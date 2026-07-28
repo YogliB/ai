@@ -1,0 +1,3 @@
+npm run prepare-agents
+git add AGENTS.md
+npx lint-staged
