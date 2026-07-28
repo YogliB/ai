@@ -1,51 +1,51 @@
 # AI — Cursor Rules, Skills, and Workflows
 
-Public repository containing reusable Cursor IDE rules, skills, and subagent workflows.
+Public repository containing reusable Cursor IDE rules, skills, subagent workflows, and personal developer toolkit references.
 
-## What's in the repo
+## Repository Structure
 
-| Path                                 | What it is                                    |
-| ------------------------------------ | --------------------------------------------- |
-| [`AGENTS.md`](AGENTS.md)             | Always-on rules (built from `.agents/rules/`) |
-| [`.agents/skills/`](.agents/skills/) | On-demand agent skills                        |
-| [`.agents/rules/`](.agents/rules/)   | Rule source files                             |
-| [`.cursor/agents/`](.cursor/agents/) | Cavecrew and chore subagent prompts           |
-| [`archive/`](archive/)               | Historical rules and workflow references      |
+| Path | Description |
+| --- | --- |
+| [`.agents/skills/`](.agents/skills/) | On-demand agent skills and workflows |
+| [`.cursor/agents/`](.cursor/agents/) | Subagent prompts (`chore-runner`) |
+| [`package.json`](package.json) | Node environment and formatting scripts |
 
-## Quick start
+## Quick Start
 
 ```bash
 npm install
-npm run prepare-agents
+npm run format
 ```
 
-## Rules
-
-Source files in `.agents/rules/`:
-
-- **agent-artifacts.md**: Storage locations for non-repo deliverables (plans, HLDs, specs).
-- **apfel.md**: macOS Apple Intelligence CLI integration.
-- **caveman.md**: Concise communication mode.
-- **comments.md**: Strict no-comments source code policy.
-- **ponytail.md**: Anti-overengineering principles.
-- **rtk.md**: Rust Token Killer CLI proxy.
-- **subagents.md**: Subagent routing policy.
-
-## Skills
+## Included Skills
 
 On-demand workflows in `.agents/skills/`:
 
-- **alternatives**: Compare up to 3 options before coding.
-- **apfel**: On-device AI execution via Apple Intelligence.
-- **planning**: Self-contained executable technical plans.
-- **review-and-fix**: Closed-loop code review and fix pass via Task subagents.
-- **review-dont-fix**: One-shot read-only code review.
+- **alternatives**: Evaluate up to 3 viable implementation/design alternatives with pros/cons before writing code.
+- **apfel**: Delegate repetitive, low-risk tasks to macOS Tahoe's on-device Apple Intelligence CLI.
+- **planning**: Generate self-contained, executable technical plans with atomic testable TODOs and plan review loops.
+- **pr**: Create or update GitHub PRs via `gh` CLI with standard titles, templates, issue links, and image attachments.
+- **review-and-fix**: Closed-loop code review pass (subagent) and fix cycle until zero valid findings remain.
+- **review-dont-fix**: One-shot read-only code review without modifying source code.
 
 ## Subagents
 
 Custom subagent prompts in `.cursor/agents/`:
 
-- **cavecrew-builder**: Bounded 1-2 file surgical edits.
-- **cavecrew-investigator**: Read-only code locator and symbol finder.
-- **cavecrew-reviewer**: Read-only diff and code reviewer.
-- **chore-runner**: Fast read-only information gathering and CLI tasks.
+- **chore-runner**: Fast, read-only agent for log tailing, terminal output inspection, CLI lookups, and web retrieval.
+
+## Rules & Development Philosophy
+
+Core guidelines and tools used in development:
+
+- **caveman**: Terse, fluff-free communication mode for AI agents. Focus strictly on technical substance.
+- **ponytail**: Anti-overengineering rules ("lazy senior dev mode"). Favor standard library, native platform features, YAGNI, and minimal code.
+- **rtk**: [Rust Token Killer](https://github.com/reachingforthejack/rtk) — token-optimized CLI proxy saving 60-90% tokens on shell and developer tool outputs.
+
+## External Skills & Plugins
+
+Toolkit references and external agent plugins:
+
+- **[mattpocock/skills/grilling](https://github.com/mattpocock/skills)**: Relentlessly grill plans, architectural decisions, and trade-offs before implementation.
+- **[softaworks/agent-toolkit/humanizer](https://github.com/softaworks/agent-toolkit)**: Remove robotic phrasing and AI writing tropes from documentation and content.
+- **[anthropics/knowledge-work-plugins/documentation](https://github.com/anthropics/knowledge-work-plugins)**: Structured standards for technical documentation, API references, runbooks, and onboarding guides.
