@@ -1,7 +1,7 @@
 {
   "name": "ai",
   "version": "0.1.0",
-  "description": "Cursor IDE rules, skills, and agent workflows.",
+  "description": "AI development tools and configurations",
   "license": "MIT",
   "author": "Yogev Boaron Ben-Har",
   "repository": {

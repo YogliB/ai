@@ -1,6 +1,5 @@
 ---
 name: chore-runner
-model: gemini-3.6-flash[]
 description: Use PROACTIVELY for routine, low-reasoning chores and information-gathering   tasks so the main agent stays focused. Ideal for: reading and tailing logs,   inspecting terminal state and output, running quick shell/CLI commands (git   status, ls, grep, find, ps, curl), checking file or directory contents,   fetching and summarizing web pages or documentation, searching the web,   looking up package versions, gathering environment/config details, and other   simple lookups or "go find X" errands. Prefer this agent whenever a task is   mechanical, read-only, or exploratory rather than requiring deep code   reasoning or edits.
 readonly: true
 ---
