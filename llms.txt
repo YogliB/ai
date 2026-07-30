@@ -1,0 +1,24 @@
+# ai
+
+Reusable agent skills, subagent prompts, and personal developer-tool references.
+
+## Entry points
+
+- README.md — overview and quick start
+- AGENTS.md — agent index and workflow notes
+- package.json — package manager (nub), scripts, and dependencies
+
+## Skills
+
+- .agents/skills/alternatives/SKILL.md
+- .agents/skills/planning/SKILL.md
+- .agents/skills/planning/templates/masterplan.md
+- .agents/skills/planning/templates/plan.md
+- .agents/skills/pr/SKILL.md
+- .agents/skills/review-and-fix/SKILL.md
+- .agents/skills/review-dont-fix/SKILL.md
+
+## Subagents
+
+- .claude/agents/chore-runner.md
+- .cursor/.agents/chore-runner.md

@@ -1,3 +1,3 @@
-npm run prepare-agents
+nub run prepare-agents
 git add AGENTS.md
-npx lint-staged
+nubx lint-staged

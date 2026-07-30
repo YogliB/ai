@@ -1,20 +1,22 @@
-# AI — Cursor Rules, Skills, and Workflows
+# AI — Agent Skills and Workflows
 
-Public repository containing reusable Cursor IDE rules, skills, subagent workflows, and personal developer toolkit references.
+Public repository containing reusable agent skills, subagent workflows, and personal developer toolkit references.
 
 ## Repository Structure
 
-| Path | Description |
-| --- | --- |
-| [`.agents/skills/`](.agents/skills/) | On-demand agent skills and workflows |
-| [`.cursor/agents/`](.cursor/agents/) | Subagent prompts (`chore-runner`) |
-| [`package.json`](package.json) | Node environment and formatting scripts |
+| Path                                   | Description                             |
+| -------------------------------------- | --------------------------------------- |
+| [`.agents/skills/`](.agents/skills/)   | On-demand agent skills and workflows    |
+| [`.claude/agents/`](.claude/agents/)   | Claude agent prompts (`chore-runner`)   |
+| [`.cursor/.agents/`](.cursor/.agents/) | Cursor agent prompts (`chore-runner`)   |
+| [`.node-version`](.node-version)       | nub Node version pin (lts/24)           |
+| [`package.json`](package.json)         | Node environment and formatting scripts |
 
 ## Quick Start
 
 ```bash
-npm install
-npm run format
+nub install
+nub run format
 ```
 
 ## Included Skills
@@ -22,7 +24,6 @@ npm run format
 On-demand workflows in `.agents/skills/`:
 
 - **alternatives**: Evaluate up to 3 viable implementation/design alternatives with pros/cons before writing code.
-- **apfel**: Delegate repetitive, low-risk tasks to macOS Tahoe's on-device Apple Intelligence CLI.
 - **planning**: Generate self-contained, executable technical plans with atomic testable TODOs and plan review loops.
 - **pr**: Create or update GitHub PRs via `gh` CLI with standard titles, templates, issue links, and image attachments.
 - **review-and-fix**: Closed-loop code review pass (subagent) and fix cycle until zero valid findings remain.
@@ -30,13 +31,13 @@ On-demand workflows in `.agents/skills/`:
 
 ## Subagents
 
-Custom subagent prompts in `.cursor/agents/`:
+Custom subagent prompts in `.claude/agents/` and `.cursor/.agents/`:
 
 - **chore-runner**: Fast, read-only agent for log tailing, terminal output inspection, CLI lookups, and web retrieval.
 
-## Rules & Development Philosophy
+## Referenced conventions and tools
 
-Core guidelines and tools used in development:
+Conventions and external tools used with these skills:
 
 - **caveman**: Terse, fluff-free communication mode for AI agents. Focus strictly on technical substance.
 - **ponytail**: Anti-overengineering rules ("lazy senior dev mode"). Favor standard library, native platform features, YAGNI, and minimal code.
