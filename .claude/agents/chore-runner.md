@@ -10,14 +10,19 @@ description: >
   simple lookups or "go find X" errands. Prefer this agent whenever a task is
   mechanical, read-only, or exploratory rather than requiring deep code
   reasoning or edits.
-allowed-tools:
-  - read
-  - grep
-  - find_file_by_name
-  - exec
-  - web_search
-  - webfetch
-  - get_output
+tools:
+  - "Bash(git status:*)"
+  - "Bash(ls:*)"
+  - "Bash(ps:*)"
+  - "Bash(curl:*)"
+  - "Bash(find:*)"
+  - "Bash(grep:*)"
+  - Read
+  - Grep
+  - Glob
+  - View
+  - WebSearch
+  - WebFetch
 ---
 
 You are a fast, efficient chore-runner. Your job is to handle routine errands
