@@ -14,6 +14,7 @@ description: Self-contained executable technical plans with atomic testable TODO
 ## Core requirements
 
 - Plan must be **self-contained**: an implementer (human or agent) executes using **only this document** plus a normal repo checkout — no fetching Confluence/Jira/Figma, reading sibling plan files, opening skill templates, or relying on chat history
+- Plan must be **durable**: the final plan is written to a file under `.agents/plans/` (or the agent's equivalent default) so the review, implementation, and PR phases can read it without chat context
 - **Inline required context** in the plan body: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. Links may appear **only** as optional source attribution **after** the needed facts are inlined
 - **Pointer-only dependencies are blockers** — e.g. "see Confluence page X", "per design doc", "details in masterplan PR2", "attach Figma at implementation time". Either inline the excerpt or list as **Assumptions** with acceptance impact and a verification step
 - Plan must be **fully executable**: every step done without guessing missing context
@@ -146,10 +147,21 @@ After **each** implementation TODO from plan, run **related tests** and **verifi
 
 Planning covers **what** to build, **how** to sequence it, **delivery shape** when needed (branches, PR boundaries, rollout stages, dependencies)—including fields in [templates/masterplan.md](templates/masterplan.md), and **plan review** per **Plan review loop** above. **Code review** of implementation (diff review, SDD implementer review gates) **not** part of this skill; use repository rules for that.
 
+## Plan file output
+
+The finalized plan must be written to a file so later phases (implementation, review, PR) can read it without depending on chat context.
+
+- Default path: `.agents/plans/<slug>.md`
+- Masterplan path: `.agents/plans/<slug>-master.md`
+- `<slug>` should describe the work in short kebab-case (e.g., `add-auth-token`, `crewmate-stream`). If the user did not name it, derive one from the Goal and ask to confirm.
+- If the agent platform has its own default plan location (e.g., Cursor plan mode), write the plan there too, but always create or symlink the canonical copy under `.agents/plans/`.
+- Do not commit or push the plan file unless the user or repo policy explicitly requests it.
+- The planning review loop still pastes the full plan text into the review subagent; the file is the durable artifact after the review passes.
+
 ## Output
 
 - Either **summarize these rules** when user only asked guidance
-- Or **emit plan text** following [templates/plan.md](templates/plan.md) (and [templates/masterplan.md](templates/masterplan.md) when split)
+- Or **write the finalized plan to a file** and return a short summary with the path, then emit the plan text on request
 
 ## Bundled templates
 

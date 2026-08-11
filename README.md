@@ -1,52 +1,86 @@
 # AI — Agent Skills and Workflows
 
-Public repository containing reusable agent skills, subagent workflows, and personal developer toolkit references.
+Reusable agent skills and an optional end-to-end workflow.
 
-## Repository Structure
+The skills work independently. Use one skill or run the full flow.
 
-| Path                                   | Description                             |
-| -------------------------------------- | --------------------------------------- |
-| [`.agents/skills/`](.agents/skills/)   | On-demand agent skills and workflows    |
-| [`.claude/agents/`](.claude/agents/)   | Claude agent prompts (`chore-runner`)   |
-| [`.cursor/.agents/`](.cursor/.agents/) | Cursor agent prompts (`chore-runner`)   |
-| [`.node-version`](.node-version)       | nub Node version pin (lts/24)           |
-| [`package.json`](package.json)         | Node environment and formatting scripts |
-
-## Quick Start
+## Quick start
 
 ```bash
 nub install
 nub run format
 ```
 
-## Included Skills
+## Install
 
-On-demand workflows in `.agents/skills/`:
+### Claude Code (plugin)
 
-- **alternatives**: Evaluate up to 3 viable implementation/design alternatives with pros/cons before writing code.
-- **planning**: Generate self-contained, executable technical plans with atomic testable TODOs and plan review loops.
-- **pr**: Create or update GitHub PRs via `gh` CLI with standard titles, templates, issue links, and image attachments.
-- **review-and-fix**: Closed-loop code review pass (subagent) and fix cycle until zero valid findings remain.
-- **review-dont-fix**: One-shot read-only code review without modifying source code.
+```bash
+./install.sh
+```
 
-## Subagents
+This copies the repo to `~/.claude/plugins/ai/` and makes the shortcuts available on the next Claude Code restart.
 
-Custom subagent prompts in `.claude/agents/` and `.cursor/.agents/`:
+### Install into another project
 
-- **chore-runner**: Fast, read-only agent for log tailing, terminal output inspection, CLI lookups, and web retrieval.
+```bash
+./install.sh /path/to/your/repo
+```
 
-## Referenced conventions and tools
+This copies skills, rules, and the runbook into the target project.
 
-Conventions and external tools used with these skills:
+### Cursor
 
-- **caveman**: Terse, fluff-free communication mode for AI agents. Focus strictly on technical substance.
-- **ponytail**: Anti-overengineering rules ("lazy senior dev mode"). Favor standard library, native platform features, YAGNI, and minimal code.
-- **rtk**: [Rust Token Killer](https://github.com/reachingforthejack/rtk) — token-optimized CLI proxy saving 60-90% tokens on shell and developer tool outputs.
+```bash
+./install.sh /path/to/your/repo
+```
 
-## External Skills & Plugins
+Cursor will pick up the `.cursor/rules/*.mdc` files.
 
-Toolkit references and external agent plugins:
+## Shortcuts
 
-- **[mattpocock/skills/grilling](https://github.com/mattpocock/skills)**: Relentlessly grill plans, architectural decisions, and trade-offs before implementation.
-- **[softaworks/agent-toolkit/humanizer](https://github.com/softaworks/agent-toolkit)**: Remove robotic phrasing and AI writing tropes from documentation and content.
-- **[anthropics/knowledge-work-plugins/documentation](https://github.com/anthropics/knowledge-work-plugins)**: Structured standards for technical documentation, API references, runbooks, and onboarding guides.
+When the Claude Code plugin is active, these shortcuts expand into skill instructions:
+
+- `/alternatives` — review up to 3 options and recommend one
+- `/plan` — write an executable plan to `.agents/plans/<slug>.md`
+- `/review` — review the current diff
+- `/pr` — create or update a PR
+- `/flow` — run the full workflow
+
+## Skills
+
+| Skill                                                              | Purpose                                               |
+| ------------------------------------------------------------------ | ----------------------------------------------------- |
+| [alternatives](.agents/skills/alternatives/SKILL.md)               | Generate and review up to 3 options before committing |
+| [review-alternatives](.agents/skills/review-alternatives/SKILL.md) | Independent review of proposed alternatives           |
+| [planning](.agents/skills/planning/SKILL.md)                       | Write a self-contained, executable plan to a file     |
+| [review-and-fix](.agents/skills/review-and-fix/SKILL.md)           | Loop: review, triage, fix, re-review until clean      |
+| [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | One-shot read-only review                             |
+| [pr](.agents/skills/pr/SKILL.md)                                   | Create or update a GitHub PR                          |
+
+## Workflow
+
+The optional end-to-end flow is documented in [RUNBOOK.md](RUNBOOK.md):
+
+```text
+alternatives → planning → implementation → review → PR
+```
+
+Each step runs in an independent subagent when the platform supports it. The parent acts as a thin dispatcher.
+
+## Plan files
+
+Finalized plans are written to `.agents/plans/<slug>.md` so later phases can read them without depending on chat context. See [.agents/plans/README.md](.agents/plans/README.md).
+
+## Repository structure
+
+| Path                                   | Description                               |
+| -------------------------------------- | ----------------------------------------- |
+| [`.agents/skills/`](.agents/skills/)   | On-demand agent skills                    |
+| [`.claude/rules/`](.claude/rules/)     | Claude rule modules loaded by `CLAUDE.md` |
+| [`.cursor/rules/`](.cursor/rules/)     | Cursor project rules                      |
+| [`.claude-plugin/`](.claude-plugin/)   | Claude Code plugin manifest               |
+| [`RUNBOOK.md`](RUNBOOK.md)             | Optional end-to-end workflow reference    |
+| [`install.sh`](install.sh)             | Install globally or into a project        |
+| [`.claude/agents/`](.claude/agents/)   | Claude subagent prompts                   |
+| [`.cursor/.agents/`](.cursor/.agents/) | Cursor subagent prompts                   |

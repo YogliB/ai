@@ -1,0 +1,28 @@
+---
+description: Optional end-to-end AI workflow (alternatives, planning, implementation, review, PR)
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# AI Workflow
+
+The optional end-to-end flow is: **alternatives → planning → implementation → review → PR**.
+
+Only use this rule when the user explicitly asks for the full workflow.
+
+## Running the full flow
+
+1. Read `RUNBOOK.md`.
+2. Run `alternatives` and let the user pick an option.
+3. Run `planning` and write the plan file to `.agents/plans/<slug>.md`.
+4. Implement the plan one atomic TODO at a time.
+5. Run `review-and-fix` (or `review-dont-fix` if read-only).
+6. Run `pr`.
+
+## Using subagents
+
+Each phase should run in an independent subagent when the platform supports it. The parent acts as a thin dispatcher. Pass the plan or diff to the subagent, triage the output, and dispatch the next phase.
+
+## Opting out
+
+The user can stop or skip any phase. Each skill works on its own.

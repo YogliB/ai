@@ -24,6 +24,7 @@ If they differ, stop and tell the user to checkout the correct branch or pass th
 - If current branch is `main` or `master`, warn and do not proceed unless the user explicitly overrides.
 - If there are uncommitted changes: remind the user; **never** stage or commit without explicit permission.
 - Base diff for understanding changes: `git diff origin/<default>...HEAD` where `<default>` is from `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`, then `master` if needed).
+- If a plan file exists under `.agents/plans/`, use it as context for the PR title and body.
 
 ## Issue / Ticket tracking & Corporate mode
 

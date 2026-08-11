@@ -65,6 +65,8 @@ Before first review pass — and again when diff surface changes materially — 
 
 Also flag environment blockers: missing deps, no Poetry/node, sandbox/network limits, no DB/tunnel, tests exist but cannot run.
 
+**Plan files:** If the repo has a plan file under `.agents/plans/`, read the latest one as context. If it is missing and the change is feature work, note it under `Known validation gaps:`.
+
 ### Alert the user
 
 When gaps affect validation, **stop before claiming loop complete** unless user chose proceed-with-limits — surface **Validation gaps**:
@@ -84,11 +86,11 @@ When gaps affect validation, **stop before claiming loop complete** unless user 
 
 ### Gaps vs loop (single reference)
 
-| Phase  | Rule                                                                                                                                                                                                                                                                      |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Review | Include `Known validation gaps:` in subagent prompt when missing. Subagent must not assert design/E2E/spec compliance it cannot verify — use `❓` with gap cited, or omit. |
-| Triage | Depends on missing context → `unvalidated`, not auto-fixed. Not `false_positive` unless wrong even without context. Do not call loop **fully validated** while material `unvalidated` 🔴/🟡 remain. |
-| Fix    | No guessed UI layout, copy, or business rules without spec/Figma. Fix only what code + available context support. |
+| Phase  | Rule                                                                                                                                                                                                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Review | Include `Known validation gaps:` in subagent prompt when missing. Subagent must not assert design/E2E/spec compliance it cannot verify — use `❓` with gap cited, or omit.                                                            |
+| Triage | Depends on missing context → `unvalidated`, not auto-fixed. Not `false_positive` unless wrong even without context. Do not call loop **fully validated** while material `unvalidated` 🔴/🟡 remain.                                   |
+| Fix    | No guessed UI layout, copy, or business rules without spec/Figma. Fix only what code + available context support.                                                                                                                     |
 | Exit   | Zero `valid` findings after triage can coexist with documented **Validation gaps** (records what was never exercised). If any gap remains at handoff, **Validation gaps** must appear in final report — no silent partial validation. |
 
 ## Review loop (mandatory)
@@ -167,16 +169,16 @@ End with exactly one line:
 
 For **each** finding: assign one label plus one-line reason.
 
-| Typical `valid`                                                       | Typical `false_positive`                                                      |
-| --------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Real bug, security risk, incorrect logic                              | Already fixed earlier in loop                                                 |
-| Missing/error-prone test for changed behavior                         | Intentional design user confirmed                                             |
-| Maintainability issue that blocks safe change                         | Out-of-scope per user                                                         |
-| Nit that violates stated project rule                                 | Stale line number; code no longer matches                                     |
-| Question exposing ambiguity needing code/test change                  | Pure preference, no correctness impact                                        |
+| Typical `valid`                                                      | Typical `false_positive`                                                      |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Real bug, security risk, incorrect logic                             | Already fixed earlier in loop                                                 |
+| Missing/error-prone test for changed behavior                        | Intentional design user confirmed                                             |
+| Maintainability issue that blocks safe change                        | Out-of-scope per user                                                         |
+| Nit that violates stated project rule                                | Stale line number; code no longer matches                                     |
+| Question exposing ambiguity needing code/test change                 | Pure preference, no correctness impact                                        |
 | Dead code, reinvention, single-use abstraction to inline (`✂️`/`🪵`) | User or ticket explicitly required that abstraction, library, or config shape |
-| Clear stdlib/native swap or measurable shrink (`⚡`)                    | "Could be shorter" with no concrete replacement or net ≤0                     |
-| Speculative branch not tied to DOD (`✂️`)                               | Would remove only test or self-check for changed logic                        |
+| Clear stdlib/native swap or measurable shrink (`⚡`)                 | "Could be shorter" with no concrete replacement or net ≤0                     |
+| Speculative branch not tied to DOD (`✂️`)                            | Would remove only test or self-check for changed logic                        |
 
 **❓ findings:** `valid` only when repo context can resolve via code or test; else `false_positive` or one clarifying question (interactive) then continue.
 

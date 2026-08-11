@@ -25,6 +25,7 @@ One-shot, read-only code review. Dispatches a **single Task subagent** to produc
    - Base branch if non-default.
 2. **Context & validation check:**
    - Check if plan/spec, Figma, or runnable tests are missing.
+   - If the repo has a plan file under `.agents/plans/`, read the latest one as context.
    - If material context is missing, note under `Known validation gaps:`.
 3. **Dispatch review subagent:**
    - Launch Task subagent with `readonly: true` and model slug.
