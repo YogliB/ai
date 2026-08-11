@@ -1,25 +1,66 @@
 # AGENTS.md
 
-Agent-facing index and condensed notes for this repo.
+Agent-facing entry point. For the open format, see [agents.md](https://agents.md/).
 
-## Index
+## Quick links
 
-| Doc                                                                  | Purpose                                    |
-| -------------------------------------------------------------------- | ------------------------------------------ |
-| [README.md](README.md)                                               | Human-facing overview and quick start      |
-| [CLAUDE.md](CLAUDE.md)                                               | Claude Code rules and workflow             |
-| [RUNBOOK.md](RUNBOOK.md)                                             | Optional end-to-end workflow reference     |
-| [.cursor/rules/ai-conventions.mdc](.cursor/rules/ai-conventions.mdc) | Cursor project rules (always on)           |
-| [.cursor/rules/ai-workflow.mdc](.cursor/rules/ai-workflow.mdc)       | Cursor workflow rule (agent-requested)     |
-| [.agents/skills/](.agents/skills/)                                   | On-demand agent skills                     |
-| [.claude/rules/](.claude/rules/)                                     | Claude rule modules loaded by CLAUDE.md    |
-| [install.sh](install.sh)                                             | Install skills and rules into another repo |
+| Topic                                    | Where to look                                                                                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| User-facing overview, install, and usage | [README.md](README.md)                                                                                                               |
+| Optional end-to-end workflow             | [RUNBOOK.md](RUNBOOK.md)                                                                                                             |
+| Architecture and data flow               | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                                                         |
+| Contributing flow and setup              | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)                                                                                         |
+| Troubleshooting                          | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)                                                                                   |
+| Security policy                          | [docs/SECURITY.md](docs/SECURITY.md)                                                                                                 |
+| Code of conduct                          | [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md)                                                                                   |
+| License                                  | [LICENSE.md](LICENSE.md)                                                                                                             |
+| Skills                                   | [.agents/skills/](.agents/skills/)                                                                                                   |
+| On-demand skill rules                    | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md)                 |
+| Cursor rules                             | [.cursor/rules/ai-conventions.mdc](.cursor/rules/ai-conventions.mdc), [.cursor/rules/ai-workflow.mdc](.cursor/rules/ai-workflow.mdc) |
 
-## Summary
+@.claude/rules/conventions.md
+@.claude/rules/workflow.md
+@RUNBOOK.md
 
-Personal toolkit of reusable agent skills and an optional cross-IDE workflow.
+## Setup
 
-- **Skills**: alternatives, review-alternatives, planning, review-and-fix, review-dont-fix, pr.
-- **Convention**: plans are written to `.agents/plans/<slug>.md`.
-- **Workflow**: alternatives → planning → implementation → review → PR.
-- **Modular**: use one skill or the whole flow.
+```bash
+nub install
+nub run format
+```
+
+## Project Layout
+
+- `.agents/skills/` — on-demand skills; source of truth for all agents.
+- `.agents/plans/` — durable plan files.
+- `.claude/rules/` — Claude rule modules loaded by `CLAUDE.md`.
+- `.cursor/rules/` — Cursor project rules.
+- `.claude-plugin/` — Claude Code plugin manifest.
+- `src/hooks/` — Claude Code `UserPromptSubmit` hook.
+- `install.sh` — install globally or into a project.
+- `RUNBOOK.md` — optional end-to-end workflow.
+- `docs/` — contributor and user documentation.
+
+## Common Commands
+
+| Command                      | Purpose                                         |
+| ---------------------------- | ----------------------------------------------- |
+| `./install.sh`               | Install the Claude Code plugin globally.        |
+| `./install.sh /path/to/repo` | Install skills and rules into a target project. |
+| `nub run format`             | Format with `oxfmt`.                            |
+| `nub run lint`               | Run the pre-commit lint step.                   |
+
+## Documentation Sync
+
+Keep these aligned when changing workflows, conventions, or navigation:
+
+- `README.md`, `AGENTS.md`, `CLAUDE.md`
+- `.claude/rules/*.md` and `.cursor/rules/*.mdc`
+- `RUNBOOK.md` and `.agents/plans/README.md`
+- `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/TROUBLESHOOTING.md`
+
+## Pull Requests
+
+- Run `nub run format` before committing.
+- Keep changes focused.
+- Squash to a single Conventional Commit.

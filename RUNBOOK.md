@@ -4,7 +4,26 @@ Optional end-to-end flow: **alternatives → planning → implementation → rev
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need.
 
-## Steps
+## When to use this runbook
+
+Use the full flow when you are starting a non-trivial piece of work and want to:
+
+- Explore options before committing to one.
+- Write a durable, reviewable plan.
+- Implement the plan in focused, testable steps.
+- Review the implementation against the plan.
+- Open a PR with the plan and review evidence in the body.
+
+Do not use the full flow for trivial changes, hotfixes, or when you already know exactly what to do.
+
+## Prerequisites
+
+- The `ai` plugin or rules are installed in your project.
+- You have a clean git working tree or a feature branch.
+- You have permission to create plan files under `.agents/plans/`.
+- For the PR step, `gh` is authenticated and the remote is reachable.
+
+## Step-by-step procedure
 
 ### 1. Alternatives
 
@@ -60,10 +79,24 @@ Each step is a reusable skill. Use the whole flow or pick just the step you need
 
 You do not have to run the full flow. Each skill is self-contained:
 
-- `/alternatives` — reviewed options for any decision
-- `/plan <slug>` — write a plan file
-- `/review` or `/review-and-fix` — review the current diff
-- `/pr` — create or update a PR
+- `/alternatives` or "use the alternatives skill" — reviewed options for any decision
+- `/plan <slug>` or "use the planning skill" — write a plan file
+- `/review` or "use the review-and-fix skill" — review the current diff
+- `/pr` or "use the pr skill" — create or update a PR
+
+## Rollback
+
+- **Before implementation:** if the plan is wrong, edit the plan file and re-run the planning review.
+- **During implementation:** if a TODO is too big, split it into smaller TODOs in the plan file and continue.
+- **After review:** if a valid finding indicates the plan itself is wrong, stop implementation, revise the plan, and re-implement.
+- **After PR:** if the PR is wrong, close or update it; do not force-merge.
+
+## Escalation path
+
+- **Hook or rule not loading:** see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+- **Skill output is wrong:** edit the skill `SKILL.md` directly and re-test.
+- **Plan review never converges:** reduce plan scope or split into a masterplan and sub-plans.
+- **Review finds the plan is wrong:** go back to planning before fixing code.
 
 ## For agents without hooks
 
