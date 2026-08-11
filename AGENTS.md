@@ -15,6 +15,7 @@ Agent-facing entry point. For the open format, see [agents.md](https://agents.md
 | Code of conduct                          | [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md)                                                                                   |
 | License                                  | [LICENSE.md](LICENSE.md)                                                                                                             |
 | Skills                                   | [.agents/skills/](.agents/skills/)                                                                                                   |
+| AI toolbelt                              | [.agents/skills/ai-toolbelt/SKILL.md](.agents/skills/ai-toolbelt/SKILL.md)                                                           |
 | On-demand skill rules                    | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md)                 |
 | Cursor rules                             | [.cursor/rules/ai-conventions.mdc](.cursor/rules/ai-conventions.mdc), [.cursor/rules/ai-workflow.mdc](.cursor/rules/ai-workflow.mdc) |
 
