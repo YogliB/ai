@@ -10,9 +10,9 @@ There are three ways to use the `ai` skills and workflow.
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh
 ```
 
-This installs the skills into each agent's global skills directory and registers the repo as a Claude Code marketplace so the plugin (shortcuts and the `UserPromptSubmit` hook) can be installed.
+This installs the skills into the universal `~/.agents/skills` directory using `npx skills`, and registers the repo as a Claude Code marketplace so the plugin (shortcuts and the `UserPromptSubmit` hook) can be installed.
 
-Requirements: `npx`, and for the Claude plugin, the `claude` CLI.
+Requirements: `npx` and the `claude` CLI.
 
 ### Per-project install
 

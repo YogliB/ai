@@ -48,12 +48,12 @@ nub run format
 
 ## Common Commands
 
-| Command                      | Purpose                                            |
-| ---------------------------- | -------------------------------------------------- |
-| `./install.sh`               | Install skills and plugin globally for all agents. |
-| `./install.sh /path/to/repo` | Install skills and rules into a target project.    |
-| `nub run format`             | Format with `oxfmt`.                               |
-| `nub run lint`               | Run the pre-commit lint step.                      |
+| Command                      | Purpose                                             |
+| ---------------------------- | --------------------------------------------------- |
+| `./install.sh`               | Install skills and the Claude Code plugin globally. |
+| `./install.sh /path/to/repo` | Install skills and rules into a target project.     |
+| `nub run format`             | Format with `oxfmt`.                                |
+| `nub run lint`               | Run the pre-commit lint step.                       |
 
 ## Documentation Sync
 

@@ -28,9 +28,9 @@ You need:
 ./install.sh
 ```
 
-This installs the skills into each agent's global skills directory using `npx skills`, and registers the repo as a Claude Code marketplace so the plugin (shortcuts/hooks) can be installed.
+This installs the skills into the universal `~/.agents/skills` directory using `npx skills`, and registers the repo as a Claude Code marketplace so the plugin (shortcuts/hooks) can be installed.
 
-Requirements: `npx` and, for the Claude plugin, the `claude` CLI.
+Requirements: `npx` and the `claude` CLI.
 
 ### Per-project install
 
