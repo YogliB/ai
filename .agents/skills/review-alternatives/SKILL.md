@@ -1,10 +1,10 @@
 ---
 name: review-alternatives
 description: >
-  Independent review of proposed alternatives before they are presented to the user.
-  Checks for relevance, distinctness, weak or strawman options, and balanced pros/cons.
-  Use when the alternatives skill has generated options and you want a second opinion,
-  or when the user passes a list of alternatives and asks for a review.
+    Independent review of proposed alternatives before they are presented to the user.
+    Checks for relevance, distinctness, weak or strawman options, and balanced pros/cons.
+    Use when the alternatives skill has generated options and you want a second opinion,
+    or when the user passes a list of alternatives and asks for a review.
 ---
 
 # Review Alternatives
@@ -22,6 +22,7 @@ Evaluate up to 3 proposed alternatives and flag low-quality options before the u
 ## Input
 
 The alternatives being reviewed, including for each option:
+
 - **Idea**: short description
 - **Snippet** (if present): minimal code or design example
 - **Pros / Cons**: brief, balanced assessment

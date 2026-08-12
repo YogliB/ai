@@ -9,9 +9,9 @@ description: Suggest up to 3 viable alternatives for code or design decisions be
 
 1. **Identify Options**: Brainstorm distinct approaches (e.g., different patterns, libraries, or architectural choices).
 2. **Present**: For each option, provide:
-   - **Idea**: Short description.
-   - **Snippet**: Minimal code example (if relevant).
-   - **Pros / Cons**: Brief, balanced assessment.
+    - **Idea**: Short description.
+    - **Snippet**: Minimal code example (if relevant).
+    - **Pros / Cons**: Brief, balanced assessment.
 3. **Review**: Dispatch a **review-alternatives** subagent (or invoke the `review-alternatives` skill) to evaluate the options for relevance, distinctness, and weak/strawman choices. Triage findings; if valid issues remain, revise once and re-review. Stop after one revision pass to avoid loops.
 4. **Recommend**: Provide **1 clear recommendation** based on clarity and maintainability.
 5. **Wait**: Stop after presenting and wait for the user's choice. **Do not edit files.**
@@ -59,7 +59,7 @@ The parent triages each finding as `valid`, `false_positive`, or `unvalidated`. 
 
 ```ts
 function processData(d: Data[]) {
-  return d.filter(validate).map(transform);
+	return d.filter(validate).map(transform);
 }
 ```
 

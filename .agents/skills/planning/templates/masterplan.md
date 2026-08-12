@@ -38,8 +38,8 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 awaiting review · ⏸️ not‑
 **Changes:**
 
 1. [what/why] — File: `path.ext`
-   - [line/context], before→after code
-   - deps/imports
+    - [line/context], before→after code
+    - deps/imports
 
 **Acceptance:**
 

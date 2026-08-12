@@ -42,11 +42,11 @@ Support any issue tracker (Jira, Linear, Monday, Trello, GitHub Issues, etc.):
 
 1. **User input or URLs:** If the user provided an issue URL (e.g. Linear `https://linear.app/.../issue/ENG-123`, Monday `https://*.monday.com/boards/.../pulses/12345`, Jira `https://jira.domain.com/browse/PROJ-123`, Trello card, or GitHub Issue URL), link it directly in the PR body.
 2. **Ticket Keys / IDs:**
-   - Look for issue keys in user text, branch name, or recent commits (e.g., Jira `PROJ-123`, Linear `ENG-456`, GitHub `#123`, or Monday item ID).
-   - When a ticket key or URL is present, include it in the PR body (and title prefix if team convention uses `<KEY>: summary`).
+    - Look for issue keys in user text, branch name, or recent commits (e.g., Jira `PROJ-123`, Linear `ENG-456`, GitHub `#123`, or Monday item ID).
+    - When a ticket key or URL is present, include it in the PR body (and title prefix if team convention uses `<KEY>: summary`).
 3. **Corporate mode fallback:**
-   - When corporate mode is **on** and no ticket/issue reference was found, use a key placeholder like `PROJ-123` in the title/body or prompt the user for the ticket ID.
-   - On `gh pr create` in corporate mode, pass `--label "code-review:request"` if supported by the repository.
+    - When corporate mode is **on** and no ticket/issue reference was found, use a key placeholder like `PROJ-123` in the title/body or prompt the user for the ticket ID.
+    - On `gh pr create` in corporate mode, pass `--label "code-review:request"` if supported by the repository.
 
 ### When corporate mode is **off** (OSS / standard repos)
 

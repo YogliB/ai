@@ -8,10 +8,10 @@ nub install
 
 ## Common Commands
 
-| Command | Purpose |
-| ------- | ------- |
+| Command          | Purpose                                |
+| ---------------- | -------------------------------------- |
 | `nub run format` | Format Markdown and JSON with `oxfmt`. |
-| `nub run lint` | Run the pre-commit lint step. |
+| `nub run lint`   | Run the pre-commit lint step.          |
 
 ## Project Layout
 

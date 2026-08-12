@@ -49,10 +49,10 @@ Branch prefix `{branch-prefix}` = team, git user, or operator convention (derive
 ## Implementation Plan (TODOs)
 
 - [ ] **Step 1: [Name]**
-  - [ ] Task 1.1
-  - [ ] Task 1.2
+    - [ ] Task 1.1
+    - [ ] Task 1.2
 - [ ] **Step 2: [Name]**
-  - [ ] Task 2.1
+    - [ ] Task 2.1
 
 ## Delivery
 

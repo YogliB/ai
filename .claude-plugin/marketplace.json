@@ -1,17 +1,17 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "ai",
-  "description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
-  "owner": {
-    "name": "Yogev Boaron Ben-Har",
-    "url": "https://github.com/yboaron"
-  },
-  "plugins": [
-    {
-      "name": "ai",
-      "description": "Reusable agent skills and an optional end-to-end workflow: alternatives, planning, implementation, review, and PR.",
-      "source": "./",
-      "category": "productivity"
-    }
-  ]
+	"$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+	"name": "ai",
+	"description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
+	"owner": {
+		"name": "Yogev Boaron Ben-Har",
+		"url": "https://github.com/yboaron"
+	},
+	"plugins": [
+		{
+			"name": "ai",
+			"description": "Reusable agent skills and an optional end-to-end workflow: alternatives, planning, implementation, review, and PR.",
+			"source": "./",
+			"category": "productivity"
+		}
+	]
 }

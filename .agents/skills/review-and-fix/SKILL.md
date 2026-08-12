@@ -1,15 +1,15 @@
 ---
 name: review-and-fix
 description: >
-  Review code changes in Task subagent using single-block action-tagged output
-  combining correctness (cavecrew) and ponytail complexity reduction, triage findings,
-  fix every valid issue, re-review until latest pass has zero valid findings.
-  Alerts explicitly when context or capabilities insufficient to validate
-  (missing plan/spec/Figma, tests or browser cannot run). Use when user asks to
-  review-and-fix, review and fix, fix review findings, clean up branch or diff,
-  or run /review-and-fix. All review passes must run in subagents — never inline
-  review in parent thread. Review subagents ALWAYS use gemini-3.6-flash-high
-  unless explicitly requested otherwise.
+    Review code changes in Task subagent using single-block action-tagged output
+    combining correctness (cavecrew) and ponytail complexity reduction, triage findings,
+    fix every valid issue, re-review until latest pass has zero valid findings.
+    Alerts explicitly when context or capabilities insufficient to validate
+    (missing plan/spec/Figma, tests or browser cannot run). Use when user asks to
+    review-and-fix, review and fix, fix review findings, clean up branch or diff,
+    or run /review-and-fix. All review passes must run in subagents — never inline
+    review in parent thread. Review subagents ALWAYS use gemini-3.6-flash-high
+    unless explicitly requested otherwise.
 ---
 
 # Review and Fix
@@ -41,9 +41,9 @@ If diff empty after scope resolution, stop in one sentence.
 
 1. **Repository:** absolute path to repo root (active workspace unless user names another).
 2. **Diff target** (default `branch changes`):
-   - `branch changes` — merge-base vs default/base branch; includes committed, staged, unstaged on current branch.
-   - `uncommitted changes` — working tree only.
-   - **Explicit branch/PR** — check out target branch first (same rules as `/review-bugbot`: stash only after user confirms).
+    - `branch changes` — merge-base vs default/base branch; includes committed, staged, unstaged on current branch.
+    - `uncommitted changes` — working tree only.
+    - **Explicit branch/PR** — check out target branch first (same rules as `/review-bugbot`: stash only after user confirms).
 3. **Base branch** — only when diff must compare against non-default branch.
 4. **Custom focus** — optional user constraints (e.g. "tests only", "exclude logging").
 5. **Out of scope** — honor exclusions during triage (`false_positive` when excluded).

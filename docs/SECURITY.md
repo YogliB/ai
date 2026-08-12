@@ -9,6 +9,7 @@ This is a personal toolkit. Security updates are applied to the latest `main` br
 If you find a security issue in the hook, install script, or skill logic, open an issue on the repository or contact the maintainer directly.
 
 Please include:
+
 - A description of the issue.
 - Steps to reproduce, if applicable.
 - The file or command involved.

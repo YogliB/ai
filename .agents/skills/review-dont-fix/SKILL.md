@@ -1,10 +1,10 @@
 ---
 name: review-dont-fix
 description: >
-  One-shot read-only code review using a Task subagent with single-block action-tagged output
-  combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop.
-  Alerts explicitly when context or capabilities insufficient to validate. Use when user asks to
-  review code without fixing, review PR/branch/diff without editing, or run /review-dont-fix.
+    One-shot read-only code review using a Task subagent with single-block action-tagged output
+    combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop.
+    Alerts explicitly when context or capabilities insufficient to validate. Use when user asks to
+    review code without fixing, review PR/branch/diff without editing, or run /review-dont-fix.
 ---
 
 # Review (Don't Fix)
@@ -20,19 +20,19 @@ One-shot, read-only code review. Dispatches a **single Task subagent** to produc
 ## Workflow
 
 1. **Resolve scope:**
-   - Repository: absolute path to repo root.
-   - Diff target (`branch changes` default, or `uncommitted changes`, or explicit branch/PR).
-   - Base branch if non-default.
+    - Repository: absolute path to repo root.
+    - Diff target (`branch changes` default, or `uncommitted changes`, or explicit branch/PR).
+    - Base branch if non-default.
 2. **Context & validation check:**
-   - Check if plan/spec, Figma, or runnable tests are missing.
-   - If the repo has a plan file under `.agents/plans/`, read the latest one as context.
-   - If material context is missing, note under `Known validation gaps:`.
+    - Check if plan/spec, Figma, or runnable tests are missing.
+    - If the repo has a plan file under `.agents/plans/`, read the latest one as context.
+    - If material context is missing, note under `Known validation gaps:`.
 3. **Dispatch review subagent:**
-   - Launch Task subagent with `readonly: true` and model slug.
-   - Pass prompt with repository path, diff target, and output contract.
+    - Launch Task subagent with `readonly: true` and model slug.
+    - Pass prompt with repository path, diff target, and output contract.
 4. **Present report:**
-   - Output the subagent's structured findings and summary line.
-   - Stop. Do NOT apply any fixes or enter a fix loop.
+    - Output the subagent's structured findings and summary line.
+    - Stop. Do NOT apply any fixes or enter a fix loop.
 
 ## Subagent prompt contract
 
