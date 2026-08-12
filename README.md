@@ -4,13 +4,21 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 
 The skills work independently. Use one skill or run the full flow.
 
+## Quick install
+
+```bash
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
+```
+
+This copies the workflow into the target project. For a global install or other options, see [Install](#install) below.
+
 ## Before you start
 
 You need:
 
 - A supported agent: **Claude Code**, **Cursor**, or **Devin**.
 - **Node.js** (for `npx skills` and the Claude Code `UserPromptSubmit` hook).
-- For the install script: `bash`, `cp`, and a writable home directory.
+- For the install script: `sh`, `cp`, and a writable home directory.
 
 ## Install
 
