@@ -13,7 +13,9 @@
 
 ## Context
 
-Inlined facts required to implement without opening other docs or chat history: schemas, field mappings, API/GraphQL shapes, flag names, env vars, before→after snippets, cross-service contracts, verification commands. **No pointer-only entries** ("see Confluence", "per Figma", "details in masterplan PR N").
+Inlined facts required to implement without opening other docs or chat history: schemas, field mappings, API/GraphQL shapes, flag names, env vars, **verified current** before→after snippets, cross-service contracts, verification commands. **No pointer-only entries** ("see Confluence", "per Figma", "details in masterplan PR N").
+
+If a `before→after` snippet is included, the `before` half must be the current code or docs as it exists right now, not the desired future state. Every file path and line number in this section must be re-checked against the repo before finalizing.
 
 ## Scope
 
@@ -47,6 +49,8 @@ Branch prefix `{branch-prefix}` = team, git user, or operator convention (derive
 - [ ] `git checkout -b {branch-prefix}/<short-meaningful-name>`
 
 ## Implementation Plan (TODOs)
+
+Keep this section at depth 2 or less. Flatten nested bullets that are details, not independent TODOs. Order steps so test and dependency changes land before code changes that would break or hang them.
 
 - [ ] **Step 1: [Name]**
     - [ ] Task 1.1

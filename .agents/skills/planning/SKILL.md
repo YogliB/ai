@@ -15,11 +15,20 @@ description: Self-contained executable technical plans with atomic testable TODO
 
 - Plan must be **self-contained**: an implementer (human or agent) executes using **only this document** plus a normal repo checkout — no fetching Confluence/Jira/Figma, reading sibling plan files, opening skill templates, or relying on chat history
 - Plan must be **durable**: the final plan is written to a file under `.agents/plans/` (or the agent's equivalent default) so the review, implementation, and PR phases can read it without chat context
-- **Inline required context** in the plan body: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. Links may appear **only** as optional source attribution **after** the needed facts are inlined
+- **Inline required context** in the plan body: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. The `Context` section must describe the repo as it is right now; a `before→after` snippet is allowed only when the `before` part is verified current code, not the desired future state. Links may appear **only** as optional source attribution **after** the needed facts are inlined
 - **Pointer-only dependencies are blockers** — e.g. "see Confluence page X", "per design doc", "details in masterplan PR2", "attach Figma at implementation time". Either inline the excerpt or list as **Assumptions** with acceptance impact and a verification step
+- **Every file path and line number** in the plan must be re-checked against the repo just before finalizing
+- **Do not include cross-plan or cross-repo references** unless they are required for execution and fully inlined
 - Plan must be **fully executable**: every step done without guessing missing context
 - TODOs **atomic** and **testable** where code changes apply
 - Include **Files** near top: **paths only** (one per line, backticked repo-relative paths), no descriptions, grouping, rationale. Union of every path you expect to create or edit for this plan (or whole masterplan). Place **Files** right after **Goal** in [templates/plan.md](templates/plan.md); in [templates/masterplan.md](templates/masterplan.md) place after overview metadata block, before **Implementation Status**. Update list when scope shifts
+
+## Initial setup
+
+Before writing the first plan in a repo:
+
+- Create `.agents/plans/` if it does not exist.
+- Add `.agents/plans/` to `.gitignore` so plan files are not committed by default.
 
 ## Clarification gates
 
@@ -30,6 +39,18 @@ description: Self-contained executable technical plans with atomic testable TODO
 ## Pre-finalization pass
 
 Before treating plan as final, note meaningful chances for **refactors**, **performance**, **security** (even if deferred, capture in Risks or short follow-up list)
+
+## Pre-review self-audit
+
+Before shipping a plan to the first subagent review, check:
+
+- [ ] `Context` snippets are the **current** code or docs, not the desired future state.
+- [ ] Every file path and line number was verified against the repo just before writing.
+- [ ] For each test change, the runner/producer is named and the expected call count matches the fixture.
+- [ ] Every constant, helper, or assertion referenced in the plan actually exists in the test file.
+- [ ] The implementation order does not create a broken intermediate state (e.g., a code change that makes tests hang before the test update lands).
+- [ ] No cross-plan or cross-repo references are included unless required for execution.
+- [ ] Nested checkboxes are flattened when they are details, not independent TODOs; keep `Implementation Plan (TODOs)` depth at 2 or less.
 
 ## Plan shape
 
@@ -133,6 +154,8 @@ Return to **Review** — dispatch a **new Task subagent** on updated plan using 
 
 - Aim for roughly **95% TODO coverage** of work in scope (remaining gap only where truly non-actionable)
 - **Consistent Markdown** (headings, lists, checkboxes)
+- **Keep `Implementation Plan (TODOs)` depth at 2 or less**; flatten nested bullets that are details, not independent TODOs
+- **Do not include cross-plan or cross-repo references** unless they are required for execution and fully inlined
 - **Branch setup** and **Delivery** blocks from template are for plans that include execution; omit when user asks **draft-only** plan or narrows scope to design-only
 - **Delivery** checklist: honor repository and operator rules for **git commit** and **push** (leave items unchecked or omit **Delivery** when commits require explicit operator request per policy)
 - When repository **interactive workflow** rules apply (small chunks, confirmation between steps), **present** plan that way; final artifact can still match full template once agreed, unless user stays **draft-only** (then omit Branch setup and Delivery as above)
@@ -142,6 +165,13 @@ Return to **Review** — dispatch a **new Task subagent** on updated plan using 
 ## Testing discipline
 
 After **each** implementation TODO from plan, run **related tests** and **verification** steps, then fix failures before moving on. Where repository defines test naming or layers, follow those rules in Testing section and in new tests.
+
+For each test change in the plan:
+
+- Name the runner/producer and confirm the expected call count matches the fixture.
+- Verify that every referenced helper, constant, or assertion exists in the test file.
+
+Order implementation TODOs so test and dependency changes land before code changes that would break or hang them; simulate the implementation order before finalizing.
 
 ## Scope boundary
 
