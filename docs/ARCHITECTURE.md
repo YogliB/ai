@@ -19,6 +19,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .agents/reports/         # Structured exploration reports
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
+├── .devin/rules/            # Devin project rules
 ├── .claude-plugin/          # Claude Code plugin manifest
 ├── src/hooks/               # Claude Code UserPromptSubmit hook
 ├── install.sh               # Install globally or per project
@@ -40,7 +41,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    │
    ├── Cursor: .cursor/rules/*.mdc loaded as context
    │
-   ├── Devin: user invokes skill tool
+   ├── Devin: .devin/rules/*.md loaded as context, user invokes skill tool
    │
    ▼
 [relevant .agents/skills/*/SKILL.md]

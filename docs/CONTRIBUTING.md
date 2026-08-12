@@ -18,6 +18,7 @@ nub install
 - `.agents/skills/` — Skills (source of truth for all agents).
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
+- `.devin/rules/` — Devin project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `src/hooks/` — Claude Code `UserPromptSubmit` hook.
 - `install.sh` — Install globally or into another project.
@@ -33,7 +34,7 @@ Keep these files aligned:
 - `README.md` — user-facing install, usage, and caveats
 - `AGENTS.md` — agent index and setup commands
 - `CLAUDE.md` — Claude rule `@` includes
-- `.claude/rules/` and `.cursor/rules/` — cross-agent rules
+- `.claude/rules/`, `.cursor/rules/`, and `.devin/rules/` — cross-agent rules
 - `RUNBOOK.md` — optional full workflow
 - `.agents/plans/README.md` — plan file conventions
 

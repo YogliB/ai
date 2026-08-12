@@ -65,6 +65,14 @@ install_project() {
 		fi
 	done
 
+	# Devin rules
+	mkdir -p "$TARGET/.devin/rules"
+	for rule in "$REPO_ROOT"/.devin/rules/*.md; do
+		if [ -f "$rule" ]; then
+			cp "$rule" "$TARGET/.devin/rules/"
+		fi
+	done
+
 	# Runbook
 	cp "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
 

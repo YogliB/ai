@@ -30,7 +30,7 @@ Requirements: `npx` and, for the Claude plugin, the `claude` CLI.
 ./install.sh /path/to/your/repo
 ```
 
-This copies rules, skills, and the runbook into the target project. It is the same command for both Claude and Cursor; the difference is which rules each editor reads.
+This copies rules, skills, and the runbook into the target project. It is the same command for Claude, Cursor, and Devin; the difference is which rules each editor reads.
 
 ### Manual install
 
@@ -103,6 +103,7 @@ Use the pr skill to open a pull request.
 - **Plan files** live in `.agents/plans/<slug>.md`. See [.agents/plans/README.md](.agents/plans/README.md).
 - **Claude rules** live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - **Cursor rules** live in `.cursor/rules/*.mdc`.
+- **Devin rules** live in `.devin/rules/*.md`.
 - **Runbook** for the optional full flow is in [RUNBOOK.md](RUNBOOK.md).
 
 ## Workflow

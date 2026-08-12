@@ -16,8 +16,9 @@ Agent-facing entry point. For the open format, see [agents.md](https://agents.md
 | License                                  | [LICENSE.md](LICENSE.md)                                                                                                             |
 | Skills                                   | [.agents/skills/](.agents/skills/)                                                                                                   |
 | AI toolbelt                              | [.agents/skills/ai-toolbelt/SKILL.md](.agents/skills/ai-toolbelt/SKILL.md)                                                           |
-| On-demand skill rules                    | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md)                 |
+| Claude rules                             | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md)                 |
 | Cursor rules                             | [.cursor/rules/ai-conventions.mdc](.cursor/rules/ai-conventions.mdc), [.cursor/rules/ai-workflow.mdc](.cursor/rules/ai-workflow.mdc) |
+| Devin rules                              | [.devin/rules/ai-conventions.md](.devin/rules/ai-conventions.md), [.devin/rules/ai-workflow.md](.devin/rules/ai-workflow.md)         |
 
 @.claude/rules/conventions.md
 @.claude/rules/workflow.md
@@ -36,6 +37,7 @@ nub run format
 - `.agents/plans/` — durable plan files.
 - `.claude/rules/` — Claude rule modules loaded by `CLAUDE.md`.
 - `.cursor/rules/` — Cursor project rules.
+- `.devin/rules/` — Devin project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `src/hooks/` — Claude Code `UserPromptSubmit` hook.
 - `install.sh` — install globally or into a project.
@@ -56,7 +58,7 @@ nub run format
 Keep these aligned when changing workflows, conventions, or navigation:
 
 - `README.md`, `AGENTS.md`, `CLAUDE.md`
-- `.claude/rules/*.md` and `.cursor/rules/*.mdc`
+- `.claude/rules/*.md`, `.cursor/rules/*.mdc`, and `.devin/rules/*.md`
 - `RUNBOOK.md` and `.agents/plans/README.md`
 - `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/TROUBLESHOOTING.md`
 
