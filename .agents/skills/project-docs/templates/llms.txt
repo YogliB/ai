@@ -1,0 +1,28 @@
+# {{project}}
+
+Brief description of the project.
+
+## Entry points
+
+- README.md
+- AGENTS.md
+- CLAUDE.md
+- package.json
+
+## Docs
+
+- docs/ARCHITECTURE.md
+- docs/CONTRIBUTING.md
+- docs/SECURITY.md
+- docs/USAGE.md
+- docs/TROUBLESHOOTING.md
+- docs/CHANGELOG.md
+- docs/CODE_OF_CONDUCT.md
+
+## Skills
+
+- .agents/skills/project-docs/SKILL.md
+
+## Rules
+
+- .agents/rules/*.md

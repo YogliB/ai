@@ -82,6 +82,7 @@ Use the pr skill to open a pull request.
 | [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only review.                                  |
 | [pr](.agents/skills/pr/SKILL.md)                                   | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR.                         |
 | [verify](.agents/skills/verify/SKILL.md)                           | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions.    |
+| [project-docs](.agents/skills/project-docs/SKILL.md)               | `.agents/skills/project-docs/SKILL.md`        | Scaffolding or nudging a project's docs structure. |
 | [ai-toolbelt](.agents/skills/ai-toolbelt/SKILL.md)                 | `.agents/skills/ai-toolbelt/SKILL.md`         | Recommended external AI tools.                     |
 
 ### Example session

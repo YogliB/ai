@@ -98,35 +98,35 @@ install_project() {
 		cat > "$AGENTS" <<'EOF'
 # AGENTS.md
 
+Agent-facing entry point.
+
+## Quick links
+
+| Topic | Where to look |
+|---|---|
+| Runbook | [RUNBOOK.md](RUNBOOK.md) |
+| Skills | [.agents/skills/](.agents/skills/) |
+| Claude rules | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md) |
+
+## AI workflow rules
+
 @.claude/rules/conventions.md
 @.claude/rules/workflow.md
 @RUNBOOK.md
 EOF
 	fi
 
-	# Update or create CLAUDE.md
+	# Create CLAUDE.md as a symlink to AGENTS.md, or fall back to an include.
 	CLAUDE="$TARGET/CLAUDE.md"
-	if [ -f "$CLAUDE" ]; then
-		if ! grep -q "ai workflow" "$CLAUDE" 2>/dev/null; then
-			{
-				echo ""
-				echo "---"
-				echo ""
-				echo "## AI workflow rules"
-				echo ""
-				echo "@.claude/rules/conventions.md"
-				echo "@.claude/rules/workflow.md"
-				echo "@RUNBOOK.md"
-			} >> "$CLAUDE"
-		fi
-	else
-		cat > "$CLAUDE" <<'EOF'
-# CLAUDE.md
-
-@.claude/rules/conventions.md
-@.claude/rules/workflow.md
-@RUNBOOK.md
+	if [ ! -e "$CLAUDE" ] && [ ! -L "$CLAUDE" ]; then
+		if ln -s AGENTS.md "$CLAUDE" 2>/dev/null && [ -L "$CLAUDE" ]; then
+			:
+		else
+			rm -f "$CLAUDE"
+			cat > "$CLAUDE" <<'EOF'
+@AGENTS.md
 EOF
+		fi
 	fi
 
 	echo "Done. Rules, skills, and runbook installed in $TARGET."
