@@ -37,6 +37,7 @@ Keep these files aligned:
 - `.claude/rules/`, `.cursor/rules/`, and `.devin/rules/` — cross-agent rules
 - `RUNBOOK.md` — optional full workflow
 - `.agents/plans/README.md` — plan file conventions
+- `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
 
 ## Pull Requests
 

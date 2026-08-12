@@ -91,7 +91,7 @@ Nothing forces the full flow. Each skill is self-contained and can be used alone
 
 - `claude` — Claude Code CLI.
 - `cursor` — Cursor CLI or IDE.
-- `node` — For the Claude Code `UserPromptSubmit` hook.
+- `Node.js` — For `npx skills` and the Claude Code `UserPromptSubmit` hook.
 - `gh` — Used by the `pr` skill.
 
 ## Security Notes

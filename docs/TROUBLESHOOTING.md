@@ -27,6 +27,6 @@
 
 ## Install script fails
 
-- Requires `bash`, `rsync`, `cp`, and a writable target directory.
+- Requires `sh`, `cp`, and a writable home directory.
 - For global install, `~/.claude/` must be writable.
 - For per-project install, the target must already exist.
