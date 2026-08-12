@@ -4,15 +4,16 @@ This repo provides reusable agent skills under `.agents/skills/`.
 
 ## Skills
 
-| Skill               | File                                          | Use when                                       |
-| ------------------- | --------------------------------------------- | ---------------------------------------------- |
-| alternatives        | `.agents/skills/alternatives/SKILL.md`        | User wants options for a decision              |
-| review-alternatives | `.agents/skills/review-alternatives/SKILL.md` | Reviewing proposed alternatives                |
-| planning            | `.agents/skills/planning/SKILL.md`            | Writing an executable technical plan           |
-| review-and-fix      | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing a diff and fixing issues             |
-| review-dont-fix     | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only diff review                          |
-| pr                  | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR                      |
-| verify              | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions |
+| Skill               | File                                          | Use when                                            |
+| ------------------- | --------------------------------------------- | --------------------------------------------------- |
+| explore             | `.agents/skills/explore/SKILL.md`             | User needs to understand the problem and repo first |
+| alternatives        | `.agents/skills/alternatives/SKILL.md`        | User wants options for a decision                   |
+| review-alternatives | `.agents/skills/review-alternatives/SKILL.md` | Reviewing proposed alternatives                     |
+| planning            | `.agents/skills/planning/SKILL.md`            | Writing an executable technical plan                |
+| review-and-fix      | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing a diff and fixing issues                  |
+| review-dont-fix     | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only diff review                               |
+| pr                  | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR                           |
+| verify              | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions      |
 
 Invoke the skill by name when the user asks for it. Do not force a full workflow unless the user asks for one.
 

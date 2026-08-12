@@ -7,6 +7,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ```text
 ./
 ├── .agents/skills/          # On-demand skills (source of truth)
+│   ├── explore/
 │   ├── alternatives/
 │   ├── review-alternatives/
 │   ├── planning/
@@ -15,6 +16,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── pr/
 │   └── verify/
 ├── .agents/plans/           # Durable plan files
+├── .agents/reports/         # Structured exploration reports
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
 ├── .claude-plugin/          # Claude Code plugin manifest
@@ -51,7 +53,9 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ```text
 [user asks for /flow]
    ▼
-[alternatives skill] → [review-alternatives skill] → user picks option
+[explore skill] → .agents/reports/<slug>.md
+   ▼
+[alternatives skill] (optional) → [review-alternatives skill] → user picks option
    ▼
 [planning skill] → .agents/plans/<slug>.md
    ▼

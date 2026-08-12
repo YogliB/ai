@@ -5,3 +5,4 @@ node_modules
 .serena/
 logs/
 .agents/plans/
+.agents/reports/

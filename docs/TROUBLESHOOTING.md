@@ -4,7 +4,7 @@
 
 - Make sure the plugin is installed: `ls ~/.claude/plugins/ai/`.
 - Restart Claude Code after installing.
-- Check that the prompt starts with `/alternatives`, `/plan`, `/review`, `/pr`, or `/flow`.
+- Check that the prompt starts with `/explore`, `/alternatives`, `/plan`, `/review`, `/pr`, or `/flow`.
 - The hook only expands known shortcuts; arbitrary messages are not modified.
 
 ## Cursor does not use the rules

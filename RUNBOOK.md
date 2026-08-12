@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-Optional end-to-end flow: **alternatives → planning → implementation → review → PR**.
+Optional end-to-end flow: **explore → alternatives (optional) → planning → implementation → review → PR**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need.
 
@@ -25,7 +25,18 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 ## Step-by-step procedure
 
-### 1. Alternatives
+### 1. Explore
+
+**When:** you are starting a new piece of work and need to understand the problem, scope, or repo context.
+
+**Skill:** `explore`
+
+**Output:** a structured report at `.agents/reports/<slug>.md`.
+
+- Gather available context from the repo and user prompt.
+- Recommend the next step: `alternatives` (if the approach is unclear) or `planning` (if the approach is clear).
+
+### 2. Alternatives
 
 **When:** you are not sure which approach to take.
 
@@ -36,7 +47,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 - The alternatives are first reviewed by the `review-alternatives` skill to catch irrelevant, duplicate, or weak options.
 - The user picks one.
 
-### 2. Planning
+### 3. Planning
 
 **When:** you have chosen an approach and are ready to write an executable plan.
 
@@ -47,7 +58,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 - The plan must be fully executable from the file alone.
 - The planning skill runs its own review loop before finalizing.
 
-### 3. Implementation
+### 4. Implementation
 
 **When:** the plan is finalized and you are ready to code.
 
@@ -56,7 +67,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 - Run tests after each implementation step.
 - Do not jump ahead; complete each TODO before marking it done.
 
-### 4. Review
+### 5. Review
 
 **When:** code is implemented and tests pass.
 
@@ -67,7 +78,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 - Review subagents use the plan to verify scope and acceptance.
 - Fix every valid finding before moving on.
 
-### 5. PR
+### 6. PR
 
 **When:** review is clean and verification is done.
 
@@ -79,6 +90,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 You do not have to run the full flow. Each skill is self-contained:
 
+- `/explore <slug>` or "use the explore skill" — gather context and write a structured report
 - `/alternatives` or "use the alternatives skill" — reviewed options for any decision
 - `/plan <slug>` or "use the planning skill" — write a plan file
 - `/review` or "use the review-and-fix skill" — review the current diff

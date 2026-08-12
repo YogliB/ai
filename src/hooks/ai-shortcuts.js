@@ -5,6 +5,8 @@
 const readline = require('readline');
 
 const SHORTCUTS = {
+	'/explore':
+		'Invoke the explore skill. Gather available context from the repo and user prompt, then write a structured report to .agents/reports/<slug>.md. Recommend whether to proceed to alternatives or planning.',
 	'/alternatives':
 		'Invoke the alternatives skill. Identify up to 3 viable options, run the review-alternatives skill to review them, then present with a clear recommendation and wait for the user to choose.',
 	'/plan':
@@ -13,7 +15,7 @@ const SHORTCUTS = {
 		'Invoke the review-and-fix skill on the current diff (or review-dont-fix if the user asked for read-only).',
 	'/pr': 'Invoke the pr skill to create or update a GitHub pull request for the current branch.',
 	'/flow':
-		'Run the full workflow from RUNBOOK.md: alternatives → planning → implementation → review → PR. Ask the user before each phase if they want to continue.',
+		'Run the full workflow from RUNBOOK.md: explore → alternatives (optional) → planning → implementation → review → PR. Ask the user before each phase if they want to continue.',
 };
 
 async function main() {

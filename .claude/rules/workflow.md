@@ -1,17 +1,18 @@
 # AI Workflow
 
-The optional end-to-end flow is: **alternatives → planning → implementation → review → PR**.
+The optional end-to-end flow is: **explore → alternatives (optional) → planning → implementation → review → PR**.
 
 The user must explicitly ask for the workflow. Do not run it automatically.
 
 ## Running the full flow
 
 1. Read `RUNBOOK.md` if the user asks for the workflow.
-2. Run `alternatives` first and let the user pick an option.
-3. Run `planning` and write the plan file to `.agents/plans/<slug>.md`.
-4. Implement the plan one atomic TODO at a time.
-5. Run `review-and-fix` (or `review-dont-fix` if the user prefers read-only).
-6. Run `pr`.
+2. Run `explore` and write a structured report to `.agents/reports/<slug>.md`.
+3. Run `alternatives` if the approach is unclear and let the user pick an option; otherwise proceed to `planning`.
+4. Run `planning` and write the plan file to `.agents/plans/<slug>.md`.
+5. Implement the plan one atomic TODO at a time.
+6. Run `review-and-fix` (or `review-dont-fix` if the user prefers read-only).
+7. Run `pr`.
 
 ## Using subagents
 

@@ -9,18 +9,20 @@ The skills work independently. Use one skill or run the full flow.
 You need:
 
 - A supported agent: **Claude Code**, **Cursor**, or **Devin**.
-- For the Claude Code plugin: **Node.js** (so the `UserPromptSubmit` hook can run).
-- For the install script: `bash`, `rsync`, `cp`, and a writable `~/.claude/` directory.
+- **Node.js** (for `npx skills` and the Claude Code `UserPromptSubmit` hook).
+- For the install script: `bash`, `cp`, and a writable home directory.
 
 ## Install
 
-### Claude Code plugin
+### Global install (all agents)
 
 ```bash
 ./install.sh
 ```
 
-This installs the plugin to `~/.claude/plugins/ai/`. Restart Claude Code to load it.
+This installs the skills into each agent's global skills directory using `npx skills`, and registers the repo as a Claude Code marketplace so the plugin (shortcuts/hooks) can be installed.
+
+Requirements: `npx` and, for the Claude plugin, the `claude` CLI.
 
 ### Per-project install
 
@@ -43,6 +45,7 @@ Once installed, you can use the shortcuts in Claude Code or ask the agent to fol
 When the plugin is active, these prompts expand into skill instructions:
 
 ```text
+/explore add-user-auth
 /alternatives for caching API responses
 /plan add-user-auth
 /review my branch
@@ -50,13 +53,14 @@ When the plugin is active, these prompts expand into skill instructions:
 /flow
 ```
 
-| Shortcut        | What happens                                                                    |
-| --------------- | ------------------------------------------------------------------------------- |
-| `/alternatives` | Generate and review up to 3 options, then recommend one.                        |
-| `/plan`         | Write an executable plan to `.agents/plans/<slug>.md`.                          |
-| `/review`       | Review the current diff and fix issues.                                         |
-| `/pr`           | Create or update a GitHub PR.                                                   |
-| `/flow`         | Run the full `alternatives → planning → implementation → review → PR` workflow. |
+| Shortcut        | What happens                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| `/explore`      | Gather context and write a structured report to `.agents/reports/<slug>.md`.              |
+| `/alternatives` | Generate and review up to 3 options, then recommend one.                                  |
+| `/plan`         | Write an executable plan to `.agents/plans/<slug>.md`.                                    |
+| `/review`       | Review the current diff and fix issues.                                                   |
+| `/pr`           | Create or update a GitHub PR.                                                             |
+| `/flow`         | Run the full `explore → alternatives → planning → implementation → review → PR` workflow. |
 
 ### Skills (any editor)
 
@@ -68,16 +72,17 @@ Use the review-and-fix skill on the current diff.
 Use the pr skill to open a pull request.
 ```
 
-| Skill                                                              | File                                          | Use when                                        |
-| ------------------------------------------------------------------ | --------------------------------------------- | ----------------------------------------------- |
-| [alternatives](.agents/skills/alternatives/SKILL.md)               | `.agents/skills/alternatives/SKILL.md`        | You want options before committing.             |
-| [review-alternatives](.agents/skills/review-alternatives/SKILL.md) | `.agents/skills/review-alternatives/SKILL.md` | Reviewing a list of alternatives.               |
-| [planning](.agents/skills/planning/SKILL.md)                       | `.agents/skills/planning/SKILL.md`            | Writing an executable plan.                     |
-| [review-and-fix](.agents/skills/review-and-fix/SKILL.md)           | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing and fixing code.                      |
-| [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only review.                               |
-| [pr](.agents/skills/pr/SKILL.md)                                   | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR.                      |
-| [verify](.agents/skills/verify/SKILL.md)                           | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions. |
-| [ai-toolbelt](.agents/skills/ai-toolbelt/SKILL.md)                 | `.agents/skills/ai-toolbelt/SKILL.md`         | Recommended external AI tools.                  |
+| Skill                                                              | File                                          | Use when                                           |
+| ------------------------------------------------------------------ | --------------------------------------------- | -------------------------------------------------- |
+| [explore](.agents/skills/explore/SKILL.md)                         | `.agents/skills/explore/SKILL.md`             | You need to understand the problem and repo first. |
+| [alternatives](.agents/skills/alternatives/SKILL.md)               | `.agents/skills/alternatives/SKILL.md`        | You want options before committing.                |
+| [review-alternatives](.agents/skills/review-alternatives/SKILL.md) | `.agents/skills/review-alternatives/SKILL.md` | Reviewing a list of alternatives.                  |
+| [planning](.agents/skills/planning/SKILL.md)                       | `.agents/skills/planning/SKILL.md`            | Writing an executable plan.                        |
+| [review-and-fix](.agents/skills/review-and-fix/SKILL.md)           | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing and fixing code.                         |
+| [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only review.                                  |
+| [pr](.agents/skills/pr/SKILL.md)                                   | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR.                         |
+| [verify](.agents/skills/verify/SKILL.md)                           | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions.    |
+| [ai-toolbelt](.agents/skills/ai-toolbelt/SKILL.md)                 | `.agents/skills/ai-toolbelt/SKILL.md`         | Recommended external AI tools.                     |
 
 ### Example session
 
@@ -105,7 +110,7 @@ Use the pr skill to open a pull request.
 The optional end-to-end flow is:
 
 ```text
-alternatives → planning → implementation → review → PR
+explore → alternatives (optional) → planning → implementation → review → PR
 ```
 
 Each step can run in an independent subagent. The parent is a thin dispatcher. The [runbook](RUNBOOK.md) has the full procedure.

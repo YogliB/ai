@@ -1,7 +1,7 @@
 {
 	"name": "ai",
 	"version": "0.1.0",
-	"description": "Reusable agent skills and an optional end-to-end workflow: alternatives, planning, implementation, review, and PR.",
+	"description": "Reusable agent skills and an optional end-to-end workflow: explore, alternatives, planning, implementation, review, and PR.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
 		"url": "https://github.com/yboaron"

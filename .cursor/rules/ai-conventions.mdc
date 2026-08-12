@@ -12,6 +12,7 @@ This repo provides reusable agent skills under `.agents/skills/`.
 
 | Skill | File | Use when |
 | ----- | ---- | -------- |
+| explore | `.agents/skills/explore/SKILL.md` | User needs to understand the problem and repo first |
 | alternatives | `.agents/skills/alternatives/SKILL.md` | User wants options for a decision |
 | review-alternatives | `.agents/skills/review-alternatives/SKILL.md` | Reviewing proposed alternatives |
 | planning | `.agents/skills/planning/SKILL.md` | Writing an executable technical plan |

@@ -1,132 +1,134 @@
 #!/usr/bin/env sh
-# Install the ai workflow plugin.
+# Install the ai workflow skills and plugin.
 #
 # Usage:
-#   ./install.sh                    # install Claude Code plugin globally
-#   ./install.sh /path/to/repo      # install rules and skills into a project
+#   ./install.sh                    # install skills/flow globally for all agents
+#   ./install.sh /path/to/repo      # install rules and skills into a target project
 
 set -e
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
-install_global() {
-  PLUGIN_DIR="$CLAUDE_CONFIG_DIR/plugins/ai"
-  echo "Installing Claude Code plugin to $PLUGIN_DIR"
-  rm -rf "$PLUGIN_DIR"
-  mkdir -p "$PLUGIN_DIR"
-  rsync -a \
-    --exclude='.git' \
-    --exclude='node_modules' \
-    --exclude='logs' \
-    --exclude='.serena' \
-    --exclude='nub.lock' \
-    "$REPO_ROOT"/ "$PLUGIN_DIR/"
-  echo "Done. Restart Claude Code to load the plugin."
+install_all_agents() {
+	echo "Installing ai skills globally with npx skills..."
+
+	if ! command -v npx >/dev/null 2>&1; then
+		echo "Error: npx is required to install skills. Install Node.js." >&2
+		exit 1
+	fi
+
+	npx --yes skills add "$REPO_ROOT" -g -a cursor -a devin -a claude-code -y
+
+	if command -v claude >/dev/null 2>&1; then
+		echo "Registering ai repo as a Claude Code marketplace and installing the plugin..."
+		claude plugin marketplace add "$REPO_ROOT" --scope user
+		claude plugin install ai@ai --scope user
+	else
+		echo "Claude Code CLI not found; skipping Claude plugin installation."
+	fi
+
+	echo "Done. Restart any running agent sessions to pick up new skills/rules."
 }
 
 install_project() {
-  TARGET="$1"
-  if [ ! -d "$TARGET" ]; then
-    echo "Error: $TARGET is not a directory" >&2
-    exit 1
-  fi
+	TARGET="$1"
+	if [ ! -d "$TARGET" ]; then
+		echo "Error: $TARGET is not a directory" >&2
+		exit 1
+	fi
 
-  echo "Installing ai workflow into $TARGET"
+	echo "Installing ai workflow into $TARGET"
 
-  # Skills for all agents
-  mkdir -p "$TARGET/.agents/skills"
-  for skill_dir in "$REPO_ROOT"/.agents/skills/*; do
-    if [ -d "$skill_dir" ]; then
-      name=$(basename "$skill_dir")
-      rm -rf "$TARGET/.agents/skills/$name"
-      cp -R "$skill_dir" "$TARGET/.agents/skills/$name"
-    fi
-  done
+	# Skills for all agents
+	mkdir -p "$TARGET/.agents/skills"
+	for skill_dir in "$REPO_ROOT"/.agents/skills/*; do
+		if [ -d "$skill_dir" ]; then
+			name=$(basename "$skill_dir")
+			rm -rf "$TARGET/.agents/skills/$name"
+			cp -R "$skill_dir" "$TARGET/.agents/skills/$name"
+		fi
+	done
 
-  # Cursor rules
-  mkdir -p "$TARGET/.cursor/rules"
-  for rule in "$REPO_ROOT"/.cursor/rules/*.mdc; do
-    if [ -f "$rule" ]; then
-      cp "$rule" "$TARGET/.cursor/rules/"
-    fi
-  done
+	# Cursor rules
+	mkdir -p "$TARGET/.cursor/rules"
+	for rule in "$REPO_ROOT"/.cursor/rules/*.mdc; do
+		if [ -f "$rule" ]; then
+			cp "$rule" "$TARGET/.cursor/rules/"
+		fi
+	done
 
-  # Claude rules
-  mkdir -p "$TARGET/.claude/rules"
-  for rule in "$REPO_ROOT"/.claude/rules/*.md; do
-    if [ -f "$rule" ]; then
-      cp "$rule" "$TARGET/.claude/rules/"
-    fi
-  done
+	# Claude rules
+	mkdir -p "$TARGET/.claude/rules"
+	for rule in "$REPO_ROOT"/.claude/rules/*.md; do
+		if [ -f "$rule" ]; then
+			cp "$rule" "$TARGET/.claude/rules/"
+		fi
+	done
 
-  # Runbook
-  cp "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
+	# Runbook
+	cp "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
 
-  # Plans directory README
-  mkdir -p "$TARGET/.agents/plans"
-  cp "$REPO_ROOT/.agents/plans/README.md" "$TARGET/.agents/plans/README.md"
+	# Plans directory README
+	mkdir -p "$TARGET/.agents/plans"
+	cp "$REPO_ROOT/.agents/plans/README.md" "$TARGET/.agents/plans/README.md"
 
-  # Update or create AGENTS.md
-  AGENTS="$TARGET/AGENTS.md"
-  if [ -f "$AGENTS" ]; then
-    if ! grep -q "ai workflow" "$AGENTS" 2>/dev/null; then
-      {
-        echo ""
-        echo "---"
-        echo ""
-        echo "## AI workflow rules"
-        echo ""
-        echo "@.claude/rules/conventions.md"
-        echo "@.claude/rules/workflow.md"
-      } >> "$AGENTS"
-    fi
-  else
-    cat > "$AGENTS" <<'EOF'
+	# Update or create AGENTS.md
+	AGENTS="$TARGET/AGENTS.md"
+	if [ -f "$AGENTS" ]; then
+		if ! grep -q "ai workflow" "$AGENTS" 2>/dev/null; then
+			{
+				echo ""
+				echo "---"
+				echo ""
+				echo "## AI workflow rules"
+				echo ""
+				echo "@.claude/rules/conventions.md"
+				echo "@.claude/rules/workflow.md"
+			} >> "$AGENTS"
+		fi
+	else
+		cat > "$AGENTS" <<'EOF'
 # AGENTS.md
 
 @.claude/rules/conventions.md
 @.claude/rules/workflow.md
 @RUNBOOK.md
 EOF
-  fi
+	fi
 
-  # Update or create CLAUDE.md
-  CLAUDE="$TARGET/CLAUDE.md"
-  if [ -f "$CLAUDE" ]; then
-    if ! grep -q "ai workflow" "$CLAUDE" 2>/dev/null; then
-      {
-        echo ""
-        echo "---"
-        echo ""
-        echo "## AI workflow rules"
-        echo ""
-        echo "@.claude/rules/conventions.md"
-        echo "@.claude/rules/workflow.md"
-        echo "@RUNBOOK.md"
-      } >> "$CLAUDE"
-    fi
-  else
-    cat > "$CLAUDE" <<'EOF'
+	# Update or create CLAUDE.md
+	CLAUDE="$TARGET/CLAUDE.md"
+	if [ -f "$CLAUDE" ]; then
+		if ! grep -q "ai workflow" "$CLAUDE" 2>/dev/null; then
+			{
+				echo ""
+				echo "---"
+				echo ""
+				echo "## AI workflow rules"
+				echo ""
+				echo "@.claude/rules/conventions.md"
+				echo "@.claude/rules/workflow.md"
+				echo "@RUNBOOK.md"
+			} >> "$CLAUDE"
+		fi
+	else
+		cat > "$CLAUDE" <<'EOF'
 # CLAUDE.md
 
 @.claude/rules/conventions.md
 @.claude/rules/workflow.md
 @RUNBOOK.md
 EOF
-  fi
+	fi
 
-  echo "Done. Rules, skills, and runbook installed in $TARGET."
+	echo "Done. Rules, skills, and runbook installed in $TARGET."
 }
 
 case "${1:-}" in
-  "")
-    install_global
-    ;;
-  --global)
-    install_global
-    ;;
-  *)
-    install_project "$1"
-    ;;
+	"" | --global)
+		install_all_agents
+		;;
+	*)
+		install_project "$1"
+		;;
 esac
