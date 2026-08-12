@@ -7,6 +7,7 @@ Agent-facing entry point. For the open format, see [agents.md](https://agents.md
 | Topic                                    | Where to look                                                                                                                        |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | User-facing overview, install, and usage | [README.md](README.md)                                                                                                               |
+| Usage                                    | [docs/USAGE.md](docs/USAGE.md)                                                                                                       |
 | Optional end-to-end workflow             | [RUNBOOK.md](RUNBOOK.md)                                                                                                             |
 | Architecture and data flow               | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                                                         |
 | Contributing flow and setup              | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)                                                                                         |
@@ -61,7 +62,7 @@ Keep these aligned when changing workflows, conventions, or navigation:
 - `README.md`, `AGENTS.md`, `CLAUDE.md`
 - `.claude/rules/*.md`, `.cursor/rules/*.mdc`, and `.devin/rules/*.md`
 - `RUNBOOK.md` and `.agents/plans/README.md`
-- `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/TROUBLESHOOTING.md`
+- `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/TROUBLESHOOTING.md`
 
 ## Pull Requests
 

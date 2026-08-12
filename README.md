@@ -40,9 +40,11 @@ Requirements: `npx` and, for the Claude plugin, the `claude` CLI.
 
 This copies rules, skills, and the runbook into the target project. It is the same command for Claude, Cursor, and Devin; the difference is which rules each editor reads.
 
-### Manual install
+### Install specific skills
 
-See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for details on copying skills and rules by hand.
+Want to install specific skills? `npx skills add YogliB/ai`
+
+This prompts you to pick skills. To install one directly, use `npx skills add YogliB/ai --skill <skill-name>`. For all options, see [docs/USAGE.md](docs/USAGE.md).
 
 ## Usage
 
@@ -137,6 +139,7 @@ Each step can run in an independent subagent. The parent is a thin dispatcher. T
 | Doc                                                | Purpose                      |
 | -------------------------------------------------- | ---------------------------- |
 | [RUNBOOK.md](RUNBOOK.md)                           | Optional end-to-end workflow |
+| [docs/USAGE.md](docs/USAGE.md)                     | Install and usage guide      |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | How the pieces fit together  |
 | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup and PR flow            |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems              |
