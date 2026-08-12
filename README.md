@@ -68,15 +68,16 @@ Use the review-and-fix skill on the current diff.
 Use the pr skill to open a pull request.
 ```
 
-| Skill                                                              | File                                          | Use when                            |
-| ------------------------------------------------------------------ | --------------------------------------------- | ----------------------------------- |
-| [alternatives](.agents/skills/alternatives/SKILL.md)               | `.agents/skills/alternatives/SKILL.md`        | You want options before committing. |
-| [review-alternatives](.agents/skills/review-alternatives/SKILL.md) | `.agents/skills/review-alternatives/SKILL.md` | Reviewing a list of alternatives.   |
-| [planning](.agents/skills/planning/SKILL.md)                       | `.agents/skills/planning/SKILL.md`            | Writing an executable plan.         |
-| [review-and-fix](.agents/skills/review-and-fix/SKILL.md)           | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing and fixing code.          |
-| [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only review.                   |
-| [pr](.agents/skills/pr/SKILL.md)                                   | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR.          |
-| [ai-toolbelt](.agents/skills/ai-toolbelt/SKILL.md)                 | `.agents/skills/ai-toolbelt/SKILL.md`         | Recommended external AI tools.      |
+| Skill                                                              | File                                          | Use when                                        |
+| ------------------------------------------------------------------ | --------------------------------------------- | ----------------------------------------------- |
+| [alternatives](.agents/skills/alternatives/SKILL.md)               | `.agents/skills/alternatives/SKILL.md`        | You want options before committing.             |
+| [review-alternatives](.agents/skills/review-alternatives/SKILL.md) | `.agents/skills/review-alternatives/SKILL.md` | Reviewing a list of alternatives.               |
+| [planning](.agents/skills/planning/SKILL.md)                       | `.agents/skills/planning/SKILL.md`            | Writing an executable plan.                     |
+| [review-and-fix](.agents/skills/review-and-fix/SKILL.md)           | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing and fixing code.                      |
+| [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only review.                               |
+| [pr](.agents/skills/pr/SKILL.md)                                   | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR.                      |
+| [verify](.agents/skills/verify/SKILL.md)                           | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions. |
+| [ai-toolbelt](.agents/skills/ai-toolbelt/SKILL.md)                 | `.agents/skills/ai-toolbelt/SKILL.md`         | Recommended external AI tools.                  |
 
 ### Example session
 

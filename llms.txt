@@ -17,6 +17,7 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 - .agents/skills/pr/SKILL.md
 - .agents/skills/review-and-fix/SKILL.md
 - .agents/skills/review-dont-fix/SKILL.md
+- .agents/skills/verify/SKILL.md
 
 ## Subagents
 

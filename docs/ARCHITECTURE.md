@@ -12,7 +12,8 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── planning/
 │   ├── review-and-fix/
 │   ├── review-dont-fix/
-│   └── pr/
+│   ├── pr/
+│   └── verify/
 ├── .agents/plans/           # Durable plan files
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules

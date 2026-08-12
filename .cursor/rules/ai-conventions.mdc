@@ -18,6 +18,7 @@ This repo provides reusable agent skills under `.agents/skills/`.
 | review-and-fix | `.agents/skills/review-and-fix/SKILL.md` | Reviewing a diff and fixing issues |
 | review-dont-fix | `.agents/skills/review-dont-fix/SKILL.md` | Read-only diff review |
 | pr | `.agents/skills/pr/SKILL.md` | Creating or updating a PR |
+| verify | `.agents/skills/verify/SKILL.md` | Verifying changes work and have no regressions |
 
 Read the relevant skill before acting. Do not force a full workflow unless the user asks for one.
 
