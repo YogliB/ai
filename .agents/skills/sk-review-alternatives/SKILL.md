@@ -1,9 +1,9 @@
 ---
-name: review-alternatives
+name: sk-review-alternatives
 description: >
     Independent review of proposed alternatives before they are presented to the user.
     Checks for relevance, distinctness, weak or strawman options, and balanced pros/cons.
-    Use when the alternatives skill has generated options and you want a second opinion,
+    Use when the sk-alternatives skill has generated options and you want a second opinion,
     or when the user passes a list of alternatives and asks for a review.
 ---
 
@@ -15,7 +15,7 @@ Evaluate up to 3 proposed alternatives and flag low-quality options before the u
 
 ## When to use
 
-- After the `alternatives` skill generates options
+- After the `sk-alternatives` skill generates options
 - When a user pastes a set of alternatives and asks you to review them
 - Before presenting alternatives to a stakeholder where quality matters
 

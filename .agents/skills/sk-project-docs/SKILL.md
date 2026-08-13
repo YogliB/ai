@@ -1,5 +1,5 @@
 ---
-name: project-docs
+name: sk-project-docs
 description: Scaffold or nudge a project's documentation structure. Trigger with "set up docs", "project docs", "nudge docs", "init documentation", or "update docs index".
 ---
 

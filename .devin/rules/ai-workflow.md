@@ -1,23 +1,24 @@
 ---
-description: Optional end-to-end AI workflow (explore, alternatives, planning, implementation, review, PR)
+description: Optional end-to-end AI workflow (sk-flow)
 trigger: model_decision
 ---
 
 # AI Workflow
 
-The optional end-to-end flow is: **explore → alternatives (optional) → planning → implementation → review → PR**.
+The optional end-to-end flow is: **sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr**.
 
 The user must explicitly ask for the workflow. Do not run it automatically.
 
 ## Running the full flow
 
 1. Read `RUNBOOK.md` if the user asks for the workflow.
-2. Run `explore` and write a structured report to `.agents/reports/<slug>.md`.
-3. Run `alternatives` if the approach is unclear and let the user pick an option; otherwise proceed to `planning`.
-4. Run `planning` and write the plan file to `.agents/plans/<slug>.md`.
-5. Implement the plan one atomic TODO at a time.
-6. Run `review-and-fix` (or `review-dont-fix` if the user prefers read-only).
-7. Run `pr`.
+2. Run `sk-flow` or follow the steps below.
+3. Run `sk-explore` and write a structured report to `.agents/reports/<slug>.md`.
+4. Run `sk-alternatives` if the approach is unclear and let the user pick an option; otherwise proceed to `sk-planning`.
+5. Run `sk-planning` and write the plan file to `.agents/plans/<slug>.md`.
+6. Implement the plan one atomic TODO at a time.
+7. Run `sk-review-and-fix` (or `sk-review-dont-fix` if the user prefers read-only).
+8. Run `sk-pr`.
 
 ## Using subagents
 

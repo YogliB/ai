@@ -1,6 +1,6 @@
 ---
-name: explore
-description: First-link discovery skill. Gather available context from the repo and user prompt, then write a structured report that feeds into alternatives or planning.
+name: sk-explore
+description: First-link discovery skill. Gather available context from the repo and user prompt, then write a structured report that feeds into sk-alternatives or sk-planning.
 ---
 
 # Explore
@@ -9,12 +9,12 @@ description: First-link discovery skill. Gather available context from the repo 
 
 - Starting a new piece of work and the problem, scope, or repo context is not fully understood.
 - The user asks "explore X", "research X", or "understand X in this repo".
-- Before `alternatives` when multiple approaches are possible.
-- Before `planning` when the approach is clear but the details are not.
+- Before `sk-alternatives` when multiple approaches are possible.
+- Before `sk-planning` when the approach is clear but the details are not.
 
 ## Goal
 
-Produce a self-contained, structured report so the next step — `alternatives` or `planning` — can proceed without re-exploring.
+Produce a self-contained, structured report so the next step — `sk-alternatives` or `sk-planning` — can proceed without re-exploring.
 
 ## Output
 
@@ -25,7 +25,7 @@ A durable report at `.agents/reports/<slug>.md` with these sections:
 - **Findings**: what exists, what is missing, patterns, constraints, and edge cases.
 - **Assumptions and Open Questions**: unknowns with acceptance impact.
 - **Risks**: known blockers or high-risk areas.
-- **Next Step Recommendation**: `alternatives` or `planning` with a one-line reason.
+- **Next Step Recommendation**: `sk-alternatives` or `sk-planning` with a one-line reason.
 
 ## Steps
 
@@ -33,7 +33,7 @@ A durable report at `.agents/reports/<slug>.md` with these sections:
 2. **Search**: use code search, grep, and file search to find relevant code, tests, docs, and config.
 3. **Read**: read the key files and inline the relevant snippets or facts.
 4. **Synthesize**: summarize the current state, constraints, and gaps.
-5. **Recommend**: choose `alternatives` if the approach is unclear, `planning` if the approach is clear.
+5. **Recommend**: choose `sk-alternatives` if the approach is unclear, `sk-planning` if the approach is clear.
 6. **Write**: save the report to `.agents/reports/<slug>.md`.
 
 ## Initial setup
@@ -82,9 +82,9 @@ Add token-based authentication to the API.
 
 ## Next Step Recommendation
 
-- **alternatives** — choose between session cookies, JWT only, or JWT + refresh tokens.
+- **sk-alternatives** — choose between session cookies, JWT only, or JWT + refresh tokens.
 ```
 
 ## Routing
 
-After writing the report, stop and state the recommendation. Do not proceed to `alternatives` or `planning` unless the user explicitly asks.
+After writing the report, stop and state the recommendation. Do not proceed to `sk-alternatives` or `sk-planning` unless the user explicitly asks.

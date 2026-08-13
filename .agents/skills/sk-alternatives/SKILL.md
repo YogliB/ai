@@ -1,6 +1,6 @@
 ---
-name: alternatives
-description: Suggest up to 3 viable alternatives for code or design decisions before committing to an implementation. Use when the user asks for alternatives, options, or "better ways" to solve a problem.
+name: sk-alternatives
+description: Suggest up to 3 viable alternatives for code or design decisions before committing to an implementation. Use when the user asks for sk-alternatives, alternatives, options, or "better ways" to solve a problem.
 ---
 
 # Alternatives
@@ -12,7 +12,7 @@ description: Suggest up to 3 viable alternatives for code or design decisions be
     - **Idea**: Short description.
     - **Snippet**: Minimal code example (if relevant).
     - **Pros / Cons**: Brief, balanced assessment.
-3. **Review**: Dispatch a **review-alternatives** subagent (or invoke the `review-alternatives` skill) to evaluate the options for relevance, distinctness, and weak/strawman choices. Triage findings; if valid issues remain, revise once and re-review. Stop after one revision pass to avoid loops.
+3. **Review**: Dispatch a **sk-review-alternatives** subagent (or invoke the `sk-review-alternatives` skill) to evaluate the options for relevance, distinctness, and weak/strawman choices. Triage findings; if valid issues remain, revise once and re-review. Stop after one revision pass to avoid loops.
 4. **Recommend**: Provide **1 clear recommendation** based on clarity and maintainability.
 5. **Wait**: Stop after presenting and wait for the user's choice. **Do not edit files.**
 
@@ -22,7 +22,7 @@ Markdown list of options followed by a recommendation. The options are reviewed 
 
 ## Alternatives review contract
 
-The review subagent (or `review-alternatives` skill) returns ONLY:
+The review subagent (or `sk-review-alternatives` skill) returns ONLY:
 
 ```text
 ### Alternatives Review Findings

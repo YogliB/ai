@@ -1,5 +1,5 @@
 ---
-name: planning
+name: sk-planning
 description: Self-contained executable technical plans with atomic testable TODOs; required context inlined in the document (no pointer-only deps on Confluence, tickets, Figma, sibling plans, or skill templates). Ambiguity gates (~10% before planning, ~5% before acting; list unknowns when percent unclear), pre-finalization pass for refactors/performance/security, mandatory plan review loop via Task subagent using single-block action-tagged output (cavecrew + ponytail complexity reduction) with model escalation until zero valid findings. Regular plan = one repo, one PR only; multi-repo or multi-PR work requires masterplan plus one self-contained sub-plan per PR. Also split on complexity thresholds. Cross-deps in Complexity Check inform narrative only. Templates use neutral branch prefix; Delivery defers commit/push to operator/repo policy. SDD-sized implementation TODOs or multiple review cycles per parent TODO. Enforces layout via co-located templates; ~95% TODO coverage. Use for planning rules, validation, drafting plans, CreatePlan-style output, splits, standard layout.
 ---
 

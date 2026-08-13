@@ -1,5 +1,5 @@
 ---
-name: verify
+name: sk-verify
 description: Verify that changes do what they aim to do and introduce no regressions. Uses the active plan's Verification section if available; otherwise falls back to a project-level .agents/verify/VERIFICATION.md. If verification steps are unknown, asks the user and records the answer.
 ---
 
@@ -8,7 +8,7 @@ description: Verify that changes do what they aim to do and introduce no regress
 ## When to use
 
 - After implementation and before creating a PR.
-- When the user asks "did this work?", "verify the changes", "use the verify skill", or similar.
+- When the user asks "did this work?", "verify the changes", "use the sk-verify skill", or similar.
 - This skill does **not** run lint, tests, or security checks; use `before-pr` for those.
 
 ## Steps

@@ -95,8 +95,8 @@ Optional source attribution only — every fact needed for execution must alread
 
 ## Complexity Check
 
-- Implementation TODO count (split threshold): [N] (checkboxes **only** under **Implementation Plan (TODOs)** above; used for “greater than 30” split rule in the planning skill)
+- Implementation TODO count (split threshold): [N] (checkboxes **only** under **Implementation Plan (TODOs)** above; used for “greater than 30” split rule in the sk-planning skill)
 - Total checklist items (optional): [N]
 - Depth: [N] (nesting **only** under **Implementation Plan (TODOs)** for split rule)
-- Cross-deps: [N] (informational for Proceed/Split narrative; no mandatory split threshold in planning skill)
+- Cross-deps: [N] (informational for Proceed/Split narrative; no mandatory split threshold in sk-planning skill)
 - **Decision:** [Proceed / Split]

@@ -21,7 +21,7 @@ Brief description of the project.
 
 ## Skills
 
-- .agents/skills/project-docs/SKILL.md
+- .agents/skills/sk-project-docs/SKILL.md
 
 ## Rules
 

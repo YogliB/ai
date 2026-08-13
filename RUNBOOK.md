@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-Optional end-to-end flow: **explore → alternatives (optional) → planning → implementation → review → PR**.
+Optional end-to-end flow: **sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need.
 
@@ -29,34 +29,34 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 **When:** you are starting a new piece of work and need to understand the problem, scope, or repo context.
 
-**Skill:** `explore`
+**Skill:** `sk-explore`
 
 **Output:** a structured report at `.agents/reports/<slug>.md`.
 
 - Gather available context from the repo and user prompt.
-- Recommend the next step: `alternatives` (if the approach is unclear) or `planning` (if the approach is clear).
+- Recommend the next step: `sk-alternatives` (if the approach is unclear) or `sk-planning` (if the approach is clear).
 
 ### 2. Alternatives
 
 **When:** you are not sure which approach to take.
 
-**Skill:** `alternatives`
+**Skill:** `sk-alternatives`
 
 **Output:** up to 3 reviewed options + a recommendation.
 
-- The alternatives are first reviewed by the `review-alternatives` skill to catch irrelevant, duplicate, or weak options.
+- The alternatives are first reviewed by the `sk-review-alternatives` skill to catch irrelevant, duplicate, or weak options.
 - The user picks one.
 
 ### 3. Planning
 
 **When:** you have chosen an approach and are ready to write an executable plan.
 
-**Skill:** `planning`
+**Skill:** `sk-planning`
 
 **Output:** a self-contained plan file at `.agents/plans/<slug>.md`.
 
 - The plan must be fully executable from the file alone.
-- The planning skill runs its own review loop before finalizing.
+- The `sk-planning` skill runs its own review loop before finalizing.
 
 ### 4. Implementation
 
@@ -71,7 +71,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 **When:** code is implemented and tests pass.
 
-**Skills:** `review-and-fix` (loop until clean) or `review-dont-fix` (read-only report).
+**Skills:** `sk-review-and-fix` (loop until clean) or `sk-review-dont-fix` (read-only report).
 
 **Input:** the diff and the plan file.
 
@@ -82,7 +82,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 **When:** review is clean and verification is done.
 
-**Skill:** `pr`
+**Skill:** `sk-pr`
 
 **Output:** a GitHub pull request with the plan and review evidence reflected in the body.
 
@@ -90,11 +90,12 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 You do not have to run the full flow. Each skill is self-contained:
 
-- `/explore <slug>` or "use the explore skill" — gather context and write a structured report
-- `/alternatives` or "use the alternatives skill" — reviewed options for any decision
-- `/plan <slug>` or "use the planning skill" — write a plan file
-- `/review` or "use the review-and-fix skill" — review the current diff
-- `/pr` or "use the pr skill" — create or update a PR
+- `/explore <slug>` or "use the sk-explore skill" — gather context and write a structured report
+- `/alternatives` or "use the sk-alternatives skill" — reviewed options for any decision
+- `/plan <slug>` or "use the sk-planning skill" — write a plan file
+- `/review` or "use the sk-review-and-fix skill" — review the current diff
+- `/pr` or "use the sk-pr skill" — create or update a PR
+- `/flow` or "use the sk-flow skill" — run the full workflow
 
 ## Rollback
 

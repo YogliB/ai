@@ -1,10 +1,11 @@
 ---
-name: review-dont-fix
+name: sk-review-dont-fix
 description: >
     One-shot read-only code review using a Task subagent with single-block action-tagged output
     combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop.
-    Alerts explicitly when context or capabilities insufficient to validate. Use when user asks to
-    review code without fixing, review PR/branch/diff without editing, or run /review-dont-fix.
+    Alerts explicitly when context or capabilities insufficient to validate. Use when user asks for
+    sk-review-dont-fix, read-only review, review code without fixing, review PR/branch/diff
+    without editing, or run /review-dont-fix.
 ---
 
 # Review (Don't Fix)

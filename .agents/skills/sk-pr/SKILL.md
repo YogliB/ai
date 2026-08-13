@@ -1,5 +1,5 @@
 ---
-name: pr
+name: sk-pr
 description: Creates or updates a GitHub pull request via gh CLI with team-style title/body, issue/ticket links (Jira, Linear, Monday, GitHub Issues, etc.), optional code-review:request label when corporate-hosted, PR-template checklists filled from verifiable evidence, and screenshots saved under assets/pr-<n> then linked in the body. Use when the user wants a PR, pull request, gh pr create/edit, to update PR description or title, add screenshots to a PR, or provides a PR number or PR URL.
 ---
 

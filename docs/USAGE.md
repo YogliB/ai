@@ -49,10 +49,10 @@ Want only the skills, not the full rules/plugin bundle? Use the `skills` CLI:
 npx skills add YogliB/ai
 
 # Install one skill directly
-npx skills add YogliB/ai --skill planning
+npx skills add YogliB/ai --skill sk-planning
 
 # Install multiple skills globally for all agents
-npx skills add YogliB/ai --skill planning --skill verify -g
+npx skills add YogliB/ai --skill sk-planning --skill sk-verify -g
 ```
 
 Run `npx skills add YogliB/ai --list` to see available skills.
@@ -64,25 +64,26 @@ Run `npx skills add YogliB/ai --list` to see available skills.
 Name the skill in a prompt. For example:
 
 ```text
-Use the explore skill to understand the repo.
-Use the alternatives skill for caching API responses.
-Use the planning skill to write a plan for pagination.
-Use the review-and-fix skill on the current diff.
-Use the pr skill to open a pull request.
+Use the sk-explore skill to understand the repo.
+Use the sk-alternatives skill for caching API responses.
+Use the sk-planning skill to write a plan for pagination.
+Use the sk-review-and-fix skill on the current diff.
+Use the sk-pr skill to open a pull request.
 ```
 
-| Skill                                                                 | Use when                                                  |
-| --------------------------------------------------------------------- | --------------------------------------------------------- |
-| [explore](../.agents/skills/explore/SKILL.md)                         | You need to understand the problem and repo first.        |
-| [alternatives](../.agents/skills/alternatives/SKILL.md)               | You want options before committing.                       |
-| [review-alternatives](../.agents/skills/review-alternatives/SKILL.md) | You are reviewing a list of alternatives.                 |
-| [planning](../.agents/skills/planning/SKILL.md)                       | You want an executable plan written to a file.            |
-| [review-and-fix](../.agents/skills/review-and-fix/SKILL.md)           | You want a diff reviewed and issues fixed.                |
-| [review-dont-fix](../.agents/skills/review-dont-fix/SKILL.md)         | You want a read-only diff review.                         |
-| [pr](../.agents/skills/pr/SKILL.md)                                   | You want to create or update a PR.                        |
-| [verify](../.agents/skills/verify/SKILL.md)                           | You want to verify changes and catch regressions.         |
-| [project-docs](../.agents/skills/project-docs/SKILL.md)               | You want to scaffold or nudge a project's docs structure. |
-| [ai-toolbelt](../.agents/skills/ai-toolbelt/SKILL.md)                 | You want pointers to recommended external tools and MCPs. |
+| Skill                                                                       | Use when                                                  |
+| --------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [sk-explore](../.agents/skills/sk-explore/SKILL.md)                         | You need to understand the problem and repo first.        |
+| [sk-alternatives](../.agents/skills/sk-alternatives/SKILL.md)               | You want options before committing.                       |
+| [sk-review-alternatives](../.agents/skills/sk-review-alternatives/SKILL.md) | You are reviewing a list of alternatives.                 |
+| [sk-planning](../.agents/skills/sk-planning/SKILL.md)                       | You want an executable plan written to a file.            |
+| [sk-review-and-fix](../.agents/skills/sk-review-and-fix/SKILL.md)           | You want a diff reviewed and issues fixed.                |
+| [sk-review-dont-fix](../.agents/skills/sk-review-dont-fix/SKILL.md)         | You want a read-only diff review.                         |
+| [sk-pr](../.agents/skills/sk-pr/SKILL.md)                                   | You want to create or update a PR.                        |
+| [sk-verify](../.agents/skills/sk-verify/SKILL.md)                           | You want to verify changes and catch regressions.         |
+| [sk-project-docs](../.agents/skills/sk-project-docs/SKILL.md)               | You want to scaffold or nudge a project's docs structure. |
+| [sk-ai-toolbelt](../.agents/skills/sk-ai-toolbelt/SKILL.md)                 | You want pointers to recommended external tools and MCPs. |
+| [sk-flow](../.agents/skills/sk-flow/SKILL.md)                               | You want to run the full end-to-end workflow.             |
 
 ### With Claude Code shortcuts
 
@@ -97,14 +98,14 @@ When the plugin is installed, type a shortcut at the start of a prompt:
 /flow
 ```
 
-| Shortcut        | What happens                                                                              |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| `/explore`      | Gather context and write a structured report to `.agents/reports/<slug>.md`.              |
-| `/alternatives` | Generate and review up to 3 options, then recommend one.                                  |
-| `/plan`         | Write an executable plan to `.agents/plans/<slug>.md`.                                    |
-| `/review`       | Review the current diff and fix issues.                                                   |
-| `/pr`           | Create or update a GitHub PR.                                                             |
-| `/flow`         | Run the full `explore → alternatives → planning → implementation → review → PR` workflow. |
+| Shortcut        | What happens                                                                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/explore`      | Invoke the `sk-explore` skill to gather context and write a structured report to `.agents/reports/<slug>.md`.                                                          |
+| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one.                                                                         |
+| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/plans/<slug>.md`.                                                                               |
+| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                                        |
+| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                              |
+| `/flow`         | Invoke the `sk-flow` skill to run the full `sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr` workflow. |
 
 Shortcuts only work in Claude Code because they rely on the `UserPromptSubmit` hook. In Cursor or Devin, use the skill names directly or the runbook.
 
@@ -113,7 +114,7 @@ Shortcuts only work in Claude Code because they rely on the `UserPromptSubmit` h
 The optional end-to-end flow is:
 
 ```text
-explore → alternatives (optional) → planning → implementation → review → PR
+sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr
 ```
 
 Each step can run in an independent subagent. The parent is a thin dispatcher. The [runbook](../RUNBOOK.md) has the full procedure.
@@ -130,14 +131,14 @@ Each step can run in an independent subagent. The parent is a thin dispatcher. T
 
 ```text
 /plan add-auth-token
-# Claude writes .agents/plans/add-auth-token.md
+# Claude invokes the sk-planning skill and writes .agents/plans/add-auth-token.md
 
 # Implement the plan, then:
 /review
-# Claude reviews the diff and fixes issues.
+# Claude invokes the sk-review-and-fix skill and fixes issues.
 
 /pr
-# Claude opens the PR.
+# Claude invokes the sk-pr skill and opens the PR.
 ```
 
 ## More docs

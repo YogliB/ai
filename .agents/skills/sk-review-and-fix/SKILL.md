@@ -1,15 +1,15 @@
 ---
-name: review-and-fix
+name: sk-review-and-fix
 description: >
     Review code changes in Task subagent using single-block action-tagged output
     combining correctness (cavecrew) and ponytail complexity reduction, triage findings,
     fix every valid issue, re-review until latest pass has zero valid findings.
     Alerts explicitly when context or capabilities insufficient to validate
-    (missing plan/spec/Figma, tests or browser cannot run). Use when user asks to
-    review-and-fix, review and fix, fix review findings, clean up branch or diff,
-    or run /review-and-fix. All review passes must run in subagents — never inline
-    review in parent thread. Review subagents ALWAYS use gemini-3.6-flash-high
-    unless explicitly requested otherwise.
+    (missing plan/spec/Figma, tests or browser cannot run). Use when user asks for
+    sk-review-and-fix, review-and-fix, review and fix, /review, fix review findings,
+    clean up branch or diff, or clean up a diff. All review passes must run in
+    subagents — never inline review in parent thread. Review subagents ALWAYS use
+    gemini-3.6-flash-high unless explicitly requested otherwise.
 ---
 
 # Review and Fix

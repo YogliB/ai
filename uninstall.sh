@@ -9,6 +9,8 @@ set -e
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
+LEGACY_SKILLS="ai-toolbelt alternatives explore planning pr project-docs review-alternatives review-and-fix review-dont-fix verify"
+
 resolve_dir() {
 	CDPATH= cd -- "$1" >/dev/null 2>&1 && pwd
 }
@@ -78,6 +80,13 @@ remove_agents_workflow_block() {
 	fi
 }
 
+remove_legacy_skills() {
+	target_dir="$1"
+	for skill in $LEGACY_SKILLS; do
+		rm -rf "$target_dir/$skill"
+	done
+}
+
 uninstall_global() {
 	echo "Uninstalling ai skills and the slash-kit Claude Code plugin..."
 
@@ -99,6 +108,9 @@ uninstall_global() {
 			done
 		fi
 	fi
+
+	# Also remove legacy (unprefixed) skill directories.
+	remove_legacy_skills "$HOME/.agents/skills"
 
 	if command -v claude >/dev/null 2>&1; then
 		echo "Removing the slash-kit Claude Code plugin and marketplace..."
@@ -132,6 +144,7 @@ uninstall_project() {
 			rm -rf "$TARGET/.agents/skills/$name"
 		fi
 	done
+	remove_legacy_skills "$TARGET/.agents/skills"
 
 	# Cursor rules
 	for rule in "$REPO_ROOT"/.cursor/rules/*.mdc; do

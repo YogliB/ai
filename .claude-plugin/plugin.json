@@ -2,7 +2,7 @@
 	"name": "slash-kit",
 	"displayName": "Slash Kit",
 	"version": "0.1.0",
-	"description": "Reusable agent skills and an optional end-to-end workflow: explore, alternatives, planning, implementation, review, and PR.",
+	"description": "Reusable agent skills and an optional end-to-end workflow. Use /explore, /alternatives, /plan, /review, /pr, or /flow to invoke the matching sk-* skill.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
 		"url": "https://github.com/yboaron"

@@ -9,6 +9,15 @@ set -e
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
+LEGACY_SKILLS="ai-toolbelt alternatives explore planning pr project-docs review-alternatives review-and-fix review-dont-fix verify"
+
+remove_legacy_skills() {
+	target_dir="$1"
+	for skill in $LEGACY_SKILLS; do
+		rm -rf "$target_dir/$skill"
+	done
+}
+
 install_global() {
 	echo "Installing ai skills and the slash-kit Claude Code plugin..."
 
@@ -16,6 +25,10 @@ install_global() {
 		echo "Error: npx is required to install skills. Install Node.js." >&2
 		exit 1
 	fi
+
+	# Remove old (unprefixed) skill directories from a previous install.
+	mkdir -p "$HOME/.agents/skills"
+	remove_legacy_skills "$HOME/.agents/skills"
 
 	npx --yes skills add "$REPO_ROOT" -g -a universal -y
 
@@ -41,6 +54,7 @@ install_project() {
 
 	# Skills for all agents
 	mkdir -p "$TARGET/.agents/skills"
+	remove_legacy_skills "$TARGET/.agents/skills"
 	for skill_dir in "$REPO_ROOT"/.agents/skills/*; do
 		if [ -d "$skill_dir" ]; then
 			name=$(basename "$skill_dir")

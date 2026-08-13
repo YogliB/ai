@@ -1,5 +1,5 @@
 ---
-name: ai-toolbelt
+name: sk-ai-toolbelt
 description: Pointer to the external AI tools and MCPs used across environments. Use when the user asks about the AI toolbelt, which tools are used, or how to install a recommended tool. This skill does not install tools; it only points to them.
 ---
 
@@ -29,7 +29,7 @@ External skills and MCPs used alongside the `ai` workflow. They are not installe
 
 ## Usage
 
-1. Load this skill when the user asks about tools, the toolbelt, MCPs, or a specific recommended tool.
+1. Load the sk-ai-toolbelt skill when the user asks about tools, the toolbelt, MCPs, or a specific recommended tool.
 2. Recommend the tool that matches their request.
 3. Provide the upstream link and a one-line trigger or example.
 4. Do not inline the tool's rules, instructions, or MCP schemas. Do not install or enable it on the user's behalf.

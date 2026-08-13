@@ -54,7 +54,7 @@ This removes the skills from `~/.agents/skills`, uninstalls the `slash-kit` Clau
 ### Per-project uninstall
 
 ```bash
-./uninstall.sh /path/to/your/repo
+./uninstall.sh /path/to/repo
 ```
 
 This removes the copied skills, rules, runbook, and generated `AGENTS.md`/`CLAUDE.md` files from the target project. Existing files that were modified are left in place.
@@ -82,50 +82,51 @@ When the plugin is active, these prompts expand into skill instructions:
 /flow
 ```
 
-| Shortcut        | What happens                                                                              |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| `/explore`      | Gather context and write a structured report to `.agents/reports/<slug>.md`.              |
-| `/alternatives` | Generate and review up to 3 options, then recommend one.                                  |
-| `/plan`         | Write an executable plan to `.agents/plans/<slug>.md`.                                    |
-| `/review`       | Review the current diff and fix issues.                                                   |
-| `/pr`           | Create or update a GitHub PR.                                                             |
-| `/flow`         | Run the full `explore → alternatives → planning → implementation → review → PR` workflow. |
+| Shortcut        | What happens                                                                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/explore`      | Invoke the `sk-explore` skill to gather context and write a structured report to `.agents/reports/<slug>.md`.                                                          |
+| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one.                                                                         |
+| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/plans/<slug>.md`.                                                                               |
+| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                                        |
+| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                              |
+| `/flow`         | Invoke the `sk-flow` skill to run the full `sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr` workflow. |
 
 ### Skills (any editor)
 
 Name the skill in a prompt. For example:
 
 ```text
-Use the planning skill to write a plan for adding pagination.
-Use the review-and-fix skill on the current diff.
-Use the pr skill to open a pull request.
+Use the sk-planning skill to write a plan for adding pagination.
+Use the sk-review-and-fix skill on the current diff.
+Use the sk-pr skill to open a pull request.
 ```
 
-| Skill                                                              | File                                          | Use when                                           |
-| ------------------------------------------------------------------ | --------------------------------------------- | -------------------------------------------------- |
-| [explore](.agents/skills/explore/SKILL.md)                         | `.agents/skills/explore/SKILL.md`             | You need to understand the problem and repo first. |
-| [alternatives](.agents/skills/alternatives/SKILL.md)               | `.agents/skills/alternatives/SKILL.md`        | You want options before committing.                |
-| [review-alternatives](.agents/skills/review-alternatives/SKILL.md) | `.agents/skills/review-alternatives/SKILL.md` | Reviewing a list of alternatives.                  |
-| [planning](.agents/skills/planning/SKILL.md)                       | `.agents/skills/planning/SKILL.md`            | Writing an executable plan.                        |
-| [review-and-fix](.agents/skills/review-and-fix/SKILL.md)           | `.agents/skills/review-and-fix/SKILL.md`      | Reviewing and fixing code.                         |
-| [review-dont-fix](.agents/skills/review-dont-fix/SKILL.md)         | `.agents/skills/review-dont-fix/SKILL.md`     | Read-only review.                                  |
-| [pr](.agents/skills/pr/SKILL.md)                                   | `.agents/skills/pr/SKILL.md`                  | Creating or updating a PR.                         |
-| [verify](.agents/skills/verify/SKILL.md)                           | `.agents/skills/verify/SKILL.md`              | Verifying changes work and have no regressions.    |
-| [project-docs](.agents/skills/project-docs/SKILL.md)               | `.agents/skills/project-docs/SKILL.md`        | Scaffolding or nudging a project's docs structure. |
-| [ai-toolbelt](.agents/skills/ai-toolbelt/SKILL.md)                 | `.agents/skills/ai-toolbelt/SKILL.md`         | Recommended external AI tools.                     |
+| Skill                                                                    | File                                             | Use when                                           |
+| ------------------------------------------------------------------------ | ------------------------------------------------ | -------------------------------------------------- |
+| [sk-explore](.agents/skills/sk-explore/SKILL.md)                         | `.agents/skills/sk-explore/SKILL.md`             | You need to understand the problem and repo first. |
+| [sk-alternatives](.agents/skills/sk-alternatives/SKILL.md)               | `.agents/skills/sk-alternatives/SKILL.md`        | You want options before committing.                |
+| [sk-review-alternatives](.agents/skills/sk-review-alternatives/SKILL.md) | `.agents/skills/sk-review-alternatives/SKILL.md` | Reviewing a list of alternatives.                  |
+| [sk-planning](.agents/skills/sk-planning/SKILL.md)                       | `.agents/skills/sk-planning/SKILL.md`            | Writing an executable plan.                        |
+| [sk-review-and-fix](.agents/skills/sk-review-and-fix/SKILL.md)           | `.agents/skills/sk-review-and-fix/SKILL.md`      | Reviewing and fixing code.                         |
+| [sk-review-dont-fix](.agents/skills/sk-review-dont-fix/SKILL.md)         | `.agents/skills/sk-review-dont-fix/SKILL.md`     | Read-only review.                                  |
+| [sk-pr](.agents/skills/sk-pr/SKILL.md)                                   | `.agents/skills/sk-pr/SKILL.md`                  | Creating or updating a PR.                         |
+| [sk-verify](.agents/skills/sk-verify/SKILL.md)                           | `.agents/skills/sk-verify/SKILL.md`              | Verifying changes work and have no regressions.    |
+| [sk-project-docs](.agents/skills/sk-project-docs/SKILL.md)               | `.agents/skills/sk-project-docs/SKILL.md`        | Scaffolding or nudging a project's docs structure. |
+| [sk-ai-toolbelt](.agents/skills/sk-ai-toolbelt/SKILL.md)                 | `.agents/skills/sk-ai-toolbelt/SKILL.md`         | Recommended external AI tools.                     |
+| [sk-flow](.agents/skills/sk-flow/SKILL.md)                               | `.agents/skills/sk-flow/SKILL.md`                | Running the full end-to-end workflow.              |
 
 ### Example session
 
 ```text
 /plan add-auth-token
-# Claude writes .agents/plans/add-auth-token.md
+# Claude invokes the sk-planning skill and writes .agents/plans/add-auth-token.md
 
 # Implement the plan, then:
 /review
-# Claude reviews the diff and fixes issues.
+# Claude invokes the sk-review-and-fix skill and fixes issues.
 
 /pr
-# Claude opens the PR.
+# Claude invokes the sk-pr skill and opens the PR.
 ```
 
 ## Configuration
@@ -141,7 +142,7 @@ Use the pr skill to open a pull request.
 The optional end-to-end flow is:
 
 ```text
-explore → alternatives (optional) → planning → implementation → review → PR
+sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr
 ```
 
 Each step can run in an independent subagent. The parent is a thin dispatcher. The [runbook](RUNBOOK.md) has the full procedure.

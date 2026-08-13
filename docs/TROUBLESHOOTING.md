@@ -15,14 +15,14 @@
 
 ## Plans are not written to a file
 
-- The `planning` skill writes to `.agents/plans/<slug>.md`. If the directory does not exist, the agent should create it.
+- The `sk-planning` skill writes to `.agents/plans/<slug>.md`. If the directory does not exist, the agent should create it.
 - If the agent has its own plan location, it should also copy or symlink to `.agents/plans/`.
 - Review `.agents/plans/README.md` for the naming convention.
 
 ## Review or PR skills miss context
 
 - Make sure a plan file exists under `.agents/plans/`.
-- The `review-and-fix`, `review-dont-fix`, and `pr` skills look for the latest plan file as context.
+- The `sk-review-and-fix`, `sk-review-dont-fix`, and `sk-pr` skills look for the latest plan file as context.
 - If the plan is missing, the skills note it under `Known validation gaps`.
 
 ## Install script fails
