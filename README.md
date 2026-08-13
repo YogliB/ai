@@ -19,6 +19,7 @@ You need:
 - A supported agent: **Claude Code**, **Cursor**, or **Devin**.
 - **Node.js** (for `npx skills` and the Claude Code `UserPromptSubmit` hook).
 - For the install script: `sh`, `cp`, and a writable home directory.
+- For the uninstall script: `sh`, `rm`, `cmp`, `mktemp`, and a writable home directory.
 
 ## Install
 
@@ -39,6 +40,24 @@ Requirements: `npx` and the `claude` CLI.
 ```
 
 This copies rules, skills, and the runbook into the target project. It is the same command for Claude, Cursor, and Devin; the difference is which rules each editor reads.
+
+## Uninstall
+
+### Global uninstall
+
+```bash
+./uninstall.sh
+```
+
+This removes the skills from `~/.agents/skills`, uninstalls the `slash-kit` Claude Code plugin, and removes the `ai` marketplace.
+
+### Per-project uninstall
+
+```bash
+./uninstall.sh /path/to/your/repo
+```
+
+This removes the copied skills, rules, runbook, and generated `AGENTS.md`/`CLAUDE.md` files from the target project. Existing files that were modified are left in place.
 
 ### Install specific skills
 

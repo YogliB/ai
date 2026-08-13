@@ -43,17 +43,20 @@ nub run format
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `src/hooks/` — Claude Code `UserPromptSubmit` hook.
 - `install.sh` — install globally or into a project.
+- `uninstall.sh` — uninstall globally or from a project.
 - `RUNBOOK.md` — optional end-to-end workflow.
 - `docs/` — contributor and user documentation.
 
 ## Common Commands
 
-| Command                      | Purpose                                             |
-| ---------------------------- | --------------------------------------------------- |
-| `./install.sh`               | Install skills and the Claude Code plugin globally. |
-| `./install.sh /path/to/repo` | Install skills and rules into a target project.     |
-| `nub run format`             | Format with `oxfmt`.                                |
-| `nub run lint`               | Run the pre-commit lint step.                       |
+| Command                        | Purpose                                               |
+| ------------------------------ | ----------------------------------------------------- |
+| `./install.sh`                 | Install skills and the Claude Code plugin globally.   |
+| `./install.sh /path/to/repo`   | Install skills and rules into a target project.       |
+| `./uninstall.sh`               | Uninstall skills and the Claude Code plugin globally. |
+| `./uninstall.sh /path/to/repo` | Uninstall skills and rules from a target project.     |
+| `nub run format`               | Format with `oxfmt`.                                  |
+| `nub run lint`                 | Run the pre-commit lint step.                         |
 
 ## Documentation Sync
 

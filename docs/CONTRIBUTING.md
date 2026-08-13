@@ -22,6 +22,7 @@ nub install
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `src/hooks/` — Claude Code `UserPromptSubmit` hook.
 - `install.sh` — Install globally or into another project.
+- `uninstall.sh` — Uninstall globally or from another project.
 - `README.md` — Human-facing overview.
 - `AGENTS.md` — Agent-facing index.
 - `RUNBOOK.md` — Optional end-to-end workflow.

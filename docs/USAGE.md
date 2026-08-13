@@ -22,6 +22,24 @@ npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
 
 This copies skills, editor rules, the runbook, and a plan directory into the target project. It is the same command for Claude, Cursor, and Devin; the difference is which rules each editor reads.
 
+## Uninstall
+
+### Global uninstall
+
+```bash
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh
+```
+
+This removes the skills from `~/.agents/skills`, uninstalls the `slash-kit` Claude Code plugin, and removes the `ai` marketplace.
+
+### Per-project uninstall
+
+```bash
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh /path/to/your/repo
+```
+
+This removes the copied skills, rules, runbook, and generated `AGENTS.md`/`CLAUDE.md` files from the target project. Existing files that were modified are left in place.
+
 ### Install specific skills
 
 Want only the skills, not the full rules/plugin bundle? Use the `skills` CLI:

@@ -30,3 +30,9 @@
 - Requires `sh`, `cp`, and a writable home directory.
 - For global install, `~/.claude/` must be writable.
 - For per-project install, the target must already exist.
+
+## Uninstall script fails
+
+- Requires `sh`, `rm`, `cmp`, `mktemp`, and a writable home directory.
+- For global uninstall, `npx` is required; if it is missing, the script falls back to removing `~/.agents/skills/<name>` manually.
+- For per-project uninstall, the target must already exist.
