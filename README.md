@@ -82,14 +82,14 @@ When the plugin is active, these prompts expand into skill instructions:
 /flow
 ```
 
-| Shortcut        | What happens                                                                                                                                                           |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/explore`      | Invoke the `sk-explore` skill to gather context and write a structured report to `.agents/reports/<slug>.md`.                                                          |
-| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one.                                                                         |
-| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/plans/<slug>.md`.                                                                               |
-| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                                        |
-| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                              |
-| `/flow`         | Invoke the `sk-flow` skill to run the full `sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr` workflow. |
+| Shortcut        | What happens                                                                                                                                                 |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/explore`      | Invoke the `sk-explore` skill to gather context and write a structured report to `.agents/reports/<slug>.md`.                                                |
+| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one.                                                               |
+| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/plans/<slug>.md`.                                                                     |
+| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                              |
+| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                    |
+| `/flow [mode]`  | Invoke the `sk-flow` skill to run the full workflow. In `auto` mode, run all phases without confirmation; in `manual` mode, ask before each phase (default). |
 
 ### Skills (any editor)
 

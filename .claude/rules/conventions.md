@@ -4,19 +4,19 @@ This repo provides reusable agent skills under `.agents/skills/`.
 
 ## Skills
 
-| Skill                  | File                                             | Use when                                               |
-| ---------------------- | ------------------------------------------------ | ------------------------------------------------------ |
-| sk-explore             | `.agents/skills/sk-explore/SKILL.md`             | User needs to understand the problem and repo first    |
-| sk-alternatives        | `.agents/skills/sk-alternatives/SKILL.md`        | User wants options for a decision                      |
-| sk-review-alternatives | `.agents/skills/sk-review-alternatives/SKILL.md` | Reviewing proposed alternatives                        |
-| sk-planning            | `.agents/skills/sk-planning/SKILL.md`            | Writing an executable technical plan                   |
-| sk-review-and-fix      | `.agents/skills/sk-review-and-fix/SKILL.md`      | Reviewing a diff and fixing issues                     |
-| sk-review-dont-fix     | `.agents/skills/sk-review-dont-fix/SKILL.md`     | Read-only diff review                                  |
-| sk-pr                  | `.agents/skills/sk-pr/SKILL.md`                  | Creating or updating a PR                              |
-| sk-verify              | `.agents/skills/sk-verify/SKILL.md`              | Verifying changes work and have no regressions         |
-| sk-project-docs        | `.agents/skills/sk-project-docs/SKILL.md`        | Scaffolding or nudging a project's docs structure      |
-| sk-ai-toolbelt         | `.agents/skills/sk-ai-toolbelt/SKILL.md`         | Pointers to recommended external tools and MCPs        |
-| sk-flow                | `.agents/skills/sk-flow/SKILL.md`                | Running the full explore → plan → review → PR workflow |
+| Skill                  | File                                             | Use when                                            |
+| ---------------------- | ------------------------------------------------ | --------------------------------------------------- |
+| sk-explore             | `.agents/skills/sk-explore/SKILL.md`             | User needs to understand the problem and repo first |
+| sk-alternatives        | `.agents/skills/sk-alternatives/SKILL.md`        | User wants options for a decision                   |
+| sk-review-alternatives | `.agents/skills/sk-review-alternatives/SKILL.md` | Reviewing proposed alternatives                     |
+| sk-planning            | `.agents/skills/sk-planning/SKILL.md`            | Writing an executable technical plan                |
+| sk-review-and-fix      | `.agents/skills/sk-review-and-fix/SKILL.md`      | Reviewing a diff and fixing issues                  |
+| sk-review-dont-fix     | `.agents/skills/sk-review-dont-fix/SKILL.md`     | Read-only diff review                               |
+| sk-pr                  | `.agents/skills/sk-pr/SKILL.md`                  | Creating or updating a PR                           |
+| sk-verify              | `.agents/skills/sk-verify/SKILL.md`              | Verifying changes work and have no regressions      |
+| sk-project-docs        | `.agents/skills/sk-project-docs/SKILL.md`        | Scaffolding or nudging a project's docs structure   |
+| sk-ai-toolbelt         | `.agents/skills/sk-ai-toolbelt/SKILL.md`         | Pointers to recommended external tools and MCPs     |
+| sk-flow                | `.agents/skills/sk-flow/SKILL.md`                | Running the full end-to-end workflow.               |
 
 Invoke the skill by name when the user asks for it. Do not force a full workflow unless the user asks for one.
 

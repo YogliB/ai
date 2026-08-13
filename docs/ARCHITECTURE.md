@@ -55,9 +55,9 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ### Full workflow
 
 ```text
-[user asks for /flow]
+[user asks for /flow [auto|manual]]
    ▼
-[sk-flow skill] → loads and runs the full flow
+[sk-flow skill] → parses mode, loads and runs the full flow
    ▼
 [sk-explore] → .agents/reports/<slug>.md
    ▼

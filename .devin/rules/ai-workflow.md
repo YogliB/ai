@@ -32,6 +32,10 @@ Each phase should always run in an independent subagent when the platform suppor
 
 The parent acts as a thin dispatcher: pass the plan or diff to the subagent, triage the output, and dispatch the next phase. The main session is updated only when the subagent is done.
 
+## Modes
+
+`sk-flow` supports `auto` and `manual` modes. In auto mode, the agent runs all phases without confirmation. In manual mode, the agent asks before each phase. Default to manual when the mode is omitted.
+
 ## Opting out
 
 The user can stop or skip any phase. Each skill works on its own.

@@ -95,7 +95,7 @@ You do not have to run the full flow. Each skill is self-contained:
 - `/plan <slug>` or "use the sk-planning skill" — write a plan file
 - `/review` or "use the sk-review-and-fix skill" — review the current diff
 - `/pr` or "use the sk-pr skill" — create or update a PR
-- `/flow` or "use the sk-flow skill" — run the full workflow
+- `/flow [auto|manual]` or "use the sk-flow skill" — run the full workflow
 
 ## Rollback
 
