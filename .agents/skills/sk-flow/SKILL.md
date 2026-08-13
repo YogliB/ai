@@ -23,6 +23,10 @@ The user must explicitly ask for the workflow. Do not run it automatically.
 10. Ask if they want to continue to PR.
 11. **PR** — invoke the `sk-pr` skill to create or update a GitHub pull request.
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Stopping and skipping
 
 The user can stop or skip any phase. Each skill works on its own. Always ask before moving to the next phase.

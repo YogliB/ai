@@ -16,6 +16,10 @@ description: Suggest up to 3 viable alternatives for code or design decisions be
 4. **Recommend**: Provide **1 clear recommendation** based on clarity and maintainability.
 5. **Wait**: Stop after presenting and wait for the user's choice. **Do not edit files.**
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Output Format
 
 Markdown list of options followed by a recommendation. The options are reviewed first; if the review finds valid issues, they are fixed before the user sees them.

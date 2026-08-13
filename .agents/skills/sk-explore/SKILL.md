@@ -36,6 +36,10 @@ A durable report at `.agents/reports/<slug>.md` with these sections:
 5. **Recommend**: choose `sk-alternatives` if the approach is unclear, `sk-planning` if the approach is clear.
 6. **Write**: save the report to `.agents/reports/<slug>.md`.
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Initial setup
 
 Before writing the first report in a repo:

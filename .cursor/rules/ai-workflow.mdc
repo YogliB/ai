@@ -23,7 +23,7 @@ Only use this rule when the user explicitly asks for the full workflow.
 
 ## Using subagents
 
-Each phase should run in an independent subagent when the platform supports it. The parent acts as a thin dispatcher. Pass the plan or diff to the subagent, triage the output, and dispatch the next phase.
+Each phase should always run in an independent subagent when the platform supports it. The parent acts as a thin dispatcher: pass the plan or diff to the subagent, triage the output, and dispatch the next phase. The main session is updated only when the subagent is done.
 
 ## Opting out
 

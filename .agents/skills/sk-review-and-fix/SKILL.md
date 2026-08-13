@@ -16,6 +16,10 @@ description: >
 
 Closed loop: **review (subagent) → triage → fix → re-review (new subagent)** until clean. Each pass emits a single block of action-tagged findings (`### Review Findings`) combining correctness (cavecrew) and complexity reduction (ponytail). Parent **triages and fixes**; parent **never** substitutes checklist skim for review pass.
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Subagent models (default)
 
 Review subagents **ALWAYS** use model `gemini-3.6-flash-high` unless the user explicitly requests a different model for a pass.

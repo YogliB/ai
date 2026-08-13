@@ -11,6 +11,10 @@ description: Self-contained executable technical plans with atomic testable TODO
 - Draft or tighten technical plan before work starts
 - Decide whether one plan enough or work should split
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Core requirements
 
 - Plan must be **self-contained**: an implementer (human or agent) executes using **only this document** plus a normal repo checkout — no fetching Confluence/Jira/Figma, reading sibling plan files, opening skill templates, or relying on chat history

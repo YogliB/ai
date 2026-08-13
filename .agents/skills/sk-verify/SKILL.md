@@ -38,3 +38,7 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 5. **Report**
     - Print the result of each step and an overall `PASS` or `FAIL`.
+
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.

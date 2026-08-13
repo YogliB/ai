@@ -19,6 +19,10 @@ Evaluate up to 3 proposed alternatives and flag low-quality options before the u
 - When a user pastes a set of alternatives and asks you to review them
 - Before presenting alternatives to a stakeholder where quality matters
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Input
 
 The alternatives being reviewed, including for each option:

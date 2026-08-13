@@ -35,6 +35,10 @@ One-shot, read-only code review. Dispatches a **single Task subagent** to produc
     - Output the subagent's structured findings and summary line.
     - Stop. Do NOT apply any fixes or enter a fix loop.
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Subagent prompt contract
 
 ```text

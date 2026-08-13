@@ -22,7 +22,7 @@ The user must explicitly ask for the workflow. Do not run it automatically.
 
 ## Using subagents
 
-Each phase should run in an independent subagent when the platform supports it:
+Each phase should always run in an independent subagent when the platform supports it:
 
 - alternatives generation in one subagent
 - alternatives review in another
@@ -30,7 +30,7 @@ Each phase should run in an independent subagent when the platform supports it:
 - code review in another
 - fixes in a builder subagent
 
-The parent acts as a thin dispatcher: pass the plan or diff to the subagent, triage the output, and dispatch the next phase.
+The parent acts as a thin dispatcher: pass the plan or diff to the subagent, triage the output, and dispatch the next phase. The main session is updated only when the subagent is done.
 
 ## Opting out
 

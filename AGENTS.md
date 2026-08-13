@@ -21,7 +21,11 @@ Agent-facing entry point. For the open format, see [agents.md](https://agents.md
 | Claude rules                             | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md)                 |
 | Cursor rules                             | [.cursor/rules/ai-conventions.mdc](.cursor/rules/ai-conventions.mdc), [.cursor/rules/ai-workflow.mdc](.cursor/rules/ai-workflow.mdc) |
 | Devin rules                              | [.devin/rules/ai-conventions.md](.devin/rules/ai-conventions.md), [.devin/rules/ai-workflow.md](.devin/rules/ai-workflow.md)         |
+| Agent rules                              | [@caveman.md](.agents/rules/caveman.md), [@ponytail.md](.agents/rules/ponytail.md), [@rtk.md](.agents/rules/rtk.md)                  |
 
+@.agents/rules/caveman.md
+@.agents/rules/ponytail.md
+@.agents/rules/rtk.md
 @.claude/rules/conventions.md
 @.claude/rules/workflow.md
 @RUNBOOK.md
@@ -37,6 +41,7 @@ nub run format
 
 - `.agents/skills/` — on-demand skills; source of truth for all agents.
 - `.agents/plans/` — durable plan files.
+- `.agents/rules/` — shared always-on rules.
 - `.claude/rules/` — Claude rule modules loaded by `CLAUDE.md`.
 - `.cursor/rules/` — Cursor project rules.
 - `.devin/rules/` — Devin project rules.
@@ -63,7 +68,7 @@ nub run format
 Keep these aligned when changing workflows, conventions, or navigation:
 
 - `README.md`, `AGENTS.md`, `CLAUDE.md`
-- `.claude/rules/*.md`, `.cursor/rules/*.mdc`, and `.devin/rules/*.md`
+- `.agents/rules/*.md`, `.claude/rules/*.md`, `.cursor/rules/*.mdc`, and `.devin/rules/*.md`
 - `RUNBOOK.md` and `.agents/plans/README.md`
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/TROUBLESHOOTING.md`
 

@@ -5,6 +5,10 @@ description: Creates or updates a GitHub pull request via gh CLI with team-style
 
 # GitHub PR create or update
 
+## Subagent execution
+
+Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+
 ## Route first (update vs new)
 
 1. **PR from user message** — If the user gave a PR number or a GitHub PR URL (`…/pull/<n>` on `github.com` or enterprise hosts), use **update** with that number (parse `n` from URL).
