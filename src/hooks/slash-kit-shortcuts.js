@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// AI workflow shortcuts for Claude Code.
-// Expands /alternatives, /plan, /review, /pr, /flow into skill instructions.
+// slash-kit workflow shortcuts for Claude Code.
+// Expands /explore, /alternatives, /plan, /review, /pr, /flow into skill instructions.
 
 const readline = require('readline');
 
@@ -42,7 +42,7 @@ async function main() {
 	const expansion = SHORTCUTS[firstWord];
 	if (!expansion) process.exit(0);
 
-	process.stdout.write(JSON.stringify({ hookSpecificOutput: `[ai] ${expansion}` }));
+	process.stdout.write(JSON.stringify({ hookSpecificOutput: `[slash-kit] ${expansion}` }));
 }
 
 main().catch(() => process.exit(0));

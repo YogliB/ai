@@ -8,10 +8,14 @@
 	},
 	"plugins": [
 		{
-			"name": "ai",
+			"name": "slash-kit",
+			"displayName": "Slash Kit",
 			"description": "Reusable agent skills and an optional end-to-end workflow: alternatives, planning, implementation, review, and PR.",
 			"source": "./",
 			"category": "productivity"
 		}
-	]
+	],
+	"renames": {
+		"ai": "slash-kit"
+	}
 }

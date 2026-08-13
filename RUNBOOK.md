@@ -18,7 +18,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 ## Prerequisites
 
-- The `ai` plugin or rules are installed in your project.
+- The `slash-kit` plugin or rules are installed in your project.
 - You have a clean git working tree or a feature branch.
 - You have permission to create plan files under `.agents/plans/`.
 - For the PR step, `gh` is authenticated and the remote is reachable.

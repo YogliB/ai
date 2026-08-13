@@ -1,5 +1,6 @@
 {
-	"name": "ai",
+	"name": "slash-kit",
+	"displayName": "Slash Kit",
 	"version": "0.1.0",
 	"description": "Reusable agent skills and an optional end-to-end workflow: explore, alternatives, planning, implementation, review, and PR.",
 	"author": {
@@ -12,9 +13,9 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "node \"${CLAUDE_PLUGIN_ROOT}/src/hooks/ai-shortcuts.js\"",
+						"command": "node \"${CLAUDE_PLUGIN_ROOT}/src/hooks/slash-kit-shortcuts.js\"",
 						"timeout": 5,
-						"statusMessage": "Expanding ai workflow shortcut..."
+						"statusMessage": "Expanding slash-kit shortcut..."
 					}
 				]
 			}

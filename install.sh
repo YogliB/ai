@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Install the ai workflow skills, plugin and rules.
+# Install the ai workflow skills, slash-kit plugin, and rules.
 #
 # Usage:
 #   ./install.sh                    # install skills and the Claude Code plugin globally
@@ -10,7 +10,7 @@ set -e
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
 install_global() {
-	echo "Installing ai skills and Claude Code plugin..."
+	echo "Installing ai skills and the slash-kit Claude Code plugin..."
 
 	if ! command -v npx >/dev/null 2>&1; then
 		echo "Error: npx is required to install skills. Install Node.js." >&2
@@ -20,9 +20,9 @@ install_global() {
 	npx --yes skills add "$REPO_ROOT" -g -a universal -y
 
 	if command -v claude >/dev/null 2>&1; then
-		echo "Registering ai repo as a Claude Code marketplace and installing the plugin..."
+		echo "Registering the ai repo as a Claude Code marketplace and installing the slash-kit plugin..."
 		claude plugin marketplace add "$REPO_ROOT" --scope user
-		claude plugin install ai@ai --scope user
+		claude plugin install slash-kit@ai --scope user
 	else
 		echo "Claude Code CLI not found; skipping Claude plugin installation."
 	fi
