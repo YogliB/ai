@@ -10,7 +10,17 @@ description: >
 
 # Review (Don't Fix)
 
-One-shot, read-only code review. Dispatches a **single Task subagent** to produce action-tagged findings (`### Review Findings`) combining correctness (cavecrew) and ponytail complexity reduction, then presents the report to the user without applying any fixes.
+One-shot, read-only code review. Dispatches a **single Task subagent** to produce action-tagged findings (`### Review Findings`) combining correctness (cavecrew) and ponytail complexity reduction, then writes `4 - REVIEW.md` and updates the runbook without applying any fixes.
+
+## Slug and flow folder
+
+1. Determine the active flow:
+    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+    - Else find the flow whose `RUNBOOK.md` is most recent.
+    - If no flow exists and the user did not name one, continue without a flow folder; `4 - REVIEW.md` will be the only artifact.
+2. Read the active plan (newest `2 - PLANNING*.md` in the active flow, if one exists) as context.
+3. Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md`.
+4. Update `RUNBOOK.md` row `4` to `done` (or `diverged` if the agent departed from read-only review).
 
 ## Subagent model
 
@@ -26,13 +36,14 @@ One-shot, read-only code review. Dispatches a **single Task subagent** to produc
     - Base branch if non-default.
 2. **Context & validation check:**
     - Check if plan/spec, Figma, or runnable tests are missing.
-    - If the repo has a plan file under `.agents/plans/`, read the latest one as context.
+    - If the active flow has a plan file under `2 - PLANNING*.md`, read the latest one as context.
     - If material context is missing, note under `Known validation gaps:`.
 3. **Dispatch review subagent:**
     - Launch Task subagent with `readonly: true` and model slug.
     - Pass prompt with repository path, diff target, and output contract.
 4. **Present report:**
-    - Output the subagent's structured findings and summary line.
+    - Write `.agents/sk-flows/<slug>/4 - REVIEW.md` with the structured findings, summary line, and any validation gaps.
+    - Update `RUNBOOK.md` row `4`.
     - Stop. Do NOT apply any fixes or enter a fix loop.
 
 ## Subagent execution

@@ -98,30 +98,30 @@ When the plugin is installed, type a shortcut at the start of a prompt:
 /flow
 ```
 
-| Shortcut        | What happens                                                                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/explore`      | Invoke the `sk-explore` skill to gather context and write a structured report to `.agents/reports/<slug>.md`.                                                |
-| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one.                                                               |
-| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/plans/<slug>.md`.                                                                     |
-| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                              |
-| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                    |
-| `/flow [mode]`  | Invoke the `sk-flow` skill to run the full workflow. In `auto` mode, run all phases without confirmation; in `manual` mode, ask before each phase (default). |
+| Shortcut        | What happens                                                                                                                                                   |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/explore`      | Invoke the `sk-explore` skill to gather context and write `0 - EXPLORE.md` into `.agents/sk-flows/<slug>/`.                                                    |
+| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one and write `1 - ALTERNATIVES.md` into `.agents/sk-flows/<slug>/`. |
+| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/sk-flows/<slug>/2 - PLANNING.md`.                                                       |
+| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                                |
+| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                      |
+| `/flow [mode]`  | Invoke the `sk-flow` skill to run the full workflow. In `auto` mode, run all phases without confirmation; in `manual` mode, ask before each phase (default).   |
 
 Shortcuts only work in Claude Code because they rely on the `UserPromptSubmit` hook. In Cursor or Devin, use the skill names directly or the runbook.
 
 ## Run the workflow
 
-The optional end-to-end flow is:
+The end-to-end flow is:
 
 ```text
-sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr
+sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr
 ```
 
 Each step can run in an independent subagent. The parent is a thin dispatcher. The [runbook](../RUNBOOK.md) has the full procedure.
 
 ## Configuration
 
-- **Plan files** live in `.agents/plans/<slug>.md`. See [.agents/plans/README.md](../.agents/plans/README.md).
+- **Plan files** live in `.agents/sk-flows/<slug>/2 - PLANNING.md`. See [.agents/sk-flows/README.md](../.agents/sk-flows/README.md).
 - **Claude rules** live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - **Cursor rules** live in `.cursor/rules/*.mdc`.
 - **Devin rules** live in `.devin/rules/*.md`.
@@ -131,7 +131,7 @@ Each step can run in an independent subagent. The parent is a thin dispatcher. T
 
 ```text
 /plan add-auth-token
-# Claude invokes the sk-planning skill and writes .agents/plans/add-auth-token.md
+# Claude invokes the sk-planning skill and writes .agents/sk-flows/add-auth-token/2 - PLANNING.md
 
 # Implement the plan, then:
 /review
@@ -144,6 +144,6 @@ Each step can run in an independent subagent. The parent is a thin dispatcher. T
 ## More docs
 
 - [README.md](../README.md) — high-level overview and install options.
-- [RUNBOOK.md](../RUNBOOK.md) — optional end-to-end workflow.
+- [RUNBOOK.md](../RUNBOOK.md) — end-to-end workflow.
 - [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md) — common problems.
 - [docs/CONTRIBUTING.md](CONTRIBUTING.md) — setup and PR flow for this repo.

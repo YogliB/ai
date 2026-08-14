@@ -68,6 +68,10 @@ Use these exact tags after the colon:
 4. **Completeness**: each option should mention the main cost/risk/limitation.
 5. **Recommendation support**: the final recommendation should be justified by the option comparisons.
 
+## Output destination
+
+The parent `sk-alternatives` skill writes the final options and these review findings into `.agents/sk-flows/<slug>/1 - ALTERNATIVES.md`. This subagent does not write files or update `RUNBOOK.md`.
+
 ## Rules
 
 - One finding per line; problem then fix separated by ". "

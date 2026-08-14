@@ -82,14 +82,14 @@ When the plugin is active, these prompts expand into skill instructions:
 /flow
 ```
 
-| Shortcut        | What happens                                                                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/explore`      | Invoke the `sk-explore` skill to gather context and write a structured report to `.agents/reports/<slug>.md`.                                                |
-| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one.                                                               |
-| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/plans/<slug>.md`.                                                                     |
-| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                              |
-| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                    |
-| `/flow [mode]`  | Invoke the `sk-flow` skill to run the full workflow. In `auto` mode, run all phases without confirmation; in `manual` mode, ask before each phase (default). |
+| Shortcut        | What happens                                                                                                                                                   |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/explore`      | Invoke the `sk-explore` skill to gather context and write `0 - EXPLORE.md` into `.agents/sk-flows/<slug>/`.                                                    |
+| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one and write `1 - ALTERNATIVES.md` into `.agents/sk-flows/<slug>/`. |
+| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/sk-flows/<slug>/2 - PLANNING.md`.                                                       |
+| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                                |
+| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                      |
+| `/flow [mode]`  | Invoke the `sk-flow` skill to run the full workflow. In `auto` mode, run all phases without confirmation; in `manual` mode, ask before each phase (default).   |
 
 ### Skills (any editor)
 
@@ -119,7 +119,7 @@ Use the sk-pr skill to open a pull request.
 
 ```text
 /plan add-auth-token
-# Claude invokes the sk-planning skill and writes .agents/plans/add-auth-token.md
+# Claude invokes the sk-planning skill and writes .agents/sk-flows/add-auth-token/2 - PLANNING.md
 
 # Implement the plan, then:
 /review
@@ -131,7 +131,7 @@ Use the sk-pr skill to open a pull request.
 
 ## Configuration
 
-- **Plan files** live in `.agents/plans/<slug>.md`. See [.agents/plans/README.md](.agents/plans/README.md).
+- **Plan files** live in `.agents/sk-flows/<slug>/2 - PLANNING.md`. See [.agents/sk-flows/README.md](.agents/sk-flows/README.md).
 - **Claude rules** live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - **Cursor rules** live in `.cursor/rules/*.mdc`.
 - **Devin rules** live in `.devin/rules/*.md`.
@@ -139,10 +139,10 @@ Use the sk-pr skill to open a pull request.
 
 ## Workflow
 
-The optional end-to-end flow is:
+The end-to-end flow is:
 
 ```text
-sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr
+sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr
 ```
 
 Each step can run in an independent subagent. The parent is a thin dispatcher. The [runbook](RUNBOOK.md) has the full procedure.
@@ -151,20 +151,20 @@ Each step can run in an independent subagent. The parent is a thin dispatcher. T
 
 - **Shortcuts only work in Claude Code.** Cursor has no `UserPromptSubmit` hook equivalent; use the skill names directly or the runbook.
 - **Cursor rules are project-scoped.** Install them into each repo where you want them.
-- **Plan files are not committed by default.** Commit them only if your policy requires it.
+- **Flow runbooks are not committed by default.** Commit them only if your policy requires it.
 - **Skills are modular.** Nothing runs the full workflow unless you explicitly ask for it.
 
 ## Documentation
 
-| Doc                                                | Purpose                      |
-| -------------------------------------------------- | ---------------------------- |
-| [RUNBOOK.md](RUNBOOK.md)                           | Optional end-to-end workflow |
-| [docs/USAGE.md](docs/USAGE.md)                     | Install and usage guide      |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | How the pieces fit together  |
-| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup and PR flow            |
-| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems              |
-| [docs/SECURITY.md](docs/SECURITY.md)               | Reporting vulnerabilities    |
-| [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Community expectations       |
+| Doc                                                | Purpose                     |
+| -------------------------------------------------- | --------------------------- |
+| [RUNBOOK.md](RUNBOOK.md)                           | End-to-end workflow         |
+| [docs/USAGE.md](docs/USAGE.md)                     | Install and usage guide     |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | How the pieces fit together |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup and PR flow           |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems             |
+| [docs/SECURITY.md](docs/SECURITY.md)               | Reporting vulnerabilities   |
+| [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Community expectations      |
 
 ## Contributing
 

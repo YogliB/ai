@@ -15,15 +15,20 @@
 
 ## Plans are not written to a file
 
-- The `sk-planning` skill writes to `.agents/plans/<slug>.md`. If the directory does not exist, the agent should create it.
-- If the agent has its own plan location, it should also copy or symlink to `.agents/plans/`.
-- Review `.agents/plans/README.md` for the naming convention.
+- The `sk-planning` skill writes the plan to `.agents/sk-flows/<slug>/2 - PLANNING.md`. If the directory does not exist, the agent should create it.
+- If the agent has its own plan location, it should also copy or symlink to `.agents/sk-flows/<slug>/2 - PLANNING.md`.
+- Review `.agents/sk-flows/README.md` for the naming convention.
 
 ## Review or PR skills miss context
 
-- Make sure a plan file exists under `.agents/plans/`.
-- The `sk-review-and-fix`, `sk-review-dont-fix`, and `sk-pr` skills look for the latest plan file as context.
-- If the plan is missing, the skills note it under `Known validation gaps`.
+- Make sure a flow folder exists under `.agents/sk-flows/<slug>/` with a `RUNBOOK.md`.
+- The `sk-review-and-fix`, `sk-review-dont-fix`, and `sk-pr` skills look for the latest `2 - PLANNING*.md` as context.
+- If the plan or runbook is missing, the skills note it under `Known validation gaps`.
+
+## Flow runbook is missing or out of date
+
+- Every phase must create or update `.agents/sk-flows/<slug>/RUNBOOK.md`.
+- If the runbook does not exist, the phase skill should create it from the template in `.agents/skills/sk-flow/templates/RUNBOOK.md`.
 
 ## Install script fails
 

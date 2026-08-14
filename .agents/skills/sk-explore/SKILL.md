@@ -14,11 +14,20 @@ description: First-link discovery skill. Gather available context from the repo 
 
 ## Goal
 
-Produce a self-contained, structured report so the next step — `sk-alternatives` or `sk-planning` — can proceed without re-exploring.
+Produce a self-contained, structured `0 - EXPLORE.md` so the next step can proceed without re-exploring, even in a new session.
+
+## Slug and flow folder
+
+1. If the user did not provide a slug, derive one from the goal and ask to confirm.
+2. Create `.agents/sk-flows/<slug>/` if it does not exist.
+3. Create or update `RUNBOOK.md` in that folder with the flow checklist. Mark all phases except `0` as `pending`. Mark phase `0` as `in-progress` while exploring.
+4. Write `0 - EXPLORE.md` and update `RUNBOOK.md` row `0` to `done` with a one-line summary.
+
+If this skill runs outside a flow, it is still a one-skill flow: the folder and runbook must still be created and maintained.
 
 ## Output
 
-A durable report at `.agents/reports/<slug>.md` with these sections:
+A durable report at `.agents/sk-flows/<slug>/0 - EXPLORE.md` with these sections:
 
 - **Goal**: restated user goal and scope boundary.
 - **Files and Context**: relevant files, code snippets, and current state. Inline facts; no pointer-only references.
@@ -34,7 +43,7 @@ A durable report at `.agents/reports/<slug>.md` with these sections:
 3. **Read**: read the key files and inline the relevant snippets or facts.
 4. **Synthesize**: summarize the current state, constraints, and gaps.
 5. **Recommend**: choose `sk-alternatives` if the approach is unclear, `sk-planning` if the approach is clear.
-6. **Write**: save the report to `.agents/reports/<slug>.md`.
+6. **Write**: save the report to `.agents/sk-flows/<slug>/0 - EXPLORE.md` and update `RUNBOOK.md`.
 
 ## Subagent execution
 
@@ -44,12 +53,12 @@ Run this skill in an independent subagent when the harness supports it. The main
 
 Before writing the first report in a repo:
 
-- Create `.agents/reports/` if it does not exist.
-- Add `.agents/reports/` to `.gitignore` so report files are not committed by default.
+- Create `.agents/sk-flows/` if it does not exist.
+- Add `.agents/sk-flows/` to `.gitignore` so flow files are not committed by default.
 
 ## Report file output
 
-- Default path: `.agents/reports/<slug>.md`
+- Default path: `.agents/sk-flows/<slug>/0 - EXPLORE.md`
 - `<slug>` should describe the work in short kebab-case (e.g., `add-auth-token`, `auth-token-refresh`).
 - If the user did not name it, derive one from the Goal and ask to confirm.
 - Do not edit non-report files.
@@ -57,7 +66,7 @@ Before writing the first report in a repo:
 ## Example
 
 ```markdown
-# Exploration Report: Add user authentication
+# 0 — Explore: Add user authentication
 
 ## Goal
 
@@ -91,4 +100,4 @@ Add token-based authentication to the API.
 
 ## Routing
 
-After writing the report, stop and state the recommendation. Do not proceed to `sk-alternatives` or `sk-planning` unless the user explicitly asks.
+After writing the report and updating `RUNBOOK.md`, stop and state the recommendation. Do not proceed to `sk-alternatives` or `sk-planning` unless the user explicitly asks.

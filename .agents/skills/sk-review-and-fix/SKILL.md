@@ -16,6 +16,15 @@ description: >
 
 Closed loop: **review (subagent) → triage → fix → re-review (new subagent)** until clean. Each pass emits a single block of action-tagged findings (`### Review Findings`) combining correctness (cavecrew) and complexity reduction (ponytail). Parent **triages and fixes**; parent **never** substitutes checklist skim for review pass.
 
+## Slug and flow folder
+
+1. Determine the active flow:
+    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+    - Else find the flow whose `RUNBOOK.md` is most recent.
+    - If no flow exists and the user did not name one, continue without a flow folder; the final `4 - REVIEW.md` will be the only artifact.
+2. Read the active plan (newest `2 - PLANNING*.md` in the active flow, if one exists) as context.
+3. Write the final review to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4`.
+
 ## Subagent execution
 
 Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
@@ -69,7 +78,7 @@ Before first review pass — and again when diff surface changes materially — 
 
 Also flag environment blockers: missing deps, no Poetry/node, sandbox/network limits, no DB/tunnel, tests exist but cannot run.
 
-**Plan files:** If the repo has a plan file under `.agents/plans/`, read the latest one as context. If it is missing and the change is feature work, note it under `Known validation gaps:`.
+**Plan files:** If the active flow has a plan file under `2 - PLANNING*.md`, read the latest one as context. If it is missing and the change is feature work, note it under `Known validation gaps:`.
 
 ### Alert the user
 
@@ -231,6 +240,7 @@ When exit rule met (or blocked):
 - Browser/visual: done or **not performed** + why
 - Uncommitted vs committed state
 - Deferred out-of-scope items
+- **Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4`**
 
 **Confidence line:** one sentence, e.g. "Verifiable surface clean; UI vs Figma and E2E not validated."
 

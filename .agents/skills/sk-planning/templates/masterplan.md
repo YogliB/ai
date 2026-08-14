@@ -1,5 +1,3 @@
-# [Feature] Masterplan
-
 **Shape:** Umbrella for multi-PR and/or multi-repo work. Each PR has its own sub-plan from [plan.md](plan.md) (one repo, one PR each).
 
 **Overview:** [2–3 short sentences]

@@ -40,7 +40,7 @@ nub run format
 ## Project Layout
 
 - `.agents/skills/` — on-demand skills; source of truth for all agents.
-- `.agents/plans/` — durable plan files.
+- `.agents/sk-flows/` — flow runbooks and numbered phase docs.
 - `.agents/rules/` — shared always-on rules.
 - `.claude/rules/` — Claude rule modules loaded by `CLAUDE.md`.
 - `.cursor/rules/` — Cursor project rules.
@@ -69,7 +69,7 @@ Keep these aligned when changing workflows, conventions, or navigation:
 
 - `README.md`, `AGENTS.md`, `CLAUDE.md`
 - `.agents/rules/*.md`, `.claude/rules/*.md`, `.cursor/rules/*.mdc`, and `.devin/rules/*.md`
-- `RUNBOOK.md` and `.agents/plans/README.md`
+- `RUNBOOK.md` and `.agents/sk-flows/README.md`
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/TROUBLESHOOTING.md`
 
 ## Pull Requests

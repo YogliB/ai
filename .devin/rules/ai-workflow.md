@@ -5,7 +5,7 @@ trigger: model_decision
 
 # AI Workflow
 
-The optional end-to-end flow is: **sk-explore → sk-alternatives (optional) → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → sk-pr**.
+The end-to-end flow is: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr**.
 
 The user must explicitly ask for the workflow. Do not run it automatically.
 
@@ -13,12 +13,13 @@ The user must explicitly ask for the workflow. Do not run it automatically.
 
 1. Read `RUNBOOK.md` if the user asks for the workflow.
 2. Run `sk-flow` or follow the steps below.
-3. Run `sk-explore` and write a structured report to `.agents/reports/<slug>.md`.
-4. Run `sk-alternatives` if the approach is unclear and let the user pick an option; otherwise proceed to `sk-planning`.
-5. Run `sk-planning` and write the plan file to `.agents/plans/<slug>.md`.
-6. Implement the plan one atomic TODO at a time.
-7. Run `sk-review-and-fix` (or `sk-review-dont-fix` if the user prefers read-only).
-8. Run `sk-pr`.
+3. Run `sk-explore` and write `0 - EXPLORE.md` to `.agents/sk-flows/<slug>/`. Update `RUNBOOK.md`.
+4. Run `sk-alternatives` and write `1 - ALTERNATIVES.md` to `.agents/sk-flows/<slug>/`. Update `RUNBOOK.md`. If the approach is so clear that no alternatives are needed, still produce a `1 - ALTERNATIVES.md` that documents the reason.
+5. Run `sk-planning` and write `2 - PLANNING.md` to `.agents/sk-flows/<slug>/`. Update `RUNBOOK.md`.
+6. Implement the plan one atomic TODO at a time. Write `3 - IMPLEMENTATION.md`. Update `RUNBOOK.md`.
+7. Run `sk-review-and-fix` (or `sk-review-dont-fix` if the user prefers read-only). Write `4 - REVIEW.md`. Update `RUNBOOK.md`.
+8. Optionally run `sk-verify`. If it runs, write `5 - VERIFY.md`. Update `RUNBOOK.md`. If not, mark row `5` as `skipped` with reason.
+9. Run `sk-pr`. Write `6 - PR.md`. Update `RUNBOOK.md`.
 
 ## Using subagents
 
@@ -38,4 +39,4 @@ The parent acts as a thin dispatcher: pass the plan or diff to the subagent, tri
 
 ## Opting out
 
-The user can stop or skip any phase. Each skill works on its own.
+The user can stop or skip any phase. Each skill works on its own. Any skip or divergence must be documented in the runbook.

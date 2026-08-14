@@ -11,6 +11,15 @@ description: Self-contained executable technical plans with atomic testable TODO
 - Draft or tighten technical plan before work starts
 - Decide whether one plan enough or work should split
 
+## Slug and flow folder
+
+1. If the user did not provide a slug, derive one from the goal and ask to confirm.
+2. Create `.agents/sk-flows/<slug>/` if it does not exist.
+3. Create or update `RUNBOOK.md` with row `2` as `in-progress` while planning.
+4. After finalizing, write the plan to `.agents/sk-flows/<slug>/2 - PLANNING.md` (or `2 - PLANNING-master.md` plus `2 - PLANNING-<pr>.md` files for masterplan/sub-plans) and update `RUNBOOK.md` row `2` to `done`.
+
+If this skill is used outside a flow, the flow folder and runbook are still created.
+
 ## Subagent execution
 
 Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
@@ -18,7 +27,7 @@ Run this skill in an independent subagent when the harness supports it. The main
 ## Core requirements
 
 - Plan must be **self-contained**: an implementer (human or agent) executes using **only this document** plus a normal repo checkout — no fetching Confluence/Jira/Figma, reading sibling plan files, opening skill templates, or relying on chat history
-- Plan must be **durable**: the final plan is written to a file under `.agents/plans/` (or the agent's equivalent default) so the review, implementation, and PR phases can read it without chat context
+- Plan must be **durable**: the final plan is written to `.agents/sk-flows/<slug>/2 - PLANNING.md` (or the agent's equivalent default) so the review, implementation, and PR phases can read it without chat context
 - **Inline required context** in the plan body: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. The `Context` section must describe the repo as it is right now; a `before→after` snippet is allowed only when the `before` part is verified current code, not the desired future state. Links may appear **only** as optional source attribution **after** the needed facts are inlined
 - **Pointer-only dependencies are blockers** — e.g. "see Confluence page X", "per design doc", "details in masterplan PR2", "attach Figma at implementation time". Either inline the excerpt or list as **Assumptions** with acceptance impact and a verification step
 - **Every file path and line number** in the plan must be re-checked against the repo just before finalizing
@@ -31,8 +40,8 @@ Run this skill in an independent subagent when the harness supports it. The main
 
 Before writing the first plan in a repo:
 
-- Create `.agents/plans/` if it does not exist.
-- Add `.agents/plans/` to `.gitignore` so plan files are not committed by default.
+- Create `.agents/sk-flows/` if it does not exist.
+- Add `.agents/sk-flows/` to `.gitignore` so flow files are not committed by default.
 
 ## Clarification gates
 
@@ -183,19 +192,21 @@ Planning covers **what** to build, **how** to sequence it, **delivery shape** wh
 
 ## Plan file output
 
-The finalized plan must be written to a file so later phases (implementation, review, PR) can read it without depending on chat context.
+The finalized plan must be written to a file so later phases (implementation, review, PR) can read it without depending on chat context. Start the plan with `# 2 — Planning: <slug>`, then use the template sections.
 
-- Default path: `.agents/plans/<slug>.md`
-- Masterplan path: `.agents/plans/<slug>-master.md`
+- Default path: `.agents/sk-flows/<slug>/2 - PLANNING.md`
+- Masterplan path: `.agents/sk-flows/<slug>/2 - PLANNING-master.md`
+- Sub-plan path: `.agents/sk-flows/<slug>/2 - PLANNING-<pr>.md`
 - `<slug>` should describe the work in short kebab-case (e.g., `add-auth-token`, `crewmate-stream`). If the user did not name it, derive one from the Goal and ask to confirm.
-- If the agent platform has its own default plan location (e.g., Cursor plan mode), write the plan there too, but always create or symlink the canonical copy under `.agents/plans/`.
+- If the agent platform has its own default plan location (e.g., Cursor plan mode), write the plan there too, but always create or symlink the canonical copy under `.agents/sk-flows/<slug>/`.
 - Do not commit or push the plan file unless the user or repo policy explicitly requests it.
+- After the plan is written, update `RUNBOOK.md` row `2` to `done` with a one-line summary.
 - The planning review loop still pastes the full plan text into the review subagent; the file is the durable artifact after the review passes.
 
 ## Output
 
 - Either **summarize these rules** when user only asked guidance
-- Or **write the finalized plan to a file** and return a short summary with the path, then emit the plan text on request
+- Or **write the finalized plan to `.agents/sk-flows/<slug>/2 - PLANNING.md`** and return a short summary with the path, then update `RUNBOOK.md` row `2`, then emit the plan text on request
 
 ## Bundled templates
 

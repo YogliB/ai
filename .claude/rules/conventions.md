@@ -18,17 +18,28 @@ This repo provides reusable agent skills under `.agents/skills/`.
 | sk-ai-toolbelt         | `.agents/skills/sk-ai-toolbelt/SKILL.md`         | Pointers to recommended external tools and MCPs     |
 | sk-flow                | `.agents/skills/sk-flow/SKILL.md`                | Running the full end-to-end workflow.               |
 
-Invoke the skill by name when the user asks for it. Do not force a full workflow unless the user asks for one.
+Read the relevant skill before acting. Do not force a full workflow unless the user asks for one.
 
-## Plan files
+## Flow runbooks
+
+Every flow is a mandatory runbook under `.agents/sk-flows/<slug>/` plus numbered, self-contained phase docs:
+
+- `0 - EXPLORE.md` from `sk-explore`
+- `1 - ALTERNATIVES.md` from `sk-alternatives`
+- `2 - PLANNING.md` from `sk-planning`
+- `3 - IMPLEMENTATION.md` from implementation
+- `4 - REVIEW.md` from `sk-review-and-fix` or `sk-review-dont-fix`
+- `5 - VERIFY.md` from `sk-verify`
+- `6 - PR.md` from `sk-pr`
 
 When the user asks for planning, the final plan must be written to a file:
 
-- Default: `.agents/plans/<slug>.md`
-- Masterplan: `.agents/plans/<slug>-master.md`
+- Default: `.agents/sk-flows/<slug>/2 - PLANNING.md`
+- Masterplan: `.agents/sk-flows/<slug>/2 - PLANNING-master.md`
+- Sub-plan: `.agents/sk-flows/<slug>/2 - PLANNING-<pr>.md`
 - `<slug>` is short, kebab-case, and describes the work
 
-The plan is the durable artifact for implementation, review, and PR phases.
+The plan is the durable artifact for implementation, review, and PR phases. The flow runbook is the source of truth for the state of the work.
 
 ## Alternatives
 
@@ -36,8 +47,8 @@ When the user asks for alternatives, the generated options must be reviewed by t
 
 ## Review
 
-When reviewing code, use the latest plan file under `.agents/plans/` as context if one exists. Note any missing plan, spec, tests, or runtime under `Validation gaps`.
+When reviewing code, use the active plan under `.agents/sk-flows/<slug>/2 - PLANNING*.md` and the `RUNBOOK.md` as context if they exist. Note any missing plan, spec, tests, or runtime under `Validation gaps`.
 
 ## PR
 
-When creating a PR, use the diff, test evidence, and the plan file (if any) to build the body.
+When creating a PR, use the diff, test evidence, the plan file, and the runbook to build the body. Update `RUNBOOK.md` and write `6 - PR.md`.

@@ -16,6 +16,7 @@ nub install
 ## Project Layout
 
 - `.agents/skills/` — Skills (source of truth for all agents).
+- `.agents/sk-flows/` — Flow runbooks and numbered phase docs.
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
 - `.devin/rules/` — Devin project rules.
@@ -25,7 +26,7 @@ nub install
 - `uninstall.sh` — Uninstall globally or from another project.
 - `README.md` — Human-facing overview.
 - `AGENTS.md` — Agent-facing index.
-- `RUNBOOK.md` — Optional end-to-end workflow.
+- `RUNBOOK.md` — End-to-end workflow.
 - `docs/` — Contributor and user documentation.
 
 ## Documentation Sync
@@ -36,8 +37,8 @@ Keep these files aligned:
 - `AGENTS.md` — agent index and setup commands
 - `CLAUDE.md` — Claude rule `@` includes
 - `.claude/rules/`, `.cursor/rules/`, and `.devin/rules/` — cross-agent rules
-- `RUNBOOK.md` — optional full workflow
-- `.agents/plans/README.md` — plan file conventions
+- `RUNBOOK.md` — full workflow
+- `.agents/sk-flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
 
 ## Pull Requests

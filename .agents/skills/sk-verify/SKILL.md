@@ -11,15 +11,23 @@ description: Verify that changes do what they aim to do and introduce no regress
 - When the user asks "did this work?", "verify the changes", "use the sk-verify skill", or similar.
 - This skill does **not** run lint, tests, or security checks; use `before-pr` for those.
 
+## Slug and flow folder
+
+1. Determine the active flow:
+    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+    - Else find the flow whose `RUNBOOK.md` is most recent.
+    - If no flow exists and the user did not name one, ask for a slug.
+2. Write the verification report to `.agents/sk-flows/<slug>/5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
+
 ## Steps
 
 1. **Understand the intent**
-    - If a plan exists in `.agents/plans/`, read its `## Goal` and `## Context` to understand what the changes should do.
+    - If a plan exists in `.agents/sk-flows/<slug>/2 - PLANNING.md` (or the newest `2 - PLANNING*.md` in the flow), read its `## Goal` and `## Context` to understand what the changes should do.
     - Review the diff for changed files.
     - If the intent is still unclear, ask the user for a one-line statement of the expected outcome.
 
 2. **Find verification steps**
-    - Read the active plan (newest `.md` in `.agents/plans/` by mtime, or the one the user named).
+    - Read the active plan (newest `2 - PLANNING*.md` in the active flow by mtime, or the one the user named).
     - If the plan's `## Verification` section has concrete steps, use those.
     - If the section is missing or empty, read `.agents/verify/VERIFICATION.md`.
 
@@ -38,6 +46,8 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 5. **Report**
     - Print the result of each step and an overall `PASS` or `FAIL`.
+    - Write the results to `.agents/sk-flows/<slug>/5 - VERIFY.md`.
+    - Update `RUNBOOK.md` row `5` to `done` (or `diverged` if the skill was departed from).
 
 ## Subagent execution
 

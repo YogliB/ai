@@ -9,6 +9,14 @@ description: Creates or updates a GitHub pull request via gh CLI with team-style
 
 Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
 
+## Slug and flow folder
+
+1. Determine the active flow:
+    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+    - Else find the flow whose `RUNBOOK.md` is most recent.
+2. If the active flow exists, read the active plan at `.agents/sk-flows/<slug>/2 - PLANNING*.md`, plus `3 - IMPLEMENTATION.md`, `4 - REVIEW.md`, and `5 - VERIFY.md` (if they exist) as context for the PR title and body.
+3. After creating or updating the PR, write `6 - PR.md` and update `RUNBOOK.md` row `6` to `done`.
+
 ## Route first (update vs new)
 
 1. **PR from user message** — If the user gave a PR number or a GitHub PR URL (`…/pull/<n>` on `github.com` or enterprise hosts), use **update** with that number (parse `n` from URL).
@@ -28,7 +36,7 @@ If they differ, stop and tell the user to checkout the correct branch or pass th
 - If current branch is `main` or `master`, warn and do not proceed unless the user explicitly overrides.
 - If there are uncommitted changes: remind the user; **never** stage or commit without explicit permission.
 - Base diff for understanding changes: `git diff origin/<default>...HEAD` where `<default>` is from `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`, then `master` if needed).
-- If a plan file exists under `.agents/plans/`, use it as context for the PR title and body.
+- If an active flow exists, read the active plan at `.agents/sk-flows/<slug>/2 - PLANNING*.md`, plus `3 - IMPLEMENTATION.md`, `4 - REVIEW.md`, and `5 - VERIFY.md` (if they exist) as context for the PR title and body.
 
 ## Issue / Ticket tracking & Corporate mode
 
@@ -117,7 +125,8 @@ Create `assets/pr-<n>/` if missing. Prefer PNG. Use short kebab filenames that d
 3. **Create:** `gh pr create --title "<title>" --body-file .pr-body-temp.md`
    If corporate mode is **on**, append ` --label "code-review:request"`.
 4. **Update:** `gh pr edit <n> --title "<title>" --body-file .pr-body-temp.md`
-5. **Always delete** `.pr-body-temp.md` when done — last step every run, success or failure (early stop included). Use the Delete tool or `rm -f .pr-body-temp.md` from repo root. Never leave the temp file behind.
+5. **Write `6 - PR.md`** in the active flow folder with the PR title, URL, number, and a short status. Update `RUNBOOK.md` row `6` to `done`.
+6. **Always delete** `.pr-body-temp.md` when done — last step every run, success or failure (early stop included). Use the Delete tool or `rm -f .pr-body-temp.md` from repo root. Never leave the temp file behind.
 
 ## Troubleshooting
 

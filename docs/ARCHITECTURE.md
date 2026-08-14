@@ -18,8 +18,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── sk-review-and-fix/
 │   ├── sk-review-dont-fix/
 │   └── sk-verify/
-├── .agents/plans/           # Durable plan files
-├── .agents/reports/         # Structured exploration reports
+├── .agents/sk-flows/        # Flow runbooks and numbered phase docs
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
 ├── .devin/rules/            # Devin project rules
@@ -59,17 +58,19 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    ▼
 [sk-flow skill] → parses mode, loads and runs the full flow
    ▼
-[sk-explore] → .agents/reports/<slug>.md
+[sk-explore] → 0 - EXPLORE.md
    ▼
-[sk-alternatives] (optional) → [sk-review-alternatives] → user picks option
+[sk-alternatives] → [sk-review-alternatives] → user picks option → 1 - ALTERNATIVES.md
    ▼
-[sk-planning] → .agents/plans/<slug>.md
+[sk-planning] → 2 - PLANNING.md
    ▼
-[implementation] (code changes + tests)
+[implementation] (code changes + tests) → 3 - IMPLEMENTATION.md
    ▼
-[sk-review-and-fix or sk-review-dont-fix]
+[sk-review-and-fix or sk-review-dont-fix] → 4 - REVIEW.md
    ▼
-[sk-pr]
+[sk-verify] (optional) → 5 - VERIFY.md
+   ▼
+[sk-pr] → 6 - PR.md
 ```
 
 Each phase can run in an independent subagent. The parent passes the plan or diff to the subagent, triages the output, and dispatches the next phase.
@@ -80,9 +81,9 @@ Each phase can run in an independent subagent. The parent passes the plan or dif
 
 Each slash command in Claude Code loads the matching `sk-*/SKILL.md`. The hook is a thin harness; the skill file is the canonical behavior. Devin and Cursor use the same skill files through the skill tool or rules.
 
-### Plan files are durable artifacts
+### Flow runbooks are durable artifacts
 
-Plans are written to `.agents/plans/<slug>.md` so implementation, review, and PR phases can read them without depending on chat context. This makes the workflow work across agents and sessions.
+Every flow lives in `.agents/sk-flows/<slug>/` with a mandatory `RUNBOOK.md` checklist and numbered phase docs. The plan, implementation, review, and PR phases read these docs without depending on chat context, so the workflow works across agents and sessions.
 
 ### Alternatives are reviewed before presentation
 

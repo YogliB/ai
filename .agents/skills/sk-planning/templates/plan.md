@@ -1,5 +1,3 @@
-# [Plan ID/Version]
-
 **Shape:** One repo, one PR. Multi-repo or multi-PR work → [masterplan.md](masterplan.md) plus one plan per PR.
 
 ## Goal
