@@ -10,7 +10,8 @@
 	},
 	"scripts": {
 		"prepare": "husky",
-		"format": "oxfmt"
+		"format": "oxfmt",
+		"lint": "lint-staged"
 	},
 	"devDependencies": {
 		"husky": "9.1.7",

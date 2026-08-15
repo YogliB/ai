@@ -1,171 +1,92 @@
-# AI — Agent Skills and Workflows
+# AI
 
-Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, and Devin.
+Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, and Devin. I built this to stop repeating myself to every agent. Take it, break it, and rebuild it into something that fits your own chaos.
 
-The skills work independently. Use one skill or run the full flow.
+## What you get
 
-## Quick install
+- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-review-and-fix`, and `sk-pr`.
+- **Shortcuts** — in Claude Code, type `/explore`, `/plan`, `/review`, `/pr`, or `/flow` and let the `slash-kit` plugin load the matching skill.
+- **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
+- **Rules** — editor-specific conventions for Claude, Cursor, and Devin.
+
+Everything lives in plain Markdown. No magic binaries, no cloud services, no tracking.
+
+## Quick start
+
+```bash
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh
+```
+
+That installs skills globally and registers the Claude Code plugin. For a single project, pass the repo path:
 
 ```bash
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
 ```
 
-This copies the workflow into the target project. For a global install or other options, see [Install](#install) below.
-
-## Before you start
-
-You need:
-
-- A supported agent: **Claude Code**, **Cursor**, or **Devin**.
-- **Node.js** (for `npx skills` and the Claude Code `UserPromptSubmit` hook).
-- For the install script: `sh`, `cp`, and a writable home directory.
-- For the uninstall script: `sh`, `rm`, `cmp`, `mktemp`, and a writable home directory.
-
-## Install
-
-### Global install (all agents)
+Want just one skill?
 
 ```bash
-./install.sh
+npx skills add YogliB/ai --skill sk-planning
 ```
 
-This installs the skills into the universal `~/.agents/skills` directory using `npx skills`, and registers the repo as a Claude Code marketplace so the plugin (shortcuts/hooks) can be installed.
+To remove: `sh /tmp/ai/uninstall.sh` (or pass a repo path).
 
-Requirements: `npx` and the `claude` CLI.
+## Use it
 
-### Per-project install
+### In Claude Code
 
-```bash
-./install.sh /path/to/your/repo
-```
-
-This copies rules, skills, and the runbook into the target project. It is the same command for Claude, Cursor, and Devin; the difference is which rules each editor reads.
-
-## Uninstall
-
-### Global uninstall
-
-```bash
-./uninstall.sh
-```
-
-This removes the skills from `~/.agents/skills`, uninstalls the `slash-kit` Claude Code plugin, and removes the `ai` marketplace.
-
-### Per-project uninstall
-
-```bash
-./uninstall.sh /path/to/repo
-```
-
-This removes the copied skills, rules, runbook, and generated `AGENTS.md`/`CLAUDE.md` files from the target project. Existing files that were modified are left in place.
-
-### Install specific skills
-
-Want to install specific skills? `npx skills add YogliB/ai`
-
-This prompts you to pick skills. To install one directly, use `npx skills add YogliB/ai --skill <skill-name>`. For all options, see [docs/USAGE.md](docs/USAGE.md).
-
-## Usage
-
-Once installed, you can use the shortcuts in Claude Code or ask the agent to follow the workflow in any editor.
-
-### Shortcuts (Claude Code only)
-
-When the plugin is active, these prompts expand into skill instructions:
+Type a shortcut at the start of a prompt:
 
 ```text
-/explore add-user-auth
+/explore add-auth-token
 /alternatives for caching API responses
-/plan add-user-auth
-/review my branch
+/plan add-auth-token
+/review
 /pr
-/flow
+/flow auto
 ```
 
-| Shortcut        | What happens                                                                                                                                                   |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/explore`      | Invoke the `sk-explore` skill to gather context and write `0 - EXPLORE.md` into `.agents/sk-flows/<slug>/`.                                                    |
-| `/alternatives` | Invoke the `sk-alternatives` skill to generate and review up to 3 options, then recommend one and write `1 - ALTERNATIVES.md` into `.agents/sk-flows/<slug>/`. |
-| `/plan`         | Invoke the `sk-planning` skill to write an executable plan to `.agents/sk-flows/<slug>/2 - PLANNING.md`.                                                       |
-| `/review`       | Invoke the `sk-review-and-fix` skill to review the current diff and fix issues.                                                                                |
-| `/pr`           | Invoke the `sk-pr` skill to create or update a GitHub PR.                                                                                                      |
-| `/flow [mode]`  | Invoke the `sk-flow` skill to run the full workflow. In `auto` mode, run all phases without confirmation; in `manual` mode, ask before each phase (default).   |
+| Shortcut          | What it does                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| `/explore <slug>` | Gather context and write `0 - EXPLORE.md` to `.agents/sk-flows/<slug>/`.             |
+| `/alternatives`   | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
+| `/plan <slug>`    | Write an executable `2 - PLANNING.md`.                                               |
+| `/review`         | Review and fix the current diff.                                                     |
+| `/pr`             | Create or update a GitHub PR.                                                        |
+| `/flow [mode]`    | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
-### Skills (any editor)
+### In any editor
 
-Name the skill in a prompt. For example:
+Name the skill directly:
 
 ```text
-Use the sk-planning skill to write a plan for adding pagination.
+Use the sk-planning skill to write a plan for pagination.
 Use the sk-review-and-fix skill on the current diff.
 Use the sk-pr skill to open a pull request.
 ```
 
-| Skill                                                                    | File                                             | Use when                                           |
-| ------------------------------------------------------------------------ | ------------------------------------------------ | -------------------------------------------------- |
-| [sk-explore](.agents/skills/sk-explore/SKILL.md)                         | `.agents/skills/sk-explore/SKILL.md`             | You need to understand the problem and repo first. |
-| [sk-alternatives](.agents/skills/sk-alternatives/SKILL.md)               | `.agents/skills/sk-alternatives/SKILL.md`        | You want options before committing.                |
-| [sk-review-alternatives](.agents/skills/sk-review-alternatives/SKILL.md) | `.agents/skills/sk-review-alternatives/SKILL.md` | Reviewing a list of alternatives.                  |
-| [sk-planning](.agents/skills/sk-planning/SKILL.md)                       | `.agents/skills/sk-planning/SKILL.md`            | Writing an executable plan.                        |
-| [sk-review-and-fix](.agents/skills/sk-review-and-fix/SKILL.md)           | `.agents/skills/sk-review-and-fix/SKILL.md`      | Reviewing and fixing code.                         |
-| [sk-review-dont-fix](.agents/skills/sk-review-dont-fix/SKILL.md)         | `.agents/skills/sk-review-dont-fix/SKILL.md`     | Read-only review.                                  |
-| [sk-pr](.agents/skills/sk-pr/SKILL.md)                                   | `.agents/skills/sk-pr/SKILL.md`                  | Creating or updating a PR.                         |
-| [sk-verify](.agents/skills/sk-verify/SKILL.md)                           | `.agents/skills/sk-verify/SKILL.md`              | Verifying changes work and have no regressions.    |
-| [sk-project-docs](.agents/skills/sk-project-docs/SKILL.md)               | `.agents/skills/sk-project-docs/SKILL.md`        | Scaffolding or nudging a project's docs structure. |
-| [sk-ai-toolbelt](.agents/skills/sk-ai-toolbelt/SKILL.md)                 | `.agents/skills/sk-ai-toolbelt/SKILL.md`         | Recommended external AI tools.                     |
-| [sk-flow](.agents/skills/sk-flow/SKILL.md)                               | `.agents/skills/sk-flow/SKILL.md`                | Running the full end-to-end workflow.              |
-
-### Example session
+## The flow
 
 ```text
-/plan add-auth-token
-# Claude invokes the sk-planning skill and writes .agents/sk-flows/add-auth-token/2 - PLANNING.md
-
-# Implement the plan, then:
-/review
-# Claude invokes the sk-review-and-fix skill and fixes issues.
-
-/pr
-# Claude invokes the sk-pr skill and opens the PR.
+sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix → optional sk-verify → sk-pr
 ```
 
-## Configuration
-
-- **Plan files** live in `.agents/sk-flows/<slug>/2 - PLANNING.md`. See [.agents/sk-flows/README.md](.agents/sk-flows/README.md).
-- **Claude rules** live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
-- **Cursor rules** live in `.cursor/rules/*.mdc`.
-- **Devin rules** live in `.devin/rules/*.md`.
-- **Runbook** for the optional full flow is in [RUNBOOK.md](RUNBOOK.md).
-
-## Workflow
-
-The end-to-end flow is:
-
-```text
-sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr
-```
-
-Each step can run in an independent subagent. The parent is a thin dispatcher. The [runbook](RUNBOOK.md) has the full procedure.
+Each phase writes a numbered doc into `.agents/sk-flows/<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
 
 ## Caveats
 
-- **Shortcuts only work in Claude Code.** Cursor has no `UserPromptSubmit` hook equivalent; use the skill names directly or the runbook.
+- **Shortcuts only work in Claude Code.** Cursor and Devin can use the skill names or the [runbook](RUNBOOK.md).
 - **Cursor rules are project-scoped.** Install them into each repo where you want them.
-- **Flow runbooks are not committed by default.** Commit them only if your policy requires it.
-- **Skills are modular.** Nothing runs the full workflow unless you explicitly ask for it.
+- **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
+- **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
 
-## Documentation
+## More
 
-| Doc                                                | Purpose                     |
-| -------------------------------------------------- | --------------------------- |
-| [RUNBOOK.md](RUNBOOK.md)                           | End-to-end workflow         |
-| [docs/USAGE.md](docs/USAGE.md)                     | Install and usage guide     |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | How the pieces fit together |
-| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup and PR flow           |
-| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems             |
-| [docs/SECURITY.md](docs/SECURITY.md)               | Reporting vulnerabilities   |
-| [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Community expectations      |
+- [RUNBOOK.md](RUNBOOK.md) — the full workflow.
+- [docs/USAGE.md](docs/USAGE.md) — install options, advanced usage, and troubleshooting.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the pieces fit together.
+- [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) — if you want to hack on this.
 
-## Contributing
+## License
 
-See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+MIT. Steal with attribution.
