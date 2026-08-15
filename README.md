@@ -29,7 +29,8 @@ Want just one skill?
 npx skills add YogliB/ai --skill sk-planning
 ```
 
-To remove: `sh /tmp/ai/uninstall.sh` (or pass a repo path).
+To remove one skill: `npx skills remove sk-planning` (add `-g` if you installed globally).
+To remove the full install: `sh /tmp/ai/uninstall.sh` (or pass a repo path).
 
 ## Use it
 

@@ -35,11 +35,23 @@ Run `npx skills add YogliB/ai --list` to see the list.
 
 ## Uninstall
 
-Global and per-project use the same `uninstall.sh` script. Pass a path for per-project.
+### Full install
+
+If you used `install.sh`, use `uninstall.sh`:
 
 ```bash
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh /path/to/your/repo
+```
+
+### Specific skills
+
+If you used `npx skills add`, remove with `npx skills remove`:
+
+```bash
+npx skills remove sk-planning
+npx skills remove -g sk-planning
+npx skills remove --all
 ```
 
 ## Use the skills
