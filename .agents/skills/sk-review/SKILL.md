@@ -1,50 +1,42 @@
 ---
 name: sk-review
-description: >
-    One-shot read-only code review using a Task subagent with single-block action-tagged output
-    combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop.
-    Alerts explicitly when context or capabilities insufficient to validate. Use when user asks for
-    sk-review, read-only review, review code without fixing, or review PR/branch/diff
-    without editing.
+description: One-shot, read-only code review using a Task subagent with single-block action-tagged output combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
 ---
 
 # Review
 
-One-shot, read-only code review. Dispatches a **single Task subagent** to produce action-tagged findings (`### Review Findings`) combining correctness (cavecrew) and ponytail complexity reduction, then writes `4 - REVIEW.md` and updates the runbook without applying any fixes.
+One-shot, read-only diff review. Dispatch a single **Task** subagent to produce a `### Review Findings` block, then write `4 - REVIEW.md` and stop. Do not apply fixes or loop.
 
-## Slug and flow folder
+## When to use
 
-1. Determine the active flow:
-    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
-    - Else find the flow whose `RUNBOOK.md` is most recent.
-    - If no flow exists and the user did not name one, continue without a flow folder; `4 - REVIEW.md` will be the only artifact.
-2. Read the active plan (newest `2 - PLANNING*.md` in the active flow, if one exists) as context.
-3. Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md`.
-4. Update `RUNBOOK.md` row `4` to `done` (or `diverged` if the agent departed from read-only review).
-
-## Workflow
-
-1. **Resolve scope:**
-    - Repository: absolute path to repo root.
-    - Diff target (`branch changes` default, or `uncommitted changes`, or explicit branch/PR).
-    - Base branch if non-default.
-2. **Context & validation check:**
-    - Check if plan/spec, Figma, or runnable tests are missing.
-    - If the active flow has a plan file under `2 - PLANNING*.md`, read the latest one as context.
-    - If material context is missing, note under `Known validation gaps:`.
-3. **Dispatch review subagent:**
-    - Launch a **Task** subagent (`subagent_type: "generalPurpose"`, `readonly: true`). Do not perform the review inline in the parent thread.
-    - Pass prompt with repository path, diff target, and output contract.
-4. **Present report:**
-    - Write `.agents/sk-flows/<slug>/4 - REVIEW.md` with the structured findings, summary line, and any validation gaps.
-    - Update `RUNBOOK.md` row `4`.
-    - Stop. Do NOT apply any fixes or enter a fix loop.
+- User asks for `sk-review`, read-only review, or review without fixing
+- Before `sk-pr` when only a report is needed
+- As a lighter alternative to `sk-review-and-fix`
 
 ## Subagent execution
 
 Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
 
-## Subagent prompt contract
+## Flow context
+
+Determine the active flow:
+
+- If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+- Else find the flow whose `RUNBOOK.md` is most recent.
+- If no flow exists and the user did not name one, continue without a flow folder; `4 - REVIEW.md` will be the only artifact.
+
+## Input
+
+- **Repository:** absolute path to repo root
+- **Diff target:** `branch changes` (default), `uncommitted changes`, or explicit branch/PR
+- **Base branch:** only when non-default
+- **Custom focus / out of scope:** only when user gave constraints
+- **Active plan:** read newest `2 - PLANNING*.md` in the active flow as context
+- **Known validation gaps:** if plan/spec/Figma/tests are missing — list each; do not claim those areas verified
+
+## Output contract
+
+The subagent receives the prompt below and returns **only** the findings block.
 
 ```text
 You are a read-only diff reviewer. Produce ONLY the findings block below; do not implement fixes.
@@ -98,7 +90,34 @@ End with exactly one line:
 - Or: Lean & valid. Ship.
 ```
 
-## Constraints
+## Tags
 
-- Read-only: strictly no file edits or code changes.
-- Single-pass: output findings and stop.
+Use these exact tags after the colon:
+
+- `🔴 bug`: correctness bug, security risk, broken logic, regression
+- `🟡 gap`: missing/error-prone test, error handling gap, maintainability defect
+- `✂️ cut`: dead code, unused feature/dependency, speculative code
+- `🪵 yagni`: single-caller layer, unset config, premature abstraction
+- `⚡ simplify`: hand-rolled stdlib behavior, native platform duplicate, complex pattern
+- `🔵 nit`: naming, minor style, formatting
+- `❓ question`: unclear logic, missing spec/context
+
+## Review criteria
+
+- Correctness, security, and broken logic
+- Tests and error handling
+- Maintainability and dead code
+- Unnecessary abstraction vs native/standard alternatives
+- Naming and style
+- Missing context (cite the gap)
+
+## Output destination
+
+Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If the agent departs from read-only review, use `diverged`.
+
+## Rules
+
+- Read-only: no file edits or code changes.
+- Single pass: output findings and stop.
+- Do not suppress findings because they are hard to fix; this is not `sk-review-and-fix`.
+- If the user asks for fixes, switch to `sk-review-and-fix`.

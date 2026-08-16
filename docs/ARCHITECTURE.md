@@ -17,6 +17,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── sk-review-alternatives/
 │   ├── sk-review-and-fix/
 │   ├── sk-review/
+│   ├── sk-review-plan/
 │   └── sk-verify/
 ├── .agents/sk-flows/        # Flow runbooks and numbered phase docs
 ├── .claude/rules/           # Claude rule modules
@@ -62,7 +63,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    ▼
 [sk-alternatives] → [sk-review-alternatives] → user picks option → 1 - ALTERNATIVES.md
    ▼
-[sk-planning] → 2 - PLANNING.md
+[sk-planning] → [sk-review-plan] → 2 - PLANNING.md
    ▼
 [implementation] (code changes + tests) → 3 - IMPLEMENTATION.md
    ▼

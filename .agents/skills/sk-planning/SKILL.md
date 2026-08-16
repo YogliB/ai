@@ -94,48 +94,14 @@ After plan text matches template (and **Pre-finalization pass** done), run revie
 
 ### 1. Review
 
-Dispatch **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`) on full plan text. **Required every loop iteration** — including after fixes. Do **not** substitute inline review, checklist skim, or parent-authored findings.
+Dispatch **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`) and run the `sk-review-plan` skill on the full plan text. **Required every loop iteration** — including after fixes. Do **not** substitute inline review, checklist skim, or parent-authored findings.
 
 Prompt must include:
 
 - Full plan body (paste text; do **not** point subagent at plan files on disk)
 - Required context (repo constraints, user scope, masterplan ↔ sub-plan linkage when split)
-- Output contract below (verbatim)
 
-Subagent returns **only** structured findings in a single block (no prose intro or architecture essay). Use this contract:
-
-```text
-Output ONLY in this format (no prose intro, no sections swapped).
-
-### Plan Review Findings
-
-section:line: <emoji> <tag>: <problem/over-engineering>. <fix/replacement>.
-totals: N🔴 N🟡 N✂️ N🪵 N⚡ N🔵 N❓ | net: -<N> lines/steps possible
-
-Or exactly when no findings:
-
-### Plan Review Findings
-
-Lean & valid. Ship.
-
-Rules for Plan Review Findings:
-- Sort findings section → line ascending
-- One finding per line; problem then fix separated by ". "
-- Location: section = exact ## heading name; line = line number within that section (1-based from heading line), or — when issue spans whole section
-- Action tags (literal after colon):
-  - 🔴 bug: correctness blocker, contradiction, broken logic, missing critical step
-  - 🟡 gap: weak testability, missing file/dependency, unclear sequencing, unmitigated risk
-  - ✂️ cut: redundant prose, duplicate information, speculative task not required for goal (replacement: nothing)
-  - 🪵 yagni: over-engineered scaffolding, premature generalization, unnecessary abstraction (replacement: inline or drop)
-  - ⚡ simplify: over-complicated sequencing, multi-tier nesting, complex pattern (replacement: simpler layout or step)
-  - 🔵 nit: wording, formatting, minor presentation tweak
-  - ❓ question: unclear intent, missing context, needs author clarification
-- Review focus: self-containment (no pointer-only external/cross-doc deps), executability, TODO atomicity/testability, scope/acceptance alignment, missing files or dependencies, contradictions between sections, unrealistic sequencing, untestable verification, risks without mitigation, Complexity Check accuracy, masterplan ↔ sub-plan consistency when split, AND ponytail plan complexity reduction (YAGNI, cuts, simplification). Do NOT perform pure micro prose edits unless they reduce implementation/plan scope, file count, or steps.
-
-End with exactly one line:
-- totals: N🔴 N🟡 N✂️ N🪵 N⚡ N🔵 N❓ | net: -<N> lines/steps possible
-- Or: Lean & valid. Ship.
-```
+The `sk-review-plan` skill defines the output contract and review criteria. The subagent returns only a `### Plan Review Findings` block.
 
 ### 2. Triage
 

@@ -4,7 +4,7 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 
 ## What you get
 
-- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-review-and-fix`, and `sk-pr`.
+- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-review-plan`, `sk-review-and-fix`, and `sk-pr`.
 - **Shortcuts** — in Claude Code, type `/explore`, `/plan`, `/review`, `/pr`, or `/flow` and let the `slash-kit` plugin load the matching skill.
 - **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude, Cursor, and Devin.
@@ -62,6 +62,7 @@ Name the skill directly:
 
 ```text
 Use the sk-planning skill to write a plan for pagination.
+Use the sk-review-plan skill to review the plan.
 Use the sk-review-and-fix skill on the current diff.
 Use the sk-pr skill to open a pull request.
 ```

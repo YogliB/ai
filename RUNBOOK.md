@@ -77,7 +77,7 @@ Every flow lives in its own folder:
 **Output:** `2 - PLANNING.md` in `.agents/sk-flows/<slug>/`.
 
 - The plan must be fully executable from the file alone.
-- The `sk-planning` skill runs its own review loop before finalizing.
+- The `sk-planning` skill dispatches `sk-review-plan` in a review loop before finalizing.
 - Update `RUNBOOK.md` row `2` to `done`.
 
 ### 3. Implementation
@@ -134,6 +134,7 @@ You do not have to run the full flow. Each skill is self-contained:
 - `/explore <slug>` or "use the sk-explore skill" — gather context and write `0 - EXPLORE.md`
 - `/alternatives` or "use the sk-alternatives skill" — reviewed options for any decision, writes `1 - ALTERNATIVES.md`
 - `/plan <slug>` or "use the sk-planning skill" — write `2 - PLANNING.md`
+- "use the sk-review-plan skill" — review an existing plan
 - `/review` or "use the sk-review-and-fix skill" — review the current diff, writes `4 - REVIEW.md`
 - `/pr` or "use the sk-pr skill" — create or update a PR, writes `6 - PR.md`
 - `/flow [auto|manual]` or "use the sk-flow skill" — run the full workflow

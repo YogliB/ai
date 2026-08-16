@@ -14,6 +14,7 @@ This repo provides reusable agent skills under `.agents/skills/`.
 | sk-alternatives        | `.agents/skills/sk-alternatives/SKILL.md`        | User wants options for a decision                   |
 | sk-review-alternatives | `.agents/skills/sk-review-alternatives/SKILL.md` | Reviewing proposed alternatives                     |
 | sk-planning            | `.agents/skills/sk-planning/SKILL.md`            | Writing an executable technical plan                |
+| sk-review-plan         | `.agents/skills/sk-review-plan/SKILL.md`         | Reviewing a technical plan                          |
 | sk-review-and-fix      | `.agents/skills/sk-review-and-fix/SKILL.md`      | Reviewing a diff and fixing issues                  |
 | sk-review              | `.agents/skills/sk-review/SKILL.md`              | Read-only diff review                               |
 | sk-pr                  | `.agents/skills/sk-pr/SKILL.md`                  | Creating or updating a PR                           |
