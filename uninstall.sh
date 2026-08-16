@@ -36,6 +36,29 @@ Agent-facing entry point.
 |---|---|
 | Runbook | [RUNBOOK.md](RUNBOOK.md) |
 | Skills | [.agents/skills/](.agents/skills/) |
+| Claude rules | [.claude/rules/slashkit.md](.claude/rules/slashkit.md) |
+
+## AI rules
+
+@.claude/rules/slashkit.md
+@RUNBOOK.md
+EOF
+	printf '%s\n' "$tmp"
+}
+
+generated_agents_tmp_old() {
+	tmp=$(mktemp)
+	cat > "$tmp" <<'EOF'
+# AGENTS.md
+
+Agent-facing entry point.
+
+## Quick links
+
+| Topic | Where to look |
+|---|---|
+| Runbook | [RUNBOOK.md](RUNBOOK.md) |
+| Skills | [.agents/skills/](.agents/skills/) |
 | Claude rules | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md) |
 
 ## AI workflow rules
@@ -59,7 +82,18 @@ remove_agents_workflow_block() {
 	awk '
 		{ lines[NR] = $0 }
 		END {
-			if (NR >= 7 &&
+			# New appended block: 6 lines
+			if (NR >= 6 &&
+			    lines[NR-5] == "" &&
+			    lines[NR-4] == "---" &&
+			    lines[NR-3] == "" &&
+			    lines[NR-2] == "## AI rules" &&
+			    lines[NR-1] == "" &&
+			    lines[NR]   == "@.claude/rules/slashkit.md") {
+				for (i = 1; i <= NR - 6; i++) print lines[i]
+			}
+			# Old appended block: 7 lines
+			else if (NR >= 7 &&
 			    lines[NR-6] == "" &&
 			    lines[NR-5] == "---" &&
 			    lines[NR-4] == "" &&
@@ -68,7 +102,18 @@ remove_agents_workflow_block() {
 			    lines[NR-1] == "@.claude/rules/conventions.md" &&
 			    lines[NR]   == "@.claude/rules/workflow.md") {
 				for (i = 1; i <= NR - 7; i++) print lines[i]
-			} else {
+			}
+			# Old generated block at end: 6 lines
+			else if (NR >= 6 &&
+			    lines[NR-5] == "" &&
+			    lines[NR-4] == "## AI workflow rules" &&
+			    lines[NR-3] == "" &&
+			    lines[NR-2] == "@.claude/rules/conventions.md" &&
+			    lines[NR-1] == "@.claude/rules/workflow.md" &&
+			    lines[NR]   == "@RUNBOOK.md") {
+				for (i = 1; i <= NR - 6; i++) print lines[i]
+			}
+			else {
 				for (i = 1; i <= NR; i++) print lines[i]
 			}
 		}
@@ -84,6 +129,14 @@ remove_legacy_skills() {
 	target_dir="$1"
 	for skill in $LEGACY_SKILLS; do
 		rm -rf "$target_dir/$skill"
+	done
+}
+
+remove_legacy_rules() {
+	target_dir="$1"
+	shift
+	for rule in "$@"; do
+		rm -f "$target_dir/$rule"
 	done
 }
 
@@ -152,6 +205,7 @@ uninstall_project() {
 			rm -f "$TARGET/.cursor/rules/$(basename "$rule")"
 		fi
 	done
+	remove_legacy_rules "$TARGET/.cursor/rules" ai-conventions.mdc ai-workflow.mdc
 
 	# Claude rules
 	for rule in "$REPO_ROOT"/.claude/rules/*.md; do
@@ -159,6 +213,7 @@ uninstall_project() {
 			rm -f "$TARGET/.claude/rules/$(basename "$rule")"
 		fi
 	done
+	remove_legacy_rules "$TARGET/.claude/rules" conventions.md workflow.md
 
 	# Devin rules
 	for rule in "$REPO_ROOT"/.devin/rules/*.md; do
@@ -166,21 +221,23 @@ uninstall_project() {
 			rm -f "$TARGET/.devin/rules/$(basename "$rule")"
 		fi
 	done
+	remove_legacy_rules "$TARGET/.devin/rules" ai-conventions.md ai-workflow.md
 
 	# Runbook and flow runbooks README if unchanged
 	remove_if_unchanged "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
 	remove_if_unchanged "$REPO_ROOT/.agents/sk-flows/README.md" "$TARGET/.agents/sk-flows/README.md"
 
-	# AGENTS.md: remove if it matches the generated version, otherwise trim the
+	# AGENTS.md: remove if it matches a generated version, otherwise trim the
 	# appended workflow section if present.
 	if [ -f "$TARGET/AGENTS.md" ]; then
 		generated_agents=$(generated_agents_tmp)
-		if cmp -s "$generated_agents" "$TARGET/AGENTS.md"; then
+		generated_agents_old=$(generated_agents_tmp_old)
+		if cmp -s "$generated_agents" "$TARGET/AGENTS.md" || cmp -s "$generated_agents_old" "$TARGET/AGENTS.md"; then
 			rm -f "$TARGET/AGENTS.md"
 		else
 			remove_agents_workflow_block "$TARGET/AGENTS.md"
 		fi
-		rm -f "$generated_agents"
+		rm -f "$generated_agents" "$generated_agents_old"
 	fi
 
 	# CLAUDE.md: remove a generated symlink that is now broken, or the generated

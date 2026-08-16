@@ -4,30 +4,29 @@ Agent-facing entry point. For the open format, see [agents.md](https://agents.md
 
 ## Quick links
 
-| Topic                                    | Where to look                                                                                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| User-facing overview, install, and usage | [README.md](README.md)                                                                                                               |
-| Usage                                    | [docs/USAGE.md](docs/USAGE.md)                                                                                                       |
-| Optional end-to-end workflow             | [RUNBOOK.md](RUNBOOK.md)                                                                                                             |
-| Architecture and data flow               | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                                                         |
-| Contributing flow and setup              | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)                                                                                         |
-| Troubleshooting                          | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)                                                                                   |
-| Security policy                          | [docs/SECURITY.md](docs/SECURITY.md)                                                                                                 |
-| Code of conduct                          | [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md)                                                                                   |
-| License                                  | [LICENSE.md](LICENSE.md)                                                                                                             |
-| Skills                                   | [.agents/skills/](.agents/skills/)                                                                                                   |
-| AI toolbelt                              | [.agents/skills/sk-ai-toolbelt/SKILL.md](.agents/skills/sk-ai-toolbelt/SKILL.md)                                                     |
-| Project docs                             | [.agents/skills/sk-project-docs/SKILL.md](.agents/skills/sk-project-docs/SKILL.md)                                                   |
-| Claude rules                             | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md)                 |
-| Cursor rules                             | [.cursor/rules/ai-conventions.mdc](.cursor/rules/ai-conventions.mdc), [.cursor/rules/ai-workflow.mdc](.cursor/rules/ai-workflow.mdc) |
-| Devin rules                              | [.devin/rules/ai-conventions.md](.devin/rules/ai-conventions.md), [.devin/rules/ai-workflow.md](.devin/rules/ai-workflow.md)         |
-| Agent rules                              | [@caveman.md](.agents/rules/caveman.md), [@ponytail.md](.agents/rules/ponytail.md), [@rtk.md](.agents/rules/rtk.md)                  |
+| Topic                                    | Where to look                                                                                                       |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| User-facing overview, install, and usage | [README.md](README.md)                                                                                              |
+| Usage                                    | [docs/USAGE.md](docs/USAGE.md)                                                                                      |
+| Optional end-to-end workflow             | [RUNBOOK.md](RUNBOOK.md)                                                                                            |
+| Architecture and data flow               | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                                                        |
+| Contributing flow and setup              | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)                                                                        |
+| Troubleshooting                          | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)                                                                  |
+| Security policy                          | [docs/SECURITY.md](docs/SECURITY.md)                                                                                |
+| Code of conduct                          | [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md)                                                                  |
+| License                                  | [LICENSE.md](LICENSE.md)                                                                                            |
+| Skills                                   | [.agents/skills/](.agents/skills/)                                                                                  |
+| AI toolbelt                              | [.agents/skills/sk-ai-toolbelt/SKILL.md](.agents/skills/sk-ai-toolbelt/SKILL.md)                                    |
+| Project docs                             | [.agents/skills/sk-project-docs/SKILL.md](.agents/skills/sk-project-docs/SKILL.md)                                  |
+| Claude rules                             | [.claude/rules/slashkit.md](.claude/rules/slashkit.md)                                                              |
+| Cursor rules                             | [.cursor/rules/slashkit.mdc](.cursor/rules/slashkit.mdc)                                                            |
+| Devin rules                              | [.devin/rules/slashkit.md](.devin/rules/slashkit.md)                                                                |
+| Agent rules                              | [@caveman.md](.agents/rules/caveman.md), [@ponytail.md](.agents/rules/ponytail.md), [@rtk.md](.agents/rules/rtk.md) |
 
 @.agents/rules/caveman.md
 @.agents/rules/ponytail.md
 @.agents/rules/rtk.md
-@.claude/rules/conventions.md
-@.claude/rules/workflow.md
+@.claude/rules/slashkit.md
 @RUNBOOK.md
 
 ## Setup

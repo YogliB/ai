@@ -18,6 +18,14 @@ remove_legacy_skills() {
 	done
 }
 
+remove_legacy_rules() {
+	target_dir="$1"
+	shift
+	for rule in "$@"; do
+		rm -f "$target_dir/$rule"
+	done
+}
+
 install_global() {
 	echo "Installing ai skills and the slash-kit Claude Code plugin..."
 
@@ -65,6 +73,7 @@ install_project() {
 
 	# Cursor rules
 	mkdir -p "$TARGET/.cursor/rules"
+	remove_legacy_rules "$TARGET/.cursor/rules" ai-conventions.mdc ai-workflow.mdc
 	for rule in "$REPO_ROOT"/.cursor/rules/*.mdc; do
 		if [ -f "$rule" ]; then
 			cp "$rule" "$TARGET/.cursor/rules/"
@@ -73,6 +82,7 @@ install_project() {
 
 	# Claude rules
 	mkdir -p "$TARGET/.claude/rules"
+	remove_legacy_rules "$TARGET/.claude/rules" conventions.md workflow.md
 	for rule in "$REPO_ROOT"/.claude/rules/*.md; do
 		if [ -f "$rule" ]; then
 			cp "$rule" "$TARGET/.claude/rules/"
@@ -81,6 +91,7 @@ install_project() {
 
 	# Devin rules
 	mkdir -p "$TARGET/.devin/rules"
+	remove_legacy_rules "$TARGET/.devin/rules" ai-conventions.md ai-workflow.md
 	for rule in "$REPO_ROOT"/.devin/rules/*.md; do
 		if [ -f "$rule" ]; then
 			cp "$rule" "$TARGET/.devin/rules/"
@@ -97,15 +108,14 @@ install_project() {
 	# Update or create AGENTS.md
 	AGENTS="$TARGET/AGENTS.md"
 	if [ -f "$AGENTS" ]; then
-		if ! grep -q "ai workflow" "$AGENTS" 2>/dev/null; then
+		if ! grep -qE "(^## AI rules$|^## AI workflow rules$)" "$AGENTS" 2>/dev/null; then
 			{
 				echo ""
 				echo "---"
 				echo ""
-				echo "## AI workflow rules"
+				echo "## AI rules"
 				echo ""
-				echo "@.claude/rules/conventions.md"
-				echo "@.claude/rules/workflow.md"
+				echo "@.claude/rules/slashkit.md"
 			} >> "$AGENTS"
 		fi
 	else
@@ -120,12 +130,11 @@ Agent-facing entry point.
 |---|---|
 | Runbook | [RUNBOOK.md](RUNBOOK.md) |
 | Skills | [.agents/skills/](.agents/skills/) |
-| Claude rules | [.claude/rules/conventions.md](.claude/rules/conventions.md), [.claude/rules/workflow.md](.claude/rules/workflow.md) |
+| Claude rules | [.claude/rules/slashkit.md](.claude/rules/slashkit.md) |
 
-## AI workflow rules
+## AI rules
 
-@.claude/rules/conventions.md
-@.claude/rules/workflow.md
+@.claude/rules/slashkit.md
 @RUNBOOK.md
 EOF
 	fi
