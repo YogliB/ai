@@ -108,16 +108,44 @@ install_project() {
 	# Update or create AGENTS.md
 	AGENTS="$TARGET/AGENTS.md"
 	if [ -f "$AGENTS" ]; then
-		if ! grep -qE "(^## AI rules$|^## AI workflow rules$)" "$AGENTS" 2>/dev/null; then
-			{
-				echo ""
-				echo "---"
-				echo ""
-				echo "## AI rules"
-				echo ""
-				echo "@.claude/rules/slashkit.md"
-			} >> "$AGENTS"
-		fi
+		# Trim any install-appended AI rules block from a previous install.
+		tmp=$(mktemp)
+		awk '
+			{ lines[NR] = $0 }
+			END {
+				if (NR >= 6 &&
+				    lines[NR-5] == "" &&
+				    lines[NR-4] == "---" &&
+				    lines[NR-3] == "" &&
+				    lines[NR-2] == "## AI rules" &&
+				    lines[NR-1] == "" &&
+				    lines[NR]   == "@.claude/rules/slashkit.md") {
+					for (i = 1; i <= NR - 6; i++) print lines[i]
+				}
+				else if (NR >= 7 &&
+				    lines[NR-6] == "" &&
+				    lines[NR-5] == "---" &&
+				    lines[NR-4] == "" &&
+				    lines[NR-3] == "## AI workflow rules" &&
+				    lines[NR-2] == "" &&
+				    lines[NR-1] == "@.claude/rules/conventions.md" &&
+				    lines[NR]   == "@.claude/rules/workflow.md") {
+					for (i = 1; i <= NR - 7; i++) print lines[i]
+				}
+				else {
+					for (i = 1; i <= NR; i++) print lines[i]
+				}
+			}
+		' "$AGENTS" > "$tmp"
+		mv "$tmp" "$AGENTS"
+		{
+			echo ""
+			echo "---"
+			echo ""
+			echo "## AI rules"
+			echo ""
+			echo "@.claude/rules/slashkit.md"
+		} >> "$AGENTS"
 	else
 		cat > "$AGENTS" <<'EOF'
 # AGENTS.md
