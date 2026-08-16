@@ -8,8 +8,7 @@ description: >
     (missing plan/spec/Figma, tests or browser cannot run). Use when user asks for
     sk-review-and-fix, review-and-fix, review and fix, /review, fix review findings,
     clean up branch or diff, or clean up a diff. All review passes must run in
-    subagents — never inline review in parent thread. Review subagents ALWAYS use
-    gemini-3.6-flash-high unless explicitly requested otherwise.
+    subagents — never inline review in parent thread.
 ---
 
 # Review and Fix
@@ -29,19 +28,11 @@ Closed loop: **review (subagent) → triage → fix → re-review (new subagent)
 
 Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
 
-## Subagent models (default)
-
-Review subagents **ALWAYS** use model `gemini-3.6-flash-high` unless the user explicitly requests a different model for a pass.
-
-Parent (orchestrator) stays on its own model; **every subagent gets an explicit `model: "gemini-3.6-flash-high"` slug**.
-
-**Override:** ONLY when the user explicitly requests a specific model (e.g. "use claude-opus-4-8-thinking-high for review") do you use that model for that pass.
-
 ## Run card
 
 1. **Scope:** repo root (absolute), diff target (`branch changes` default, or `uncommitted changes`, or explicit branch/PR), base branch if non-default, custom focus, out-of-scope exclusions.
 2. **Gaps:** list what validation needs vs what exists; if anything material missing, emit **Validation gaps** (template below) before or with first pass; refresh when diff surface changes a lot.
-3. **Review:** new Task (`generalPurpose`, `readonly: true`, **`model:` per Subagent models**) each iteration — full subagent prompt below; pass `Known validation gaps:` when applicable.
+3. **Review:** new Task (`generalPurpose`, `readonly: true`) each iteration — full subagent prompt below; pass `Known validation gaps:` when applicable.
 4. **Triage:** every non-header line gets exactly one label: `valid` | `false_positive` | `unvalidated` (see Triage).
 5. **Fix:** all `valid` before next review; `unvalidated` → gaps + no guess-fixes.
 6. **Repeat** until exit rule or stuck/unfixable stop.
@@ -116,9 +107,8 @@ Launch **Task** with:
 
 - `subagent_type: "generalPurpose"`
 - `readonly: true`
-- `model:` slug per **Subagent models** (required every pass)
 - `run_in_background: false` unless user asked for background
-- `description: "review pass N (<model>)"` (increment N each loop)
+- `description: "review pass N"` (increment N each loop)
 
 **Prompt shape** (fill placeholders; omit optional lines when unused):
 
@@ -203,11 +193,11 @@ Count **valid** this pass (excludes `unvalidated`). `Lean & valid. Ship.` means 
 
 Resolve **every `valid`** finding before next review.
 
-| Fix scope                                 | Use                                                                                                                 |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| ≤2 files, surgical                        | `cavecrew-builder` via Task (`subagent_type: "generalPurpose"`, not readonly, **`model:`** per **Subagent models**) |
-| 3+ files or cross-cutting                 | Parent thread edits                                                                                                 |
-| Builder returns `too-big.` / `ambiguous.` | Parent thread takes over for that finding                                                                           |
+| Fix scope                                 | Use                                                                           |
+| ----------------------------------------- | ----------------------------------------------------------------------------- |
+| ≤2 files, surgical                        | `cavecrew-builder` via Task (`subagent_type: "generalPurpose"`, not readonly) |
+| 3+ files or cross-cutting                 | Parent thread edits                                                           |
+| Builder returns `too-big.` / `ambiguous.` | Parent thread takes over for that finding                                     |
 
 - Minimal diff; match conventions; no scope creep.
 - Do not silence linters (`noqa`, `eslint-disable`, etc.) — fix root cause.
@@ -231,7 +221,7 @@ Do not stop while `valid` findings remain.
 
 When exit rule met (or blocked):
 
-- Review rounds completed; **subagent models** used per pass (review + fix Tasks)
+- Review rounds completed (review + fix Tasks)
 - `valid` fixed (count; optional table: action tag, location, one-line fix)
 - Subagent `net: -N` vs approximate lines removed, or `Lean & valid. Ship.` when triage agreed
 - `false_positive` count (detail only if asked)
@@ -247,7 +237,6 @@ When exit rule met (or blocked):
 ## Constraints
 
 - **Subagent-only reviews** every iteration; no parent-authored findings; no parent merging partial subagent outputs into one pass.
-- **Review model:** ALWAYS use `gemini-3.6-flash-high` for every review and re-review subagent unless the user explicitly requests a different model.
 - **Single-block action-tagged output every pass** — `Review Findings` contract above (cavecrew + ponytail combined into one stream).
 - **Re-review** after every fix batch — no "fixes look obvious" skip.
 - **Headless:** no mid-loop confirmation; stop on unfixable blocker or stuck guard.

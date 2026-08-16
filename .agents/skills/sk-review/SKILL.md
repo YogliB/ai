@@ -1,14 +1,14 @@
 ---
-name: sk-review-dont-fix
+name: sk-review
 description: >
     One-shot read-only code review using a Task subagent with single-block action-tagged output
     combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop.
     Alerts explicitly when context or capabilities insufficient to validate. Use when user asks for
-    sk-review-dont-fix, read-only review, review code without fixing, review PR/branch/diff
-    without editing, or run /review-dont-fix.
+    sk-review, read-only review, review code without fixing, or review PR/branch/diff
+    without editing.
 ---
 
-# Review (Don't Fix)
+# Review
 
 One-shot, read-only code review. Dispatches a **single Task subagent** to produce action-tagged findings (`### Review Findings`) combining correctness (cavecrew) and ponytail complexity reduction, then writes `4 - REVIEW.md` and updates the runbook without applying any fixes.
 
@@ -22,12 +22,6 @@ One-shot, read-only code review. Dispatches a **single Task subagent** to produc
 3. Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md`.
 4. Update `RUNBOOK.md` row `4` to `done` (or `diverged` if the agent departed from read-only review).
 
-## Subagent model
-
-- Subagent model: ALWAYS use `gemini-3.6-flash-high` unless the user explicitly requests a different model.
-- Must run in a **Task** subagent (`subagent_type: "generalPurpose"`, `readonly: true`).
-- Do NOT perform review inline in parent thread.
-
 ## Workflow
 
 1. **Resolve scope:**
@@ -39,7 +33,7 @@ One-shot, read-only code review. Dispatches a **single Task subagent** to produc
     - If the active flow has a plan file under `2 - PLANNING*.md`, read the latest one as context.
     - If material context is missing, note under `Known validation gaps:`.
 3. **Dispatch review subagent:**
-    - Launch Task subagent with `readonly: true` and model slug.
+    - Launch a **Task** subagent (`subagent_type: "generalPurpose"`, `readonly: true`). Do not perform the review inline in the parent thread.
     - Pass prompt with repository path, diff target, and output contract.
 4. **Present report:**
     - Write `.agents/sk-flows/<slug>/4 - REVIEW.md` with the structured findings, summary line, and any validation gaps.

@@ -1,12 +1,12 @@
 ---
 name: sk-flow
 argument-hint: '[auto|manual]'
-description: Mandatory end-to-end slash-kit workflow [auto|manual]. Run sk-explore, then sk-alternatives, then sk-planning, then implement, then sk-review-and-fix (or sk-review-dont-fix), then optional sk-verify, then sk-pr. In manual mode, stop and ask for user confirmation before each phase. In auto mode, run all phases without confirmation. Use when the user asks for the full workflow, /flow [auto|manual], or "run the ai workflow".
+description: Mandatory end-to-end slash-kit workflow [auto|manual]. Run sk-explore, then sk-alternatives, then sk-planning, then implement, then sk-review-and-fix (or sk-review), then optional sk-verify, then sk-pr. In manual mode, stop and ask for user confirmation before each phase. In auto mode, run all phases without confirmation. Use when the user asks for the full workflow, /flow [auto|manual], or "run the ai workflow".
 ---
 
 # Flow
 
-The end-to-end flow is: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr**.
+The end-to-end flow is: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
 
 Every phase produces a numbered, self-contained doc inside `.agents/sk-flows/<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory; it is the record of what ran, what was skipped, and any divergence from the skill.
 
@@ -71,7 +71,7 @@ Do not leave a completed or skipped phase as `pending`. The runbook must match r
 5. **Manual only:** Ask if they want to continue to implementation.
 6. **Implement** — implement the plan one atomic TODO at a time. Write `3 - IMPLEMENTATION.md` and update runbook row 3. Run tests after each step. If the implementation departs from the plan, record the divergence in `3 - IMPLEMENTATION.md` and runbook row 3.
 7. **Manual only:** Ask if they want to continue to review.
-8. **Review** — invoke `sk-review-and-fix` by default, or `sk-review-dont-fix` if the user prefers read-only. It writes `4 - REVIEW.md` and updates runbook row 4.
+8. **Review** — invoke `sk-review-and-fix` by default, or `sk-review` if the user prefers read-only. It writes `4 - REVIEW.md` and updates runbook row 4.
 9. **Manual only:** Ask if they want to continue to verify.
 10. **Verify (optional in the flow)** — invoke `sk-verify` if the plan or user calls for it. If not, leave runbook row 5 as `skipped` with reason. If it runs, it writes `5 - VERIFY.md` and updates runbook row 5.
 11. **Manual only:** Ask if they want to continue to PR.
@@ -98,7 +98,7 @@ The durable artifacts are all inside `.agents/sk-flows/<slug>/`:
 - `1 - ALTERNATIVES.md` from `sk-alternatives`
 - `2 - PLANNING.md` from `sk-planning`
 - `3 - IMPLEMENTATION.md` from implementation
-- `4 - REVIEW.md` from `sk-review-and-fix` or `sk-review-dont-fix`
+- `4 - REVIEW.md` from `sk-review-and-fix` or `sk-review`
 - `5 - VERIFY.md` from `sk-verify` (if run)
 - `6 - PR.md` from `sk-pr`
 

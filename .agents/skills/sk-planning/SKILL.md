@@ -1,6 +1,6 @@
 ---
 name: sk-planning
-description: Self-contained executable technical plans with atomic testable TODOs; required context inlined in the document (no pointer-only deps on Confluence, tickets, Figma, sibling plans, or skill templates). Ambiguity gates (~10% before planning, ~5% before acting; list unknowns when percent unclear), pre-finalization pass for refactors/performance/security, mandatory plan review loop via Task subagent using single-block action-tagged output (cavecrew + ponytail complexity reduction) with model escalation until zero valid findings. Regular plan = one repo, one PR only; multi-repo or multi-PR work requires masterplan plus one self-contained sub-plan per PR. Also split on complexity thresholds. Cross-deps in Complexity Check inform narrative only. Templates use neutral branch prefix; Delivery defers commit/push to operator/repo policy. SDD-sized implementation TODOs or multiple review cycles per parent TODO. Enforces layout via co-located templates; ~95% TODO coverage. Use for planning rules, validation, drafting plans, CreatePlan-style output, splits, standard layout.
+description: Self-contained executable technical plans with atomic testable TODOs; required context inlined in the document (no pointer-only deps on Confluence, tickets, Figma, sibling plans, or skill templates). Ambiguity gates (~10% before planning, ~5% before acting; list unknowns when percent unclear), pre-finalization pass for refactors/performance/security, mandatory plan review loop via Task subagent using single-block action-tagged output (cavecrew + ponytail complexity reduction) with repeated review passes until zero valid findings. Regular plan = one repo, one PR only; multi-repo or multi-PR work requires masterplan plus one self-contained sub-plan per PR. Also split on complexity thresholds. Cross-deps in Complexity Check inform narrative only. Templates use neutral branch prefix; Delivery defers commit/push to operator/repo policy. SDD-sized implementation TODOs or multiple review cycles per parent TODO. Enforces layout via co-located templates; ~95% TODO coverage. Use for planning rules, validation, drafting plans, CreatePlan-style output, splits, standard layout.
 ---
 
 # Planning
@@ -86,23 +86,15 @@ If **any** holds, use **masterplan** plus **sub-plans** (one [templates/plan.md]
 - Read [templates/plan.md](templates/plan.md) and include every `##` section **in file order**: Goal, Files, Context, Scope, Risks, Dependencies, Priority, Logging / Observability, Branch setup, Implementation Plan (TODOs), Delivery, Docs, Testing, Verification, Acceptance, Fallback Plan, References, Complexity Check (omit section only if user explicitly narrows scope). If that template's `##` headings change, update this list in same change
 - Fill **Complexity Check** with real counts and explicit **Proceed** or **Split** decision
 
-## Subagent models (default)
-
-Review subagents **ALWAYS** use model `gemini-3.6-flash-high` unless the user explicitly requests a different model for a pass.
-
-Parent (orchestrator) stays on its own model; **every subagent gets an explicit `model: "gemini-3.6-flash-high"` slug**.
-
-**Override:** ONLY when the user explicitly requests a specific model (e.g. "use claude-opus-4-8-thinking-high for review") do you use that model for that pass.
-
 ## Plan review loop (mandatory before handoff)
 
 After plan text matches template (and **Pre-finalization pass** done), run review loop on **each** emitted document (sub-plan and masterplan when split). Do **not** hand off or summarize plan as final while **valid** findings remain. Each pass emits a single block of action-tagged findings (`### Plan Review Findings`) combining correctness, gaps, and ponytail plan complexity reduction. Parent **triages and fixes**; parent **never** self-reviews inline.
 
-**Subagent-only:** every **Review** step **must** run in a **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`, **`model: "gemini-3.6-flash-high"`**).
+**Subagent-only:** every **Review** step **must** run in a **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`).
 
 ### 1. Review
 
-Dispatch **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`, `model: "gemini-3.6-flash-high"`) on full plan text. **Required every loop iteration** — including after fixes. Do **not** substitute inline review, checklist skim, or parent-authored findings.
+Dispatch **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`) on full plan text. **Required every loop iteration** — including after fixes. Do **not** substitute inline review, checklist skim, or parent-authored findings.
 
 Prompt must include:
 
@@ -159,7 +151,7 @@ Edit plan to resolve **every `valid`** finding before next review. Prefer minima
 
 ### 4. Repeat
 
-Return to **Review** — dispatch a **new Task subagent** on updated plan using `model: "gemini-3.6-flash-high"`. Continue until latest pass has **zero `valid` findings** across the review pass after triage.
+Return to **Review** — dispatch a **new Task subagent** on the updated plan. Continue until latest pass has **zero `valid` findings** across the review pass after triage.
 
 **Exit rule:** hand off only when latest review pass has **zero `valid` findings** (`Plan Review Findings` is `Lean & valid. Ship.` or all findings triaged false positive). If valid findings remain after fix pass, loop again — do not stop early.
 

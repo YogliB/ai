@@ -9,7 +9,7 @@ set -e
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
-LEGACY_SKILLS="ai-toolbelt alternatives explore planning pr project-docs review-alternatives review-and-fix review-dont-fix verify"
+LEGACY_SKILLS="ai-toolbelt alternatives explore planning pr project-docs review-alternatives review-and-fix review-dont-fix sk-review-dont-fix verify"
 
 resolve_dir() {
 	CDPATH= cd -- "$1" >/dev/null 2>&1 && pwd

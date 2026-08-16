@@ -73,7 +73,7 @@ Use the sk-pr skill to open a pull request.
 | [sk-review-alternatives](../.agents/skills/sk-review-alternatives/SKILL.md) | You are reviewing a list of alternatives.                 |
 | [sk-planning](../.agents/skills/sk-planning/SKILL.md)                       | You want an executable plan.                              |
 | [sk-review-and-fix](../.agents/skills/sk-review-and-fix/SKILL.md)           | You want a diff reviewed and fixed.                       |
-| [sk-review-dont-fix](../.agents/skills/sk-review-dont-fix/SKILL.md)         | You want a read-only review.                              |
+| [sk-review](../.agents/skills/sk-review/SKILL.md)                           | You want a read-only review.                              |
 | [sk-pr](../.agents/skills/sk-pr/SKILL.md)                                   | You want a PR.                                            |
 | [sk-verify](../.agents/skills/sk-verify/SKILL.md)                           | You want to verify changes.                               |
 | [sk-project-docs](../.agents/skills/sk-project-docs/SKILL.md)               | You want to scaffold a project's docs structure.          |

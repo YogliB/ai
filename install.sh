@@ -9,7 +9,7 @@ set -e
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
-LEGACY_SKILLS="ai-toolbelt alternatives explore planning pr project-docs review-alternatives review-and-fix review-dont-fix verify"
+LEGACY_SKILLS="ai-toolbelt alternatives explore planning pr project-docs review-alternatives review-and-fix review-dont-fix sk-review-dont-fix verify"
 
 remove_legacy_skills() {
 	target_dir="$1"

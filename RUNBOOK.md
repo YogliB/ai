@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-End-to-end flow: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr**.
+End-to-end flow: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/sk-flows/<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
@@ -97,7 +97,7 @@ Every flow lives in its own folder:
 
 **When:** code is implemented and tests pass.
 
-**Skills:** `sk-review-and-fix` (loop until clean) or `sk-review-dont-fix` (read-only report).
+**Skills:** `sk-review-and-fix` (loop until clean) or `sk-review` (read-only report).
 
 **Output:** `4 - REVIEW.md` in `.agents/sk-flows/<slug>/`.
 

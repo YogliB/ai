@@ -5,7 +5,7 @@ trigger: model_decision
 
 # AI Workflow
 
-The end-to-end flow is: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review-dont-fix) → optional sk-verify → sk-pr**.
+The end-to-end flow is: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
 
 The user must explicitly ask for the workflow. Do not run it automatically.
 
@@ -17,7 +17,7 @@ The user must explicitly ask for the workflow. Do not run it automatically.
 4. Run `sk-alternatives` and write `1 - ALTERNATIVES.md` to `.agents/sk-flows/<slug>/`. Update `RUNBOOK.md`. If the approach is so clear that no alternatives are needed, still produce a `1 - ALTERNATIVES.md` that documents the reason.
 5. Run `sk-planning` and write `2 - PLANNING.md` to `.agents/sk-flows/<slug>/`. Update `RUNBOOK.md`.
 6. Implement the plan one atomic TODO at a time. Write `3 - IMPLEMENTATION.md`. Update `RUNBOOK.md`.
-7. Run `sk-review-and-fix` (or `sk-review-dont-fix` if the user prefers read-only). Write `4 - REVIEW.md`. Update `RUNBOOK.md`.
+7. Run `sk-review-and-fix` (or `sk-review` if the user prefers read-only). Write `4 - REVIEW.md`. Update `RUNBOOK.md`.
 8. Optionally run `sk-verify`. If it runs, write `5 - VERIFY.md`. Update `RUNBOOK.md`. If not, mark row `5` as `skipped` with reason.
 9. Run `sk-pr`. Write `6 - PR.md`. Update `RUNBOOK.md`.
 

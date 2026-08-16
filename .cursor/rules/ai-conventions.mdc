@@ -17,7 +17,7 @@ This repo provides reusable agent skills under `.agents/skills/`.
 | sk-review-alternatives | `.agents/skills/sk-review-alternatives/SKILL.md` | Reviewing proposed alternatives |
 | sk-planning | `.agents/skills/sk-planning/SKILL.md` | Writing an executable technical plan |
 | sk-review-and-fix | `.agents/skills/sk-review-and-fix/SKILL.md` | Reviewing a diff and fixing issues |
-| sk-review-dont-fix | `.agents/skills/sk-review-dont-fix/SKILL.md` | Read-only diff review |
+| sk-review | `.agents/skills/sk-review/SKILL.md` | Read-only diff review |
 | sk-pr | `.agents/skills/sk-pr/SKILL.md` | Creating or updating a PR |
 | sk-verify | `.agents/skills/sk-verify/SKILL.md` | Verifying changes work and have no regressions |
 | sk-project-docs | `.agents/skills/sk-project-docs/SKILL.md` | Scaffolding or nudging a project's docs structure |
@@ -34,7 +34,7 @@ Every flow is a mandatory runbook under `.agents/sk-flows/<slug>/` plus numbered
 - `1 - ALTERNATIVES.md` from `sk-alternatives`
 - `2 - PLANNING.md` from `sk-planning`
 - `3 - IMPLEMENTATION.md` from implementation
-- `4 - REVIEW.md` from `sk-review-and-fix` or `sk-review-dont-fix`
+- `4 - REVIEW.md` from `sk-review-and-fix` or `sk-review`
 - `5 - VERIFY.md` from `sk-verify`
 - `6 - PR.md` from `sk-pr`
 
