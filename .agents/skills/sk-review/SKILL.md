@@ -15,7 +15,7 @@ One-shot, read-only diff review. Dispatch a single `readonly` `generalPurpose` T
 
 ## Flow context
 
-1. If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. Else find the most recent `RUNBOOK.md`.
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 
@@ -103,7 +103,7 @@ End with exactly one line:
 
 ## Output destination
 
-Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
+Write the final report to `.agents/flows/sk-<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
 
 ## Rules
 

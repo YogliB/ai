@@ -102,8 +102,8 @@ install_project() {
 	cp "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
 
 	# Flow runbooks README
-	mkdir -p "$TARGET/.agents/sk-flows"
-	cp "$REPO_ROOT/.agents/sk-flows/README.md" "$TARGET/.agents/sk-flows/README.md"
+	mkdir -p "$TARGET/.agents/flows"
+	cp "$REPO_ROOT/.agents/flows/README.md" "$TARGET/.agents/flows/README.md"
 
 	# Update or create AGENTS.md
 	AGENTS="$TARGET/AGENTS.md"

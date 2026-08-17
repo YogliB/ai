@@ -16,7 +16,7 @@ nub install
 ## Project Layout
 
 - `.agents/skills/` — Skills (source of truth for all agents).
-- `.agents/sk-flows/` — Flow runbooks and numbered phase docs.
+- `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
 - `.devin/rules/` — Devin project rules.
@@ -38,7 +38,7 @@ Keep these files aligned:
 - `CLAUDE.md` — Claude rule `@` includes
 - `.claude/rules/`, `.cursor/rules/`, and `.devin/rules/` — cross-agent rules
 - `RUNBOOK.md` — full workflow
-- `.agents/sk-flows/README.md` — flow runbook conventions
+- `.agents/flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
 
 ## Skill style

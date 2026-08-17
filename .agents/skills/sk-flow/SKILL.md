@@ -18,7 +18,7 @@ Only run this skill when the user explicitly asks for the workflow.
 ## Slug and flow folder
 
 1. Ask for a short kebab-case slug if not provided.
-2. Create `.agents/sk-flows/<slug>/` if needed.
+2. Create `.agents/flows/sk-<slug>/` if needed.
 3. Create or update `RUNBOOK.md` with the checklist below.
 4. Pass the slug to each phase.
 

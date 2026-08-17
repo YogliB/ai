@@ -13,7 +13,7 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 ## Slug and flow folder
 
-1. If the user provided a slug, use `.agents/sk-flows/<slug>/`. Else find the most recent `RUNBOOK.md`. If none, ask for a slug.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`. Else find the most recent `RUNBOOK.md`. If none, ask for a slug.
 2. Write the verification report to `5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
 
 ## Steps

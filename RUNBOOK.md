@@ -2,7 +2,7 @@
 
 End-to-end flow: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
 
-Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/sk-flows/<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
+Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
 ## When to use this runbook
 
@@ -20,7 +20,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 - The `slash-kit` plugin or rules are installed in your project.
 - You have a clean git working tree or a feature branch.
-- You have permission to create files under `.agents/sk-flows/`.
+- You have permission to create files under `.agents/flows/`.
 - For the PR step, `gh` is authenticated and the remote is reachable.
 
 ## Flow folder and runbook
@@ -28,7 +28,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 Every flow lives in its own folder:
 
 ```text
-.agents/sk-flows/<slug>/
+.agents/flows/sk-<slug>/
 ├── RUNBOOK.md
 ├── 0 - EXPLORE.md
 ├── 1 - ALTERNATIVES.md
@@ -49,7 +49,7 @@ Every flow lives in its own folder:
 
 **Skill:** `sk-explore`
 
-**Output:** `0 - EXPLORE.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `0 - EXPLORE.md` in `.agents/flows/sk-<slug>/`.
 
 - Gather available context from the repo and user prompt.
 - Recommend the next step: `sk-alternatives` (if the approach is unclear) or `sk-planning` (if the approach is clear).
@@ -61,7 +61,7 @@ Every flow lives in its own folder:
 
 **Skill:** `sk-alternatives`
 
-**Output:** `1 - ALTERNATIVES.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `1 - ALTERNATIVES.md` in `.agents/flows/sk-<slug>/`.
 
 - Generate up to 3 reviewed options. In the full flow, this phase is mandatory; if there is only one viable approach, produce a `1 - ALTERNATIVES.md` that documents why.
 - The options are first reviewed by the `sk-review-alternatives` skill to catch irrelevant, duplicate, or weak options.
@@ -74,7 +74,7 @@ Every flow lives in its own folder:
 
 **Skill:** `sk-planning`
 
-**Output:** `2 - PLANNING.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `2 - PLANNING.md` in `.agents/flows/sk-<slug>/`.
 
 - The plan must be fully executable from the file alone.
 - The `sk-planning` skill dispatches `sk-review-plan` in a review loop before finalizing.
@@ -86,7 +86,7 @@ Every flow lives in its own folder:
 
 **Approach:** read the plan file and implement one atomic TODO at a time.
 
-**Output:** `3 - IMPLEMENTATION.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `3 - IMPLEMENTATION.md` in `.agents/flows/sk-<slug>/`.
 
 - Run tests after each implementation step.
 - Do not jump ahead; complete each TODO before marking it done.
@@ -99,7 +99,7 @@ Every flow lives in its own folder:
 
 **Skills:** `sk-review-and-fix` (loop until clean) or `sk-review` (read-only report).
 
-**Output:** `4 - REVIEW.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `4 - REVIEW.md` in `.agents/flows/sk-<slug>/`.
 
 - Review subagents use the plan to verify scope and acceptance.
 - Fix every valid finding before moving on.
@@ -111,7 +111,7 @@ Every flow lives in its own folder:
 
 **Skill:** `sk-verify`
 
-**Output:** `5 - VERIFY.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `5 - VERIFY.md` in `.agents/flows/sk-<slug>/`.
 
 - Run the verification steps from the plan.
 - If this step is skipped, record the reason in `RUNBOOK.md` row `5`.
@@ -122,7 +122,7 @@ Every flow lives in its own folder:
 
 **Skill:** `sk-pr`
 
-**Output:** `6 - PR.md` in `.agents/sk-flows/<slug>/`.
+**Output:** `6 - PR.md` in `.agents/flows/sk-<slug>/`.
 
 - Create or update a GitHub pull request with the plan and review evidence reflected in the body.
 - Update `RUNBOOK.md` row `6` to `done` and set the top status to `completed`.

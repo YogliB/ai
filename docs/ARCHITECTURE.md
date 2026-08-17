@@ -19,7 +19,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── sk-review/
 │   ├── sk-review-plan/
 │   └── sk-verify/
-├── .agents/sk-flows/        # Flow runbooks and numbered phase docs
+├── .agents/flows/           # Flow output directory (actual flow dirs are sk-*)
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
 ├── .devin/rules/            # Devin project rules
@@ -84,7 +84,7 @@ Each slash command in Claude Code loads the matching `sk-*/SKILL.md`. The hook i
 
 ### Flow runbooks are durable artifacts
 
-Every flow lives in `.agents/sk-flows/<slug>/` with a mandatory `RUNBOOK.md` checklist and numbered phase docs. The plan, implementation, review, and PR phases read these docs without depending on chat context, so the workflow works across agents and sessions.
+Every flow lives in `.agents/flows/sk-<slug>/` with a mandatory `RUNBOOK.md` checklist and numbered phase docs. The plan, implementation, review, and PR phases read these docs without depending on chat context, so the workflow works across agents and sessions.
 
 ### Alternatives are reviewed before presentation
 

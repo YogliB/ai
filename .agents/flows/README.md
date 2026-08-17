@@ -5,7 +5,7 @@ This directory holds one subfolder per flow. Each flow is a mandatory runbook pl
 ## Layout
 
 ```text
-.agents/sk-flows/<slug>/
+.agents/flows/sk-<slug>/
 ├── RUNBOOK.md
 ├── 0 - EXPLORE.md
 ├── 1 - ALTERNATIVES.md
@@ -19,7 +19,7 @@ This directory holds one subfolder per flow. Each flow is a mandatory runbook pl
 ## Slug
 
 - Short, kebab-case, describes the work (not a ticket or issue id).
-- Examples: `add-auth-token`, `refactor-cache-layer`.
+- The actual flow directory is `sk-<slug>` (e.g., `sk-add-auth-token`, `sk-refactor-cache-layer`).
 
 ## Runbook
 
@@ -29,15 +29,15 @@ This directory holds one subfolder per flow. Each flow is a mandatory runbook pl
 
 Each numbered doc is self-contained so the next phase can start from it without chat context.
 
-| # | Doc | Phase |
-|---|-----|-------|
-| 0 | `0 - EXPLORE.md` | Explore |
-| 1 | `1 - ALTERNATIVES.md` | Alternatives |
-| 2 | `2 - PLANNING.md` | Planning |
-| 3 | `3 - IMPLEMENTATION.md` | Implementation |
-| 4 | `4 - REVIEW.md` | Review |
-| 5 | `5 - VERIFY.md` | Verify |
-| 6 | `6 - PR.md` | PR |
+| #   | Doc                     | Phase          |
+| --- | ----------------------- | -------------- |
+| 0   | `0 - EXPLORE.md`        | Explore        |
+| 1   | `1 - ALTERNATIVES.md`   | Alternatives   |
+| 2   | `2 - PLANNING.md`       | Planning       |
+| 3   | `3 - IMPLEMENTATION.md` | Implementation |
+| 4   | `4 - REVIEW.md`         | Review         |
+| 5   | `5 - VERIFY.md`         | Verify         |
+| 6   | `6 - PR.md`             | PR             |
 
 ## Status values
 

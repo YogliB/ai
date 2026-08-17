@@ -225,7 +225,7 @@ uninstall_project() {
 
 	# Runbook and flow runbooks README if unchanged
 	remove_if_unchanged "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
-	remove_if_unchanged "$REPO_ROOT/.agents/sk-flows/README.md" "$TARGET/.agents/sk-flows/README.md"
+	remove_if_unchanged "$REPO_ROOT/.agents/flows/README.md" "$TARGET/.agents/flows/README.md"
 
 	# AGENTS.md: remove if it matches a generated version, otherwise trim the
 	# appended workflow section if present.
@@ -256,7 +256,7 @@ uninstall_project() {
 
 	# Clean up empty directories.
 	rmdir "$TARGET/.agents/skills" 2>/dev/null || true
-	rmdir "$TARGET/.agents/sk-flows" 2>/dev/null || true
+	rmdir "$TARGET/.agents/flows" 2>/dev/null || true
 	rmdir "$TARGET/.agents" 2>/dev/null || true
 	rmdir "$TARGET/.cursor/rules" 2>/dev/null || true
 	rmdir "$TARGET/.cursor" 2>/dev/null || true

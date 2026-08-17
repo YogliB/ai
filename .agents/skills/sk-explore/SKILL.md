@@ -18,10 +18,10 @@ Produce a self-contained `0 - EXPLORE.md` so the next phase can proceed without 
 ## Slug and flow folder
 
 1. Derive a short kebab-case slug from the goal (confirm with the user if not provided).
-2. Create `.agents/sk-flows/<slug>/` if needed.
+2. Create `.agents/flows/sk-<slug>/` if needed.
 3. Create or update `RUNBOOK.md` with all phases `pending`; mark `0` as `in-progress`.
 4. Write `0 - EXPLORE.md` and set row `0` to `done` with a one-line summary.
-5. Add `.agents/sk-flows/` to `.gitignore` if this is the first flow in the repo.
+5. Add `.agents/flows/sk-*/` to `.gitignore` if this is the first flow in the repo.
 
 ## Output
 

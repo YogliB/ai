@@ -49,7 +49,7 @@ Type a shortcut at the start of a prompt:
 
 | Shortcut          | What it does                                                                         |
 | ----------------- | ------------------------------------------------------------------------------------ |
-| `/explore <slug>` | Gather context and write `0 - EXPLORE.md` to `.agents/sk-flows/<slug>/`.             |
+| `/explore <slug>` | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
 | `/alternatives`   | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
 | `/plan <slug>`    | Write an executable `2 - PLANNING.md`.                                               |
 | `/review`         | Review and fix the current diff.                                                     |
@@ -73,7 +73,7 @@ Use the sk-pr skill to open a pull request.
 sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix → optional sk-verify → sk-pr
 ```
 
-Each phase writes a numbered doc into `.agents/sk-flows/<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
+Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
 
 ## Caveats
 

@@ -97,7 +97,7 @@ When the `slash-kit` plugin is installed:
 
 | Shortcut        | What happens                                                                              |
 | --------------- | ----------------------------------------------------------------------------------------- |
-| `/explore`      | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/sk-flows/<slug>/`.             |
+| `/explore`      | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
 | `/alternatives` | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
 | `/plan`         | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
 | `/review`       | Invoke `sk-review-and-fix` on the current diff.                                           |
@@ -116,7 +116,7 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 
 ## Configuration
 
-- Plans live in `.agents/sk-flows/<slug>/2 - PLANNING.md`.
+- Plans live in `.agents/flows/sk-<slug>/2 - PLANNING.md`.
 - Claude rules live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - Cursor rules live in `.cursor/rules/*.mdc`.
 - Devin rules live in `.devin/rules/*.md`.
@@ -126,7 +126,7 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 
 ```text
 /plan add-auth-token
-# Claude writes .agents/sk-flows/add-auth-token/2 - PLANNING.md
+# Claude writes .agents/flows/sk-add-auth-token/2 - PLANNING.md
 
 # Implement the plan, then:
 /review

@@ -6,4 +6,4 @@ node_modules
 logs/
 .agents/plans/
 .agents/reports/
-.agents/sk-flows/
+.agents/flows/sk-*/
