@@ -1,42 +1,36 @@
 ---
 name: sk-review
-description: One-shot, read-only code review using a Task subagent with single-block action-tagged output combining correctness (cavecrew) and ponytail complexity reduction. Does NOT apply fixes or loop. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
+description: One-shot, read-only code review. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
 ---
 
 # Review
 
-One-shot, read-only diff review. Dispatch a single **Task** subagent to produce a `### Review Findings` block, then write `4 - REVIEW.md` and stop. Do not apply fixes or loop.
+One-shot, read-only diff review. Dispatch a single `readonly` `generalPurpose` Task subagent, write `4 - REVIEW.md`, and stop. Do not fix or loop.
 
 ## When to use
 
-- User asks for `sk-review`, read-only review, or review without fixing
-- Before `sk-pr` when only a report is needed
-- As a lighter alternative to `sk-review-and-fix`
-
-## Subagent execution
-
-Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+- User asks for `sk-review`, a read-only review, or review without fixing.
+- Before `sk-pr` when only a report is needed.
+- As a lighter alternative to `sk-review-and-fix`.
 
 ## Flow context
 
-Determine the active flow:
-
-- If the user provided a slug, use `.agents/sk-flows/<slug>/`.
-- Else find the flow whose `RUNBOOK.md` is most recent.
-- If no flow exists and the user did not name one, continue without a flow folder; `4 - REVIEW.md` will be the only artifact.
+1. If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+2. Else find the most recent `RUNBOOK.md`.
+3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 
 ## Input
 
 - **Repository:** absolute path to repo root
 - **Diff target:** `branch changes` (default), `uncommitted changes`, or explicit branch/PR
 - **Base branch:** only when non-default
-- **Custom focus / out of scope:** only when user gave constraints
-- **Active plan:** read newest `2 - PLANNING*.md` in the active flow as context
-- **Known validation gaps:** if plan/spec/Figma/tests are missing — list each; do not claim those areas verified
+- **Custom focus / out of scope:** only when the user gave constraints
+- **Active plan:** newest `2 - PLANNING*.md` in the active flow
+- **Known validation gaps:** list missing plan/spec/Figma/tests; do not claim those areas verified
 
 ## Output contract
 
-The subagent receives the prompt below and returns **only** the findings block.
+The subagent returns ONLY the findings block below.
 
 ```text
 You are a read-only diff reviewer. Produce ONLY the findings block below; do not implement fixes.
@@ -78,12 +72,10 @@ Rules for Review Findings:
 - Do not report style-only nits outside project norms unless indicating real bugs.
 - Do not flag a single smoke test, one assert-based self-check, or the smallest runnable check guarding changed logic.
 
-Examples (tone only — not this repo's code):
+Examples (tone only):
 - L12-38: ⚡ simplify: 27-line email validator class. Use standard shape check or rely on confirmation mail.
-- L4: ⚡ simplify: moment.js for one date format call. Use native Intl.DateTimeFormat, no extra dependency.
 - repo.py:L88: 🪵 yagni: AbstractRepository with one implementation. Inline until a second backend exists.
 - L52-71: ✂️ cut: retry wrapper around an idempotent local call. Remove wrapper.
-- L30-44: ⚡ simplify: loop builds dict from parallel lists. dict(zip(keys, values)).
 
 End with exactly one line:
 - totals: N🔴 N🟡 N✂️ N🪵 N⚡ N🔵 N❓ | net: -<N> lines possible
@@ -91,8 +83,6 @@ End with exactly one line:
 ```
 
 ## Tags
-
-Use these exact tags after the colon:
 
 - `🔴 bug`: correctness bug, security risk, broken logic, regression
 - `🟡 gap`: missing/error-prone test, error handling gap, maintainability defect
@@ -113,11 +103,11 @@ Use these exact tags after the colon:
 
 ## Output destination
 
-Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If the agent departs from read-only review, use `diverged`.
+Write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
 
 ## Rules
 
 - Read-only: no file edits or code changes.
 - Single pass: output findings and stop.
-- Do not suppress findings because they are hard to fix; this is not `sk-review-and-fix`.
+- Do not suppress findings because they are hard to fix.
 - If the user asks for fixes, switch to `sk-review-and-fix`.

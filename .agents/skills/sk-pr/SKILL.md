@@ -1,149 +1,71 @@
 ---
 name: sk-pr
-description: Creates or updates a GitHub pull request via gh CLI with team-style title/body, issue/ticket links (Jira, Linear, Monday, GitHub Issues, etc.), optional code-review:request label when corporate-hosted, PR-template checklists filled from verifiable evidence, and screenshots saved under assets/pr-<n> then linked in the body. Use when the user wants a PR, pull request, gh pr create/edit, to update PR description or title, add screenshots to a PR, or provides a PR number or PR URL.
+description: Create or update a GitHub pull request via gh CLI. Use when the user wants a PR, pull request, gh pr create/edit, or provides a PR number or URL.
 ---
 
-# GitHub PR create or update
+# PR
 
-## Subagent execution
-
-Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+Create or update a GitHub PR for the current branch.
 
 ## Slug and flow folder
 
-1. Determine the active flow:
-    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
-    - Else find the flow whose `RUNBOOK.md` is most recent.
-2. If the active flow exists, read the active plan at `.agents/sk-flows/<slug>/2 - PLANNING*.md`, plus `3 - IMPLEMENTATION.md`, `4 - REVIEW.md`, and `5 - VERIFY.md` (if they exist) as context for the PR title and body.
-3. After creating or updating the PR, write `6 - PR.md` and update `RUNBOOK.md` row `6` to `done`.
+1. If the user provided a slug, use `.agents/sk-flows/<slug>/`. Else find the most recent `RUNBOOK.md`.
+2. Read the active plan (`2 - PLANNING*.md`) and other phase docs for context.
+3. After creating/updating the PR, write `6 - PR.md` and set `RUNBOOK.md` row `6` to `done`.
 
-## Route first (update vs new)
+## Route: update or new
 
-1. **PR from user message** — If the user gave a PR number or a GitHub PR URL (`…/pull/<n>` on `github.com` or enterprise hosts), use **update** with that number (parse `n` from URL).
-2. **Else** — From repo root run `gh pr view --json number,headRefName,title` (no PR argument). If it succeeds, use **update** with returned `number`.
-3. **Else** — `gh pr view` failed (no PR for current branch): use **new PR**.
+1. If the user gave a PR number or GitHub PR URL, use **update** with that number.
+2. Else run `gh pr view --json number,headRefName,title` from the repo root. If it succeeds, use **update**.
+3. Else use **new**.
 
-**Update guard:** Before editing, confirm the PR’s head branch matches the current branch:
-
-- `gh pr view <n> --json headRefName -q .headRefName`
-- `git branch --show-current`
-
-If they differ, stop and tell the user to checkout the correct branch or pass the right PR.
+**Update guard:** before editing, confirm `gh pr view <n> --json headRefName -q .headRefName` matches `git branch --show-current`. If not, stop and tell the user.
 
 ## Environment and git
 
-- Run `gh` in a **non-sandboxed** terminal with **network** permission.
-- If current branch is `main` or `master`, warn and do not proceed unless the user explicitly overrides.
-- If there are uncommitted changes: remind the user; **never** stage or commit without explicit permission.
-- Base diff for understanding changes: `git diff origin/<default>...HEAD` where `<default>` is from `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback: `main`, then `master` if needed).
-- If an active flow exists, read the active plan at `.agents/sk-flows/<slug>/2 - PLANNING*.md`, plus `3 - IMPLEMENTATION.md`, `4 - REVIEW.md`, and `5 - VERIFY.md` (if they exist) as context for the PR title and body.
+- Run `gh` from the repo root with network access.
+- Warn and stop if the current branch is `main` or `master` unless the user overrides.
+- Do not stage or commit uncommitted changes without permission.
+- Base diff for context: `git diff origin/<default>...HEAD`, where `<default>` is `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` (fallback `main`, then `master`).
 
-## Issue / Ticket tracking & Corporate mode
+## Corporate mode
 
-**Goal:** Pull requests can link to issues or tickets across trackers—such as Jira, Linear, Monday.com, Trello, or GitHub Issues. Drop-in support handles ticket IDs, issue keys, or direct task URLs provided by the user, branch name, or commit messages.
+1. **Overrides:** `PR_SKIP_JIRA` (non-empty) → off. `PR_REQUIRE_JIRA` → on even on `github.com`.
+2. **Otherwise:** run `gh repo view --json url -q .url` and parse the host. Corporate is **off** for `github.com`, `gist.github.com`, `gitlab.com`, `codeberg.org`, `bitbucket.org`, `dev.azure.com`, `ssh.dev.azure.com`. **On** for any other host.
+3. If `gh repo view` fails, default off.
 
-### Corporate mode switch (Jira / Tracker links + `code-review:request` label)
+In corporate mode, link any ticket key/URL found in user input, branch, or commits; use a placeholder like `PROJ-123` if none found. On `gh pr create`, append `--label "code-review:request"` if the repo supports it.
 
-1. **Overrides (checked first):** `PR_SKIP_JIRA` set (any non-empty) → corporate mode **off** (skips ticket placeholders and label). `PR_REQUIRE_JIRA` set → corporate mode **on** on public `github.com` too.
-2. **Otherwise:** From repo root run `gh repo view --json url -q .url`. Parse host (no path). Corporate mode **off** if host is exactly one of: `github.com`, `gist.github.com`, `gitlab.com`, `codeberg.org`, `bitbucket.org`, `dev.azure.com`, `ssh.dev.azure.com`. Corporate mode **on** for any other host (enterprise GitHub, self-hosted GitLab, etc.).
-3. If `gh repo view` fails, default corporate mode **off**.
-
-### Extracting & linking tickets or issues
-
-Support any issue tracker (Jira, Linear, Monday, Trello, GitHub Issues, etc.):
-
-1. **User input or URLs:** If the user provided an issue URL (e.g. Linear `https://linear.app/.../issue/ENG-123`, Monday `https://*.monday.com/boards/.../pulses/12345`, Jira `https://jira.domain.com/browse/PROJ-123`, Trello card, or GitHub Issue URL), link it directly in the PR body.
-2. **Ticket Keys / IDs:**
-    - Look for issue keys in user text, branch name, or recent commits (e.g., Jira `PROJ-123`, Linear `ENG-456`, GitHub `#123`, or Monday item ID).
-    - When a ticket key or URL is present, include it in the PR body (and title prefix if team convention uses `<KEY>: summary`).
-3. **Corporate mode fallback:**
-    - When corporate mode is **on** and no ticket/issue reference was found, use a key placeholder like `PROJ-123` in the title/body or prompt the user for the ticket ID.
-    - On `gh pr create` in corporate mode, pass `--label "code-review:request"` if supported by the repository.
-
-### When corporate mode is **off** (OSS / standard repos)
-
-- **Title (for PR):** conventional-commit-style summary (e.g., `feat(scope): add thing`).
-- If an issue key or URL was explicitly provided by the user, add a single link or reference line in the PR body.
-- Do **not** pass `--label "code-review:request"` on create unless requested.
+In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add thing`). Add one linked issue/ticket line in the body only if the user provided it. Do not add the `code-review:request` label.
 
 ## Title and body
 
-- **Title (with ticket key):** `<KEY>: <summary>` (e.g., `PROJ-123: feat(auth) add sso login` or `ENG-456: fix(api) handle timeout` — omit the second colon after type/scope so there is no double `:` in the title).
-- **Title (without ticket key):** `<conventional-commit-style summary>` (e.g., `feat(auth): add sso login`).
-- **Body:** Reviewer-focused outcomes — what changed, what files/areas, behavior added/changed/removed, and linked issue/ticket URL. Avoid internal commit-by-commit narrative unless relevant. Short bullets.
-- **Regenerate** the full body from scratch each time unless the user explicitly asks to preserve or append to the existing description.
+- **With ticket key:** `<KEY>: <summary>` (e.g. `PROJ-123: feat(auth) add sso login` — omit a second colon after type/scope to avoid `::`).
+- **Without:** `<conventional-commit-style summary>` (e.g. `feat(auth): add sso login`).
+- **Body:** reviewer-focused outcomes — what changed, what files/areas, behavior added/changed/removed, linked issue/ticket. Avoid commit-by-commit narrative.
+- Regenerate the full body from scratch unless the user asks to preserve it.
 
-## Template
+## Template and checklists
 
-- Search for `PULL_REQUEST_TEMPLATE.md` under `.github/`, `docs/`, and `.gitlab/` (repo root and common layouts).
-- **If found:** Structure the body to match the template sections and headings.
-- **If missing:** Minimal body: Context, Changes, Related Issue/Ticket.
+- Search for `PULL_REQUEST_TEMPLATE.md` under `.github/`, `docs/`, and `.gitlab/`.
+- If found, match its sections/headings.
+- If missing, use a minimal body: Context, Changes, Related Issue/Ticket.
+- Check `- [x]` only when clearly supported by evidence; leave `- [ ]` when unsure.
 
-## Checklists in the template
+## Screenshots
 
-When the template contains `- [ ]` / `- [x]` items:
+When asked, save screenshots to `assets/pr-<n>/<descriptive-kebab-name>.png` (PNG, create folder if needed). Commit/push when requested and embed with raw image URLs. Include only screenshots relevant to the change.
 
-- After filling narrative sections, set items to `- [x]` only when **clearly supported** by available evidence (diff, touched paths, user-stated facts like “tests passed”, obvious mechanical checks).
-- Leave `- [ ]` when unsure. **Do not** check boxes to imply testing, security review, or release steps without evidence.
-- Optionally add one short line if many items stay unchecked, e.g. that they were not verified from the diff alone.
+## Run gh
 
-## Screenshots for PR descriptions
-
-When the user asks to add screenshots to a PR (or the template has a Screenshots section and captures are needed):
-
-### Where to save
-
-Save screenshots in an `assets/` folder in the rules/docs repository (or repo-configured asset folder):
-
-```text
-assets/pr-<n>/<descriptive-kebab-name>.png
-```
-
-Example: `assets/pr-1166/dashboard-dark-mode.png`
-
-Create `assets/pr-<n>/` if missing. Prefer PNG. Use short kebab filenames that describe what the screenshot displays.
-
-### Commit, push, and link
-
-1. Commit and push images to the assets repository when requested to attach PR screenshots.
-2. In the PR body Screenshots section, embed with markdown images using raw image URLs and fallback blob links:
-
-```markdown
-![Short label](https://<github-host>/<owner>/<repo>/raw/main/assets/pr-<n>/<file>.png)
-
-[file.png](https://<github-host>/<owner>/<repo>/blob/main/assets/pr-<n>/<file>.png)
-```
-
-3. Include a brief note under Screenshots explaining what state or environment the capture shows.
-
-**Quality bar:** Only include screenshots that show the feature or fix under review. Avoid skeleton loaders, truncated views, or irrelevant popups.
-
-## Write body and run gh
-
-1. Compose the full markdown body (including filled template and checklists).
-2. **Write** it to a temp file at the repo root, e.g. `.pr-body-temp.md`, using the editor tool (avoids shell quoting issues with backticks and special characters).
-3. **Create:** `gh pr create --title "<title>" --body-file .pr-body-temp.md`
-   If corporate mode is **on**, append ` --label "code-review:request"`.
-4. **Update:** `gh pr edit <n> --title "<title>" --body-file .pr-body-temp.md`
-5. **Write `6 - PR.md`** in the active flow folder with the PR title, URL, number, and a short status. Update `RUNBOOK.md` row `6` to `done`.
-6. **Always delete** `.pr-body-temp.md` when done — last step every run, success or failure (early stop included). Use the Delete tool or `rm -f .pr-body-temp.md` from repo root. Never leave the temp file behind.
+1. Compose the body and write it to `.pr-body-temp.md` in the repo root.
+2. **Create:** `gh pr create --title "<title>" --body-file .pr-body-temp.md` (append `--label "code-review:request"` in corporate mode).
+3. **Update:** `gh pr edit <n> --title "<title>" --body-file .pr-body-temp.md`.
+4. Write `6 - PR.md` and update `RUNBOOK.md` row `6`.
+5. **Always delete** `.pr-body-temp.md` last, even on failure.
 
 ## Troubleshooting
 
-- **`gh` not found or auth errors:** Tell the user to install GitHub CLI and run `gh auth login` (and `gh auth refresh` if needed).
-- **Wrong repo:** Run commands from the git root of the project that should host the PR.
-- **Ambiguous PR number:** If multiple remotes or contexts confuse `gh`, use `gh pr view <n> --repo owner/name` when the user specifies the repo.
-
-## Quick command reference
-
-```bash
-# Current branch’s PR (JSON)
-gh pr view --json number,headRefName,title
-
-# PR head branch vs local
-gh pr view <n> --json headRefName -q .headRefName
-git branch --show-current
-
-# Default branch name
-gh repo view --json defaultBranchRef -q .defaultBranchRef.name
-```
+- `gh` not found/auth errors: tell the user to run `gh auth login` (and `gh auth refresh` if needed).
+- Wrong repo: run commands from the project root.
+- Ambiguous PR: use `gh pr view <n> --repo owner/name` when the user specifies the repo.

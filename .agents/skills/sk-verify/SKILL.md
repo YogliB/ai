@@ -1,6 +1,6 @@
 ---
 name: sk-verify
-description: Verify that changes do what they aim to do and introduce no regressions. Uses the active plan's Verification section if available; otherwise falls back to a project-level .agents/verify/VERIFICATION.md. If verification steps are unknown, asks the user and records the answer.
+description: Verify that changes do what they aim to do and introduce no regressions. Use after implementation and before creating a PR.
 ---
 
 # Verify
@@ -8,47 +8,38 @@ description: Verify that changes do what they aim to do and introduce no regress
 ## When to use
 
 - After implementation and before creating a PR.
-- When the user asks "did this work?", "verify the changes", "use the sk-verify skill", or similar.
+- When the user asks "did this work?", "verify the changes", or similar.
 - This skill does **not** run lint, tests, or security checks; use `before-pr` for those.
 
 ## Slug and flow folder
 
-1. Determine the active flow:
-    - If the user provided a slug, use `.agents/sk-flows/<slug>/`.
-    - Else find the flow whose `RUNBOOK.md` is most recent.
-    - If no flow exists and the user did not name one, ask for a slug.
-2. Write the verification report to `.agents/sk-flows/<slug>/5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
+1. If the user provided a slug, use `.agents/sk-flows/<slug>/`. Else find the most recent `RUNBOOK.md`. If none, ask for a slug.
+2. Write the verification report to `5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
 
 ## Steps
 
-1. **Understand the intent**
-    - If a plan exists in `.agents/sk-flows/<slug>/2 - PLANNING.md` (or the newest `2 - PLANNING*.md` in the flow), read its `## Goal` and `## Context` to understand what the changes should do.
-    - Review the diff for changed files.
-    - If the intent is still unclear, ask the user for a one-line statement of the expected outcome.
+1. **Understand intent**
+    - Read the active plan (`2 - PLANNING*.md`) to understand what the changes should do.
+    - Review the diff.
+    - If intent is unclear, ask the user for a one-line expected outcome.
 
 2. **Find verification steps**
-    - Read the active plan (newest `2 - PLANNING*.md` in the active flow by mtime, or the one the user named).
-    - If the plan's `## Verification` section has concrete steps, use those.
-    - If the section is missing or empty, read `.agents/verify/VERIFICATION.md`.
+    - Use the plan's `## Verification` section.
+    - If missing, read `.agents/verify/VERIFICATION.md`.
 
 3. **Ask if nothing is known**
-    - If no verification steps are found, ask the user:
-      "What should I run or inspect to confirm these changes do what they aim and introduce no regressions?"
+    - If no steps are found, ask: "What should I run or inspect to confirm these changes do what they aim and introduce no regressions?"
     - Create `.agents/verify/` if needed.
     - Append the answer to `.agents/verify/VERIFICATION.md`.
-    - **Do not write to the plan file.** This skill only reads the plan.
+    - Do not write to the plan.
 
 4. **Run the steps**
     - Treat each step as a shell command when possible.
-    - If a step is not runnable (e.g. a manual check or a question), ask the user to confirm the result.
     - Stop on the first failure and report it.
     - Do not auto-fix failures.
 
 5. **Report**
     - Print the result of each step and an overall `PASS` or `FAIL`.
-    - Write the results to `.agents/sk-flows/<slug>/5 - VERIFY.md`.
-    - Update `RUNBOOK.md` row `5` to `done` (or `diverged` if the skill was departed from).
+    - Write `5 - VERIFY.md` and update `RUNBOOK.md` row `5` to `done` (or `diverged` if departed).
 
-## Subagent execution
-
-Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+Run this skill in a subagent when the harness supports it.

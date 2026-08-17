@@ -1,36 +1,26 @@
 ---
 name: sk-review-alternatives
-description: >
-    Independent review of proposed alternatives before they are presented to the user.
-    Checks for relevance, distinctness, weak or strawman options, and balanced pros/cons.
-    Use when the sk-alternatives skill has generated options and you want a second opinion,
-    or when the user passes a list of alternatives and asks for a review.
+description: Independent review of proposed alternatives before they are presented to the user. Use when the sk-alternatives skill has generated options, or when the user passes alternatives and asks for a review.
 ---
 
 # Review Alternatives
 
-## Purpose
-
-Evaluate up to 3 proposed alternatives and flag low-quality options before the user sees them. This is a read-only review unless the user explicitly asks the reviewer to rewrite options.
+Evaluate up to 3 proposed alternatives and flag low-quality options. Read-only unless the user explicitly asks the reviewer to rewrite.
 
 ## When to use
 
-- After the `sk-alternatives` skill generates options
-- When a user pastes a set of alternatives and asks you to review them
-- Before presenting alternatives to a stakeholder where quality matters
-
-## Subagent execution
-
-Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+- After `sk-alternatives` generates options.
+- When a user pastes alternatives and asks for a review.
+- Before presenting alternatives to a stakeholder.
 
 ## Input
 
-The alternatives being reviewed, including for each option:
+For each option:
 
 - **Idea**: short description
 - **Snippet** (if present): minimal code or design example
 - **Pros / Cons**: brief, balanced assessment
-- **Recommendation** (if present): which option the author preferred and why
+- **Recommendation** (if present): author's preferred option and why
 
 ## Output contract
 
@@ -41,9 +31,11 @@ Return ONLY this block. No prose intro.
 
 option:<n>: <tag>: <problem>. <fix>
 totals: N irrelevant N duplicate N weak N strawman N missing-context N unjustified | verdict: pass / needs-revision
+```
 
-Or exactly when no findings:
+Or, when no findings:
 
+```text
 ### Alternatives Review Findings
 
 Lean & valid. Ship.
@@ -51,32 +43,26 @@ Lean & valid. Ship.
 
 ## Tags
 
-Use these exact tags after the colon:
-
-- `irrelevant`: the option does not solve the user's actual problem or constraints
-- `duplicate`: the option overlaps another option without adding a distinct trade-off
-- `weak`: the option is technically viable but worse in every meaningful dimension
-- `strawman`: the option is intentionally bad or only included to make another look good
-- `missing-context`: the option omits a critical cost, risk, or constraint
-- `unjustified`: the recommendation is not supported by the stated pros/cons
+- `irrelevant`: does not solve the actual problem or constraints
+- `duplicate`: overlaps another option without a distinct trade-off
+- `weak`: viable but worse in every meaningful dimension
+- `strawman`: intentionally bad or only included to make another look good
+- `missing-context`: omits a critical cost, risk, or constraint
+- `unjustified`: recommendation not supported by pros/cons
 
 ## Review criteria
 
-1. **Relevance to the real problem**: every option must address the user's actual constraints, not a simplified or adjacent problem.
-2. **Distinctness**: options should differ on at least one meaningful trade-off (complexity, cost, portability, maintenance, etc.).
-3. **Fairness**: pros and cons must be balanced. Do not include an option whose only purpose is to make another look good.
-4. **Completeness**: each option should mention the main cost/risk/limitation.
-5. **Recommendation support**: the final recommendation should be justified by the option comparisons.
-
-## Output destination
-
-The parent `sk-alternatives` skill writes the final options and these review findings into `.agents/sk-flows/<slug>/1 - ALTERNATIVES.md`. This subagent does not write files or update `RUNBOOK.md`.
+1. **Relevance**: every option addresses the user's actual constraints.
+2. **Distinctness**: options differ on at least one meaningful trade-off.
+3. **Fairness**: pros and cons are balanced.
+4. **Completeness**: each option mentions the main cost/risk/limitation.
+5. **Recommendation support**: the recommendation follows from the comparisons.
 
 ## Rules
 
-- One finding per line; problem then fix separated by ". "
-- Sort findings by `option:<n>` ascending
-- If the same issue spans multiple options, repeat it per option
-- If no issues, output exactly `Lean & valid. Ship.`
-- Do not add new options; only review what is provided
-- Do not be overly harsh: minor wording issues or disagreements are not findings unless they mislead
+- One finding per line; problem then fix, separated by ". ".
+- Sort findings by `option:<n>` ascending.
+- Repeat issues per option if they span multiple options.
+- If no issues, output exactly `Lean & valid. Ship.`.
+- Do not add new options; only review what is provided.
+- Minor wording or disagreements are not findings unless they mislead.

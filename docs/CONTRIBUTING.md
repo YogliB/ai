@@ -41,6 +41,12 @@ Keep these files aligned:
 - `.agents/sk-flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
 
+## Skill style
+
+- Keep `SKILL.md` files short, clear, and concise.
+- Preserve output contracts, tag definitions, and subagent instructions.
+- Remove redundant prose and duplicated explanations; do not cut essential intent.
+
 ## Pull Requests
 
 - Keep changes focused on one concern.

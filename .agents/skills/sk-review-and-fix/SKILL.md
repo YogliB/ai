@@ -1,41 +1,35 @@
 ---
 name: sk-review-and-fix
-description: Review code changes in a Task subagent using single-block action-tagged output combining correctness (cavecrew) and ponytail complexity reduction, then triage, fix every valid issue, and re-review until the latest pass is clean. Use when the user asks for sk-review-and-fix, /review, or review and fix.
+description: Closed-loop code review through review, triage, fix, and re-review until the latest pass is clean. Use when the user asks for sk-review-and-fix, /review, or review and fix.
 ---
 
 # Review and Fix
 
-Closed-loop code review: **review (subagent) → triage → fix → re-review (new subagent)** until the latest pass has zero valid findings or the loop is blocked.
+Closed-loop diff review: **review → triage → fix → re-review** until the latest pass has zero valid findings.
 
 ## When to use
 
-- User asks for `sk-review-and-fix`, `/review`, or fixing review findings
-- After implementation, when review and fixes should happen in one pass
-
-## Subagent execution
-
-Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+- User asks for `sk-review-and-fix`, `/review`, or fixing review findings.
+- After implementation, when review and fixes should happen in one pass.
 
 ## Flow context
 
-Determine the active flow:
-
-- If the user provided a slug, use `.agents/sk-flows/<slug>/`.
-- Else find the flow whose `RUNBOOK.md` is most recent.
-- If no flow exists and the user did not name one, continue without a flow folder; the final `4 - REVIEW.md` will be the only artifact.
+1. If the user provided a slug, use `.agents/sk-flows/<slug>/`.
+2. Else find the most recent `RUNBOOK.md`.
+3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 
 ## Input
 
 - **Repository:** absolute path to repo root
 - **Diff target:** `branch changes` (default), `uncommitted changes`, or explicit branch/PR
 - **Base branch:** only when non-default
-- **Custom focus / out of scope:** only when user gave constraints
-- **Active plan:** read newest `2 - PLANNING*.md` in the active flow as context
-- **Known validation gaps:** if plan/spec/Figma/tests/browser are missing — list each
+- **Custom focus / out of scope:** only when the user gave constraints
+- **Active plan:** newest `2 - PLANNING*.md` in the active flow
+- **Known validation gaps:** list missing plan/spec/Figma/tests/browser; do not claim those areas verified
 
 ## Output contract
 
-The subagent is read-only and returns **only** the findings block below.
+The subagent is read-only and returns ONLY the findings block below.
 
 ```text
 You are a read-only diff reviewer. Produce ONLY the findings block below; do not implement fixes.
@@ -77,12 +71,10 @@ Rules for Review Findings:
 - Do not report style-only nits outside project norms unless indicating real bugs.
 - Do not flag a single smoke test, one assert-based self-check, or the smallest runnable check guarding changed logic.
 
-Examples (tone only — not this repo's code):
+Examples (tone only):
 - L12-38: ⚡ simplify: 27-line email validator class. Use standard shape check or rely on confirmation mail.
-- L4: ⚡ simplify: moment.js for one date format call. Use native Intl.DateTimeFormat, no extra dependency.
 - repo.py:L88: 🪵 yagni: AbstractRepository with one implementation. Inline until a second backend exists.
 - L52-71: ✂️ cut: retry wrapper around an idempotent local call. Remove wrapper.
-- L30-44: ⚡ simplify: loop builds dict from parallel lists. dict(zip(keys, values)).
 
 End with exactly one line:
 - totals: N🔴 N🟡 N✂️ N🪵 N⚡ N🔵 N❓ | net: -<N> lines possible
@@ -90,8 +82,6 @@ End with exactly one line:
 ```
 
 ## Tags
-
-Use these exact tags after the colon:
 
 - `🔴 bug`: correctness bug, security risk, broken logic, regression
 - `🟡 gap`: missing/error-prone test, error handling gap, maintainability defect
@@ -112,14 +102,14 @@ Use these exact tags after the colon:
 
 ## Loop
 
-If the diff is empty after scope resolution, stop in one sentence.
+If the diff is empty, stop in one sentence.
 
-1. **Review:** dispatch a new **Task** subagent (`subagent_type: "generalPurpose"`, `readonly: true`, `description: "review pass N"`) with the prompt above.
-2. **Triage:** label each finding `valid`, `false_positive`, or `unvalidated`. Count `valid` only. `unvalidated` items are recorded as validation gaps, not auto-fixed.
-3. **Fix:** resolve every `valid` finding before the next review. Use a builder subagent for ≤2 surgical files; parent edits for 3+ files or cross-cutting changes.
-4. **Repeat:** dispatch a new subagent on the current tree. Continue until the latest pass has zero `valid` findings after triage.
+1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent with the prompt above.
+2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated`. Count `valid` only. `unvalidated` items are recorded as validation gaps.
+3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for ≤2 surgical files; parent edits for 3+ files or cross-cutting changes.
+4. **Repeat** — dispatch a new subagent on the current tree. Continue until the latest pass has zero `valid` findings after triage.
 
-**Exit rule:** hand off only when the latest pass is `Lean & valid. Ship.` or all findings are `false_positive`.
+**Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or all findings are `false_positive`.
 
 **Stuck guard:** if the same `valid` finding persists after 3 fix passes, stop and report the blocker.
 
@@ -129,16 +119,15 @@ If the diff is empty after scope resolution, stop in one sentence.
 - Do not silence linters — fix the root cause.
 - Run relevant tests after non-trivial fixes; record failures as blockers.
 - Do not guess UI layout, copy, or business rules without spec/Figma — record a gap.
-- Commits only when user rules or explicit request allow.
 
 ## Output destination
 
-When the exit rule is met (or blocked), write the final report to `.agents/sk-flows/<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4`. Include:
+When the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` with:
 
 - Review rounds completed
 - `valid` findings fixed (count and one-line summary)
 - `false_positive` count
-- Any remaining `unvalidated` items / validation gaps
+- Any `unvalidated` items / validation gaps
 - Test and browser/visual status, if available
 
 ## Rules

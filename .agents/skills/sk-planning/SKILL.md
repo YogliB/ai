@@ -1,173 +1,114 @@
 ---
 name: sk-planning
-description: Self-contained executable technical plans with atomic testable TODOs; required context inlined in the document (no pointer-only deps on Confluence, tickets, Figma, sibling plans, or skill templates). Ambiguity gates (~10% before planning, ~5% before acting; list unknowns when percent unclear), pre-finalization pass for refactors/performance/security, mandatory plan review loop via Task subagent using single-block action-tagged output (cavecrew + ponytail complexity reduction) with repeated review passes until zero valid findings. Regular plan = one repo, one PR only; multi-repo or multi-PR work requires masterplan plus one self-contained sub-plan per PR. Also split on complexity thresholds. Cross-deps in Complexity Check inform narrative only. Templates use neutral branch prefix; Delivery defers commit/push to operator/repo policy. SDD-sized implementation TODOs or multiple review cycles per parent TODO. Enforces layout via co-located templates; ~95% TODO coverage. Use for planning rules, validation, drafting plans, CreatePlan-style output, splits, standard layout.
+description: Draft a self-contained executable technical plan with atomic testable TODOs. Required context is inlined. Use for planning rules, validation, splits, or any CreatePlan-style output.
 ---
 
 # Planning
 
 ## When to use
 
-- User asks planning rules or wants plan validated
-- Draft or tighten technical plan before work starts
-- Decide whether one plan enough or work should split
+- User asks for planning rules or wants a plan validated.
+- Draft or tighten a technical plan before work starts.
+- Decide whether one plan is enough or the work should split.
 
 ## Slug and flow folder
 
-1. If the user did not provide a slug, derive one from the goal and ask to confirm.
-2. Create `.agents/sk-flows/<slug>/` if it does not exist.
-3. Create or update `RUNBOOK.md` with row `2` as `in-progress` while planning.
-4. After finalizing, write the plan to `.agents/sk-flows/<slug>/2 - PLANNING.md` (or `2 - PLANNING-master.md` plus `2 - PLANNING-<pr>.md` files for masterplan/sub-plans) and update `RUNBOOK.md` row `2` to `done`.
-
-If this skill is used outside a flow, the flow folder and runbook are still created.
-
-## Subagent execution
-
-Run this skill in an independent subagent when the harness supports it. The main session is updated only when the subagent is done.
+1. Derive a short kebab-case slug from the goal (confirm if not provided).
+2. Create `.agents/sk-flows/<slug>/` if needed.
+3. Create or update `RUNBOOK.md` with row `2` as `in-progress`.
+4. Write the plan to `2 - PLANNING.md` (or `2 - PLANNING-master.md` plus `2 - PLANNING-<pr>.md` for masterplan/sub-plans) and set row `2` to `done`.
 
 ## Core requirements
 
-- Plan must be **self-contained**: an implementer (human or agent) executes using **only this document** plus a normal repo checkout — no fetching Confluence/Jira/Figma, reading sibling plan files, opening skill templates, or relying on chat history
-- Plan must be **durable**: the final plan is written to `.agents/sk-flows/<slug>/2 - PLANNING.md` (or the agent's equivalent default) so the review, implementation, and PR phases can read it without chat context
-- **Inline required context** in the plan body: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. The `Context` section must describe the repo as it is right now; a `before→after` snippet is allowed only when the `before` part is verified current code, not the desired future state. Links may appear **only** as optional source attribution **after** the needed facts are inlined
-- **Pointer-only dependencies are blockers** — e.g. "see Confluence page X", "per design doc", "details in masterplan PR2", "attach Figma at implementation time". Either inline the excerpt or list as **Assumptions** with acceptance impact and a verification step
-- **Every file path and line number** in the plan must be re-checked against the repo just before finalizing
-- **Do not include cross-plan or cross-repo references** unless they are required for execution and fully inlined
-- Plan must be **fully executable**: every step done without guessing missing context
-- TODOs **atomic** and **testable** where code changes apply
-- Include **Files** near top: **paths only** (one per line, backticked repo-relative paths), no descriptions, grouping, rationale. Union of every path you expect to create or edit for this plan (or whole masterplan). Place **Files** right after **Goal** in [templates/plan.md](templates/plan.md); in [templates/masterplan.md](templates/masterplan.md) place after overview metadata block, before **Implementation Status**. Update list when scope shifts
-
-## Initial setup
-
-Before writing the first plan in a repo:
-
-- Create `.agents/sk-flows/` if it does not exist.
-- Add `.agents/sk-flows/` to `.gitignore` so flow files are not committed by default.
+- **Self-contained**: an implementer can execute using only this document plus a normal repo checkout. No pointer-only references to Confluence, Jira, Figma, sibling plans, or chat history.
+- **Durable**: the plan is written to `2 - PLANNING*.md` so later phases can read it without chat context.
+- **Inlined context**: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. Links are only optional attribution after the facts are inlined.
+- **Executable**: every step can be done without guessing missing context.
+- **Atomic TODOs**: each `Implementation Plan (TODOs)` item is one focused, testable action.
+- **Files near top**: a `Files` section right after `Goal` lists every path expected to change (one per line, repo-relative, no descriptions).
+- **No cross-plan or cross-repo references** unless required and fully inlined.
+- **Verified paths**: every file path and line number is re-checked against the repo before finalizing.
 
 ## Clarification gates
 
-- Before **planning**: drive ambiguity **under ~10%** (open questions answered or listed as assumptions with acceptance impact)
-- Before **acting** (implementation): ambiguity **under ~5%**
-- Percentages = judgment aid; when uncertain, list concrete unknowns and assumptions instead of claiming percent
+- Before planning: drive ambiguity under ~10%. List unknowns as assumptions with acceptance impact.
+- Before acting: under ~5%. Use concrete assumptions instead of percentages when uncertain.
 
 ## Pre-finalization pass
 
-Before treating plan as final, note meaningful chances for **refactors**, **performance**, **security** (even if deferred, capture in Risks or short follow-up list)
+Note meaningful chances for refactors, performance, or security — even if deferred, capture them in Risks or a short follow-up list.
 
-## Pre-review self-audit
+## Self-audit before review
 
-Before shipping a plan to the first subagent review, check:
-
-- [ ] `Context` snippets are the **current** code or docs, not the desired future state.
-- [ ] Every file path and line number was verified against the repo just before writing.
-- [ ] For each test change, the runner/producer is named and the expected call count matches the fixture.
-- [ ] Every constant, helper, or assertion referenced in the plan actually exists in the test file.
-- [ ] The implementation order does not create a broken intermediate state (e.g., a code change that makes tests hang before the test update lands).
-- [ ] No cross-plan or cross-repo references are included unless required for execution.
-- [ ] Nested checkboxes are flattened when they are details, not independent TODOs; keep `Implementation Plan (TODOs)` depth at 2 or less.
+- `Context` snippets are current code, not desired state.
+- Every file path and line number was verified.
+- Test changes name the runner and expected call count.
+- Implementation order does not create a broken intermediate state.
+- `Implementation Plan (TODOs)` depth stays at 2 or less.
 
 ## Plan shape
 
-- **[templates/plan.md](templates/plan.md)** — **one PR only**, **one repo only**. All scoped changes land in single PR in single repo. Do not stretch one plan across multiple PRs or repos.
-- **[templates/masterplan.md](templates/masterplan.md)** — required when work spans **more than one repo** or **more than one PR**. Masterplan owns sequencing, cross-repo coordination, rollout, PR status; **each PR** gets own **self-contained** sub-plan from [templates/plan.md](templates/plan.md). Sub-plans **repeat** (do not merely reference) every fact they need from the masterplan or external sources; masterplan PR blocks must already inline enough context to draft or execute that PR without re-reading chat
+- **one repo, one PR** → use `templates/plan.md`.
+- **multi-repo or multi-PR** → use `templates/masterplan.md` plus one `templates/plan.md` per PR. Sub-plans repeat every fact they need from the masterplan.
 
 ## Complexity split
 
-If **any** holds, use **masterplan** plus **sub-plans** (one [templates/plan.md](templates/plan.md) per PR) instead of one monolithic plan:
+Use a masterplan + sub-plans (one per PR) if any of these hold:
 
-- **More than one repo** or **more than one PR** (see **Plan shape** above — mandatory)
-- **Implementation TODO count** greater than 30: count **only** checkboxes under **Implementation Plan (TODOs)** section in [templates/plan.md](templates/plan.md) (exclude Branch setup, Delivery, Docs, Testing, Acceptance, other non-implementation sections so scaffolding does not force split)
-- **Depth** greater than 3: nested checklist levels **under** that same Implementation Plan section
-- **High risk** items greater than 5: count **distinct** risk lines or bullets under **Risks** (or masterplan's risk equivalent), not every sub-clause in prose
+- More than one repo or more than one PR.
+- Implementation TODO count > 30 (count only checkboxes under `Implementation Plan (TODOs)`).
+- Depth > 3 (nested levels under that same section).
+- High-risk items > 5 (distinct risk lines/bullets).
 
-**Complexity Check** fields **Cross-deps** and total checklist counts inform **Proceed** or **Split** narrative; they do **not** trigger mandatory split by themselves (multi-repo / multi-PR always does).
+The `Complexity Check` fields `Cross-deps` and total counts inform `Proceed` or `Split`; they do not force a split by themselves (multi-repo / multi-PR always does).
 
 ## Template enforcement
 
-- Read [templates/plan.md](templates/plan.md) and include every `##` section **in file order**: Goal, Files, Context, Scope, Risks, Dependencies, Priority, Logging / Observability, Branch setup, Implementation Plan (TODOs), Delivery, Docs, Testing, Verification, Acceptance, Fallback Plan, References, Complexity Check (omit section only if user explicitly narrows scope). If that template's `##` headings change, update this list in same change
-- Fill **Complexity Check** with real counts and explicit **Proceed** or **Split** decision
-
-## Plan review loop (mandatory before handoff)
-
-After plan text matches template (and **Pre-finalization pass** done), run review loop on **each** emitted document (sub-plan and masterplan when split). Do **not** hand off or summarize plan as final while **valid** findings remain. Each pass emits a single block of action-tagged findings (`### Plan Review Findings`) combining correctness, gaps, and ponytail plan complexity reduction. Parent **triages and fixes**; parent **never** self-reviews inline.
-
-**Subagent-only:** every **Review** step **must** run in a **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`).
-
-### 1. Review
-
-Dispatch **Task** subagent (`subagent_type="generalPurpose"`, `readonly: true`) and run the `sk-review-plan` skill on the full plan text. **Required every loop iteration** — including after fixes. Do **not** substitute inline review, checklist skim, or parent-authored findings.
-
-Prompt must include:
-
-- Full plan body (paste text; do **not** point subagent at plan files on disk)
-- Required context (repo constraints, user scope, masterplan ↔ sub-plan linkage when split)
-
-The `sk-review-plan` skill defines the output contract and review criteria. The subagent returns only a `### Plan Review Findings` block.
-
-### 2. Triage
-
-**Labels (use these literals):** `valid` | `false_positive` | `unvalidated`
-
-For **each** finding: assign one label plus a one-line reason. False positives do not require plan edits.
-
-Count **valid** findings this pass. `Lean & valid. Ship.` means zero valid findings after triage.
-
-### 3. Fix
-
-Edit plan to resolve **every `valid`** finding before next review. Prefer minimal edits; do not expand scope while fixing.
-
-### 4. Repeat
-
-Return to **Review** — dispatch a **new Task subagent** on the updated plan. Continue until latest pass has **zero `valid` findings** across the review pass after triage.
-
-**Exit rule:** hand off only when latest review pass has **zero `valid` findings** (`Plan Review Findings` is `Lean & valid. Ship.` or all findings triaged false positive). If valid findings remain after fix pass, loop again — do not stop early.
-
-## Agent constraints
-
-- Aim for roughly **95% TODO coverage** of work in scope (remaining gap only where truly non-actionable)
-- **Consistent Markdown** (headings, lists, checkboxes)
-- **Keep `Implementation Plan (TODOs)` depth at 2 or less**; flatten nested bullets that are details, not independent TODOs
-- **Do not include cross-plan or cross-repo references** unless they are required for execution and fully inlined
-- **Branch setup** and **Delivery** blocks from template are for plans that include execution; omit when user asks **draft-only** plan or narrows scope to design-only
-- **Delivery** checklist: honor repository and operator rules for **git commit** and **push** (leave items unchecked or omit **Delivery** when commits require explicit operator request per policy)
-- When repository **interactive workflow** rules apply (small chunks, confirmation between steps), **present** plan that way; final artifact can still match full template once agreed, unless user stays **draft-only** (then omit Branch setup and Delivery as above)
-- **Plan review:** subagent-only per **Plan review loop**; never skip Task dispatch or review inline in parent thread
-- When **Subagent-Driven Development** rules apply, size each **implementation** TODO to **one** focused implementer dispatch; if work larger, split into smaller TODOs or run multiple implementer cycles (each cycle: **spec compliance review** then **code quality review**) before checking parent TODO complete. One implementer at a time, never parallel implementers, and do **not** point subagents at plan files—paste a **self-contained** task slice (Goal, Files, inlined Context, scoped TODOs, acceptance for that slice only)
+- Include every `##` section from `templates/plan.md` in file order: Goal, Files, Context, Scope, Risks, Dependencies, Priority, Logging / Observability, Branch setup, Implementation Plan (TODOs), Delivery, Docs, Testing, Verification, Acceptance, Fallback Plan, References, Complexity Check (omit only if the user narrows scope).
+- Fill `Complexity Check` with real counts and an explicit `Proceed` or `Split`.
+- Keep `Implementation Plan (TODOs)` depth at 2 or less; flatten nested bullets that are details, not independent TODOs.
+- Aim for ~95% TODO coverage of in-scope work.
+- Use consistent Markdown.
 
 ## Testing discipline
 
-After **each** implementation TODO from plan, run **related tests** and **verification** steps, then fix failures before moving on. Where repository defines test naming or layers, follow those rules in Testing section and in new tests.
+- Run related tests after each implementation TODO; fix failures before moving on.
+- Name the runner/producer and confirm expected call counts for test changes.
+- Order TODOs so test and dependency changes land before code that would break or hang them.
 
-For each test change in the plan:
+## Plan review loop (mandatory)
 
-- Name the runner/producer and confirm the expected call count matches the fixture.
-- Verify that every referenced helper, constant, or assertion exists in the test file.
+After the plan matches the template and the pre-finalization pass is done, review every emitted document until the latest pass has zero `valid` findings.
 
-Order implementation TODOs so test and dependency changes land before code changes that would break or hang them; simulate the implementation order before finalizing.
+1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent and run the `sk-review-plan` skill on the full plan text (paste the plan; do not point at files).
+2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason.
+3. **Fix** — resolve every `valid` finding before the next review. Prefer minimal edits.
+4. **Repeat** — dispatch a new subagent on the updated plan. Continue until the latest pass is clean.
+
+**Exit rule:** hand off only when the latest `### Plan Review Findings` is `Lean & valid. Ship.` or all findings are `false_positive`.
+
+## Delivery notes
+
+- Omit `Branch setup` and `Delivery` for draft-only or design-only plans.
+- Defer commit/push to operator/repo policy.
+- If the repo uses an interactive workflow, present the plan in small chunks first; the final artifact can still match the full template once agreed.
+- Size each implementation TODO for one focused agent dispatch; split or run multiple cycles if larger.
 
 ## Scope boundary
 
-Planning covers **what** to build, **how** to sequence it, **delivery shape** when needed (branches, PR boundaries, rollout stages, dependencies)—including fields in [templates/masterplan.md](templates/masterplan.md), and **plan review** per **Plan review loop** above. **Code review** of implementation (diff review, SDD implementer review gates) **not** part of this skill; use repository rules for that.
+Planning covers what to build, how to sequence it, delivery shape, and plan review. Code review of the implementation is not part of this skill.
 
 ## Plan file output
 
-The finalized plan must be written to a file so later phases (implementation, review, PR) can read it without depending on chat context. Start the plan with `# 2 — Planning: <slug>`, then use the template sections.
-
-- Default path: `.agents/sk-flows/<slug>/2 - PLANNING.md`
-- Masterplan path: `.agents/sk-flows/<slug>/2 - PLANNING-master.md`
-- Sub-plan path: `.agents/sk-flows/<slug>/2 - PLANNING-<pr>.md`
-- `<slug>` should describe the work in short kebab-case (e.g., `add-auth-token`, `crewmate-stream`). If the user did not name it, derive one from the Goal and ask to confirm.
-- If the agent platform has its own default plan location (e.g., Cursor plan mode), write the plan there too, but always create or symlink the canonical copy under `.agents/sk-flows/<slug>/`.
-- Do not commit or push the plan file unless the user or repo policy explicitly requests it.
-- After the plan is written, update `RUNBOOK.md` row `2` to `done` with a one-line summary.
-- The planning review loop still pastes the full plan text into the review subagent; the file is the durable artifact after the review passes.
-
-## Output
-
-- Either **summarize these rules** when user only asked guidance
-- Or **write the finalized plan to `.agents/sk-flows/<slug>/2 - PLANNING.md`** and return a short summary with the path, then update `RUNBOOK.md` row `2`, then emit the plan text on request
+- Default: `.agents/sk-flows/<slug>/2 - PLANNING.md`
+- Masterplan: `.agents/sk-flows/<slug>/2 - PLANNING-master.md`
+- Sub-plan: `.agents/sk-flows/<slug>/2 - PLANNING-<pr>.md`
+- Do not commit or push unless requested.
+- After writing, update `RUNBOOK.md` row `2` to `done` with a one-line summary.
 
 ## Bundled templates
 
-- [templates/plan.md](templates/plan.md)
-- [templates/masterplan.md](templates/masterplan.md)
-- If repository keeps copies under `.cursor/templates/`, edit those files in **same change** whenever you change [templates/plan.md](templates/plan.md) or [templates/masterplan.md](templates/masterplan.md) here (or add TODO in plan to sync if copies missing)
+- `templates/plan.md`
+- `templates/masterplan.md`
+
+If the repo keeps copies under `.cursor/templates/`, update those in the same change.
