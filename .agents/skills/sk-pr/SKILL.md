@@ -40,9 +40,10 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 
 ## Title and body
 
+- **Keep the title and body short, clear, and concise.** Title is one line; body is brief and reviewer-focused.
 - **With ticket key:** `<KEY>: <summary>` (e.g. `PROJ-123: feat(auth) add sso login` — omit a second colon after type/scope to avoid `::`).
 - **Without:** `<conventional-commit-style summary>` (e.g. `feat(auth): add sso login`).
-- **Body:** reviewer-focused outcomes — what changed, what files/areas, behavior added/changed/removed, linked issue/ticket. Avoid commit-by-commit narrative.
+- **Body:** what changed, what files/areas, behavior added/changed/removed, linked issue/ticket. Avoid commit-by-commit narrative and long explanations.
 - Regenerate the full body from scratch unless the user asks to preserve it.
 
 ## Template and checklists
@@ -51,10 +52,6 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 - If found, match its sections/headings.
 - If missing, use a minimal body: Context, Changes, Related Issue/Ticket.
 - Check `- [x]` only when clearly supported by evidence; leave `- [ ]` when unsure.
-
-## Screenshots
-
-When asked, save screenshots to `assets/pr-<n>/<descriptive-kebab-name>.png` (PNG, create folder if needed). Commit/push when requested and embed with raw image URLs. Include only screenshots relevant to the change.
 
 ## Run gh
 
