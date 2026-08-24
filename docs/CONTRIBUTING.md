@@ -33,7 +33,7 @@ nub install
 Keep these files aligned:
 
 - `README.md` — user-facing install, usage, and caveats
-- `AGENTS.md` — agent index and setup commands
+- `AGENTS.md` — rules index, docs index, and condensed docs
 - `CLAUDE.md` — Claude rule `@` includes
 - `.claude/rules/`, `.cursor/rules/`, and `.devin/rules/` — cross-agent rules
 - `RUNBOOK.md` — full workflow

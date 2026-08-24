@@ -67,7 +67,7 @@ Choose templates from `templates/` next to this `SKILL.md` (e.g. `README.md` →
 
 ## Placeholders
 
-Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setup}}`, `{{run}}`, and `{{format}}` from `package.json`, git remote, or by asking.
+Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setup}}`, `{{run}}`, `{{format}}`, `{{rules_table}}`, `{{rules_includes}}`, `{{docs_table}}`, `{{what}}`, `{{how}}`, and `{{conventions}}` from `package.json`, git remote, or by asking/inferring.
 
 ## Steps
 
@@ -77,7 +77,7 @@ Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setu
 4. **Read** the relevant templates from `templates/`.
 5. **Substitute** placeholders.
 6. **Write** each doc.
-7. **Create or update** `AGENTS.md` from `templates/template-agents.md` with quick links, docs sync list, and `@` includes for existing rule files.
+7. **Create or update** `AGENTS.md` from `templates/template-agents.md`. It must be three things: a rules index with a strong instruction to read the rules first, a docs index, and a highly condensed version of the docs. Include `@` includes for existing rule files.
 8. **Create or update** `llms.txt` if `audience` is `public`.
 9. **Create or update** `CLAUDE.md`: try `ln -s AGENTS.md CLAUDE.md`, fall back to a one-line `@AGENTS.md` file.
 10. **Report** what changed and suggest using the `documentation` skill to fill prose.
