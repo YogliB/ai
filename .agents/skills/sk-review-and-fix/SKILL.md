@@ -109,7 +109,7 @@ If the diff is empty, stop in one sentence.
 3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for ≤2 surgical files; parent edits for 3+ files or cross-cutting changes.
 4. **Repeat** — dispatch a new subagent on the current tree. Continue until the latest pass has zero `valid` findings after triage.
 
-**Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or all findings are `false_positive`.
+**Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
 **Stuck guard:** if the same `valid` finding persists after 3 fix passes, stop and report the blocker.
 
