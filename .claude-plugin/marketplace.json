@@ -10,7 +10,7 @@
 		{
 			"name": "slash-kit",
 			"displayName": "Slash Kit",
-			"description": "Reusable agent skills and an optional end-to-end workflow. Each slash command loads the matching sk-* skill.",
+			"description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
 			"source": "./",
 			"category": "productivity"
 		}

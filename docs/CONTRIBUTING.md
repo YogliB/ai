@@ -21,7 +21,6 @@ nub install
 - `.cursor/rules/` — Cursor project rules.
 - `.devin/rules/` — Devin project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `src/hooks/` — Claude Code `UserPromptSubmit` hook.
 - `install.sh` — Install globally or into another project.
 - `uninstall.sh` — Uninstall globally or from another project.
 - `README.md` — Human-facing overview.

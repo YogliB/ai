@@ -16,7 +16,7 @@ Please include:
 
 ## What This Toolkit Does
 
-- Reads user prompts (via the Claude Code `UserPromptSubmit` hook).
+- Reads user prompts to match skill descriptions.
 - Writes plan files and markdown docs to the local repository.
 - Runs `gh` for PR operations through the user’s authenticated CLI.
 

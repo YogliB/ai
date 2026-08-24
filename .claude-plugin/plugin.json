@@ -2,23 +2,9 @@
 	"name": "slash-kit",
 	"displayName": "Slash Kit",
 	"version": "0.1.0",
-	"description": "Reusable agent skills and an optional end-to-end workflow. Use /explore, /alternatives, /plan, /review, /pr, or /flow to invoke the matching sk-* skill.",
+	"description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
 		"url": "https://github.com/yboaron"
-	},
-	"hooks": {
-		"UserPromptSubmit": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "node \"${CLAUDE_PLUGIN_ROOT}/src/hooks/slash-kit-shortcuts.js\"",
-						"timeout": 5,
-						"statusMessage": "Expanding slash-kit shortcut..."
-					}
-				]
-			}
-		]
 	}
 }

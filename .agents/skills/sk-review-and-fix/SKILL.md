@@ -1,6 +1,6 @@
 ---
 name: sk-review-and-fix
-description: Closed-loop code review through review, triage, fix, and re-review until the latest pass is clean. Use when the user asks for sk-review-and-fix, /review, or review and fix.
+description: Closed-loop code review through review, triage, fix, and re-review until the latest pass is clean. Use when the user asks for sk-review-and-fix, /sk-review-and-fix, or review and fix.
 ---
 
 # Review and Fix
@@ -9,7 +9,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 
 ## When to use
 
-- User asks for `sk-review-and-fix`, `/review`, or fixing review findings.
+- User asks for `sk-review-and-fix`, `/sk-review-and-fix`, or fixing review findings.
 - After implementation, when review and fixes should happen in one pass.
 
 ## Flow context

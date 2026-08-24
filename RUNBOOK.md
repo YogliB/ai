@@ -18,7 +18,7 @@ Do not use the full flow for trivial changes, hotfixes, or when you already know
 
 ## Prerequisites
 
-- The `slash-kit` plugin or rules are installed in your project.
+- The slashkit skills and rules are installed in your project.
 - You have a clean git working tree or a feature branch.
 - You have permission to create files under `.agents/flows/`.
 - For the PR step, `gh` is authenticated and the remote is reachable.
@@ -131,13 +131,13 @@ Every flow lives in its own folder:
 
 You do not have to run the full flow. Each skill is self-contained:
 
-- `/explore <slug>` or "use the sk-explore skill" — gather context and write `0 - EXPLORE.md`
-- `/alternatives` or "use the sk-alternatives skill" — reviewed options for any decision, writes `1 - ALTERNATIVES.md`
-- `/plan <slug>` or "use the sk-planning skill" — write `2 - PLANNING.md`
+- `/sk-explore <slug>` or "use the sk-explore skill" — gather context and write `0 - EXPLORE.md`
+- `/sk-alternatives` or "use the sk-alternatives skill" — reviewed options for any decision, writes `1 - ALTERNATIVES.md`
+- `/sk-planning <slug>` or "use the sk-planning skill" — write `2 - PLANNING.md`
 - "use the sk-review-plan skill" — review an existing plan
-- `/review` or "use the sk-review-and-fix skill" — review the current diff, writes `4 - REVIEW.md`
-- `/pr` or "use the sk-pr skill" — create or update a PR, writes `6 - PR.md`
-- `/flow [auto|manual]` or "use the sk-flow skill" — run the full workflow
+- `/sk-review-and-fix` or "use the sk-review-and-fix skill" — review the current diff, writes `4 - REVIEW.md`
+- `/sk-pr` or "use the sk-pr skill" — create or update a PR, writes `6 - PR.md`
+- `/sk-flow [auto|manual]` or "use the sk-flow skill" — run the full workflow
 
 Even when using just one skill, a flow folder and runbook are created so the state is documented.
 
@@ -150,14 +150,14 @@ Even when using just one skill, a flow folder and runbook are created so the sta
 
 ## Escalation path
 
-- **Hook or rule not loading:** see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+- **Skill or rule not loading:** see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 - **Skill output is wrong:** edit the skill `SKILL.md` directly and re-test.
 - **Plan review never converges:** reduce plan scope or split into a masterplan and sub-plans.
 - **Review finds the plan is wrong:** go back to planning before fixing code.
 - **Agent diverged from the skill:** document it in the runbook and, if needed, return to the phase that diverged.
 
-## For agents without hooks
+## For agents without skills
 
-If your agent does not support `UserPromptSubmit` hooks, open this runbook and read the relevant step before starting.
+If your agent does not support skills, open this runbook and read the relevant step before starting.
 
 The rules and skills files in this repo contain the detailed instructions for each step.

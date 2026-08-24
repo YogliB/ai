@@ -24,7 +24,6 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .cursor/rules/           # Cursor project rules
 ├── .devin/rules/            # Devin project rules
 ├── .claude-plugin/          # Claude Code plugin manifest
-├── src/hooks/               # Claude Code UserPromptSubmit hook
 ├── install.sh               # Install globally or per project
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
@@ -40,7 +39,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ```text
 [user prompt]
    │
-   ├── Claude: UserPromptSubmit hook loads the matching .agents/skills/sk-*/SKILL.md
+   ├── Claude: slash command or description match loads the matching .agents/skills/sk-*/SKILL.md
    │
    ├── Cursor: .cursor/rules/*.mdc loaded as context
    │
@@ -55,7 +54,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ### Full workflow
 
 ```text
-[user asks for /flow [auto|manual]]
+[user asks for /sk-flow [auto|manual] or "use the sk-flow skill"]
    ▼
 [sk-flow skill] → parses mode, loads and runs the full flow
    ▼
@@ -80,7 +79,7 @@ Each phase can run in an independent subagent. The parent passes the plan or dif
 
 ### Skills are source of truth
 
-Each slash command in Claude Code loads the matching `sk-*/SKILL.md`. The hook is a thin harness; the skill file is the canonical behavior. Devin and Cursor use the same skill files through the skill tool or rules.
+Each skill in `.agents/skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin and Cursor use the same skill files through the skill tool or rules.
 
 ### Flow runbooks are durable artifacts
 
@@ -96,15 +95,15 @@ Claude rules use the `@.claude/rules/*.md` include pattern from `CLAUDE.md`. Cur
 
 ### Workflow is opt-in
 
-Nothing forces the full flow. Each skill is self-contained and can be used alone. The runbook exists for agents that do not support hooks.
+Nothing forces the full flow. Each skill is self-contained and can be used alone. The runbook exists for agents that do not support skills.
 
 ## External Dependencies
 
 - `claude` — Claude Code CLI.
 - `cursor` — Cursor CLI or IDE.
-- `Node.js` — For `npx skills` and the Claude Code `UserPromptSubmit` hook.
+- `Node.js` — For `npx skills`.
 - `gh` — Used by the `sk-pr` skill.
 
 ## Security Notes
 
-No web server, no stored credentials, and no network calls from the toolkit itself. The `sk-pr` skill uses the user’s authenticated `gh` CLI. The hook only reads prompts and emits the relevant skill content. See [docs/SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+No web server, no stored credentials, and no network calls from the toolkit itself. The `sk-pr` skill uses the user’s authenticated `gh` CLI. See [docs/SECURITY.md](SECURITY.md) for reporting vulnerabilities.

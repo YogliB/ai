@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
-# Install the ai workflow skills, slash-kit plugin, and rules.
+# Install the ai workflow skills, Claude Code plugin, and rules.
 #
 # Usage:
-#   ./install.sh                    # install skills and the Claude Code plugin globally
+#   ./install.sh                    # install skills, the Claude Code plugin, and rules globally
 #   ./install.sh /path/to/repo      # install rules and skills into a target project
 
 set -e
@@ -27,7 +27,7 @@ remove_legacy_rules() {
 }
 
 install_global() {
-	echo "Installing ai skills and the slash-kit Claude Code plugin..."
+	echo "Installing ai workflow skills, Claude Code plugin, and rules..."
 
 	if ! command -v npx >/dev/null 2>&1; then
 		echo "Error: npx is required to install skills. Install Node.js." >&2

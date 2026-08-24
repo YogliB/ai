@@ -8,7 +8,7 @@
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh
 ```
 
-Installs skills to `~/.agents/skills` and registers the Claude Code plugin. Requires `npx` and the `claude` CLI.
+Installs skills to `~/.agents/skills` and registers the Claude Code plugin if `claude` is installed. Requires `npx`.
 
 ### Per-project
 
@@ -82,29 +82,29 @@ Use the sk-pr skill to open a pull request.
 | [sk-ai-toolbelt](../.agents/skills/sk-ai-toolbelt/SKILL.md)                 | You want pointers to recommended external tools and MCPs. |
 | [sk-flow](../.agents/skills/sk-flow/SKILL.md)                               | You want the full workflow.                               |
 
-### With Claude Code shortcuts
+### In Claude Code
 
-When the `slash-kit` plugin is installed:
+Type the skill name as a slash command:
 
 ```text
-/explore add-user-auth
-/alternatives for caching API responses
-/plan add-user-auth
-/review my branch
-/pr
-/flow
+/sk-explore add-user-auth
+/sk-alternatives for caching API responses
+/sk-planning add-user-auth
+/sk-review-and-fix my branch
+/sk-pr
+/sk-flow
 ```
 
-| Shortcut        | What happens                                                                              |
-| --------------- | ----------------------------------------------------------------------------------------- |
-| `/explore`      | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/alternatives` | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
-| `/plan`         | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
-| `/review`       | Invoke `sk-review-and-fix` on the current diff.                                           |
-| `/pr`           | Invoke `sk-pr` to create or update a PR.                                                  |
-| `/flow [mode]`  | Run the full workflow. `auto` runs without confirmation; `manual` asks before each phase. |
+| Slash command        | What happens                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `/sk-explore`        | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/sk-alternatives`   | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
+| `/sk-planning`       | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
+| `/sk-review-and-fix` | Invoke `sk-review-and-fix` on the current diff.                                           |
+| `/sk-pr`             | Invoke `sk-pr` to create or update a PR.                                                  |
+| `/sk-flow [mode]`    | Run the full workflow. `auto` runs without confirmation; `manual` asks before each phase. |
 
-Shortcuts only work in Claude Code.
+Slash commands only work in Claude Code.
 
 ## Run the workflow
 
@@ -125,14 +125,14 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 ## Example session
 
 ```text
-/plan add-auth-token
+/sk-planning add-auth-token
 # Claude writes .agents/flows/sk-add-auth-token/2 - PLANNING.md
 
 # Implement the plan, then:
-/review
+/sk-review-and-fix
 # Claude reviews and fixes issues.
 
-/pr
+/sk-pr
 # Claude opens the PR.
 ```
 

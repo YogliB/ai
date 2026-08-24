@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
-# Uninstall the ai workflow skills, slash-kit plugin, and rules.
+# Uninstall the ai workflow skills, Claude Code plugin, and rules.
 #
 # Usage:
-#   ./uninstall.sh                    # uninstall skills and plugin globally
+#   ./uninstall.sh                    # uninstall skills, plugin, and rules globally
 #   ./uninstall.sh /path/to/repo      # uninstall rules and skills from a target project
 
 set -e
@@ -141,7 +141,7 @@ remove_legacy_rules() {
 }
 
 uninstall_global() {
-	echo "Uninstalling ai skills and the slash-kit Claude Code plugin..."
+	echo "Uninstalling ai workflow skills, Claude Code plugin, and rules..."
 
 	# Collect the skill names defined in this repo.
 	set --

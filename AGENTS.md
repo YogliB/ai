@@ -45,7 +45,6 @@ nub run format
 - `.cursor/rules/` — Cursor project rules.
 - `.devin/rules/` — Devin project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `src/hooks/` — Claude Code `UserPromptSubmit` hook.
 - `install.sh` — install globally or into a project.
 - `uninstall.sh` — uninstall globally or from a project.
 - `RUNBOOK.md` — optional end-to-end workflow.

@@ -1,7 +1,7 @@
 ---
 name: sk-flow
 argument-hint: '[auto|manual]'
-description: End-to-end slash-kit workflow. Runs sk-explore, sk-alternatives, sk-planning, implement, sk-review-and-fix (or sk-review), optional sk-verify, then sk-pr. Use when the user asks for /flow, the full workflow, or "run the ai workflow".
+description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, implement, sk-review-and-fix (or sk-review), optional sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
 ---
 
 # Flow
@@ -67,7 +67,7 @@ State values: `done`, `skipped` (with reason), `diverged` (with reason), `blocke
 
 ## Example prompts
 
-- `/flow add-auth-token`
-- `/flow auto add-auth-token`
-- `/flow manual add-auth-token`
+- `/sk-flow add-auth-token`
+- `/sk-flow auto add-auth-token`
+- `/sk-flow manual add-auth-token`
 - `Run the full ai workflow for add-auth-token`

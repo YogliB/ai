@@ -1,11 +1,11 @@
 # Troubleshooting
 
-## The `/alternatives` shortcut does nothing in Claude Code
+## A slashkit skill does nothing in Claude Code
 
-- Make sure the plugin is installed: `ls ~/.claude/plugins/slash-kit/`.
+- Make sure the skill is installed: `ls ~/.claude/skills/sk-<name>/SKILL.md`.
 - Restart Claude Code after installing.
-- Check that the prompt starts with `/explore`, `/alternatives`, `/plan`, `/review`, `/pr`, or `/flow`.
-- The hook only expands known shortcuts; arbitrary messages are not modified.
+- Use the exact skill name as the slash command: `/sk-explore`, `/sk-alternatives`, `/sk-planning`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow`.
+- Skills only respond to known names; arbitrary messages are not modified.
 
 ## Cursor does not use the rules
 

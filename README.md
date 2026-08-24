@@ -5,7 +5,7 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 ## What you get
 
 - **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-review-plan`, `sk-review-and-fix`, and `sk-pr`.
-- **Shortcuts** — in Claude Code, type `/explore`, `/plan`, `/review`, `/pr`, or `/flow` and let the `slash-kit` plugin load the matching skill.
+- **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
 - **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude, Cursor, and Devin.
 
@@ -36,25 +36,25 @@ To remove the full install: `sh /tmp/ai/uninstall.sh` (or pass a repo path).
 
 ### In Claude Code
 
-Type a shortcut at the start of a prompt:
+Type the skill name as a slash command at the start of a prompt:
 
 ```text
-/explore add-auth-token
-/alternatives for caching API responses
-/plan add-auth-token
-/review
-/pr
-/flow auto
+/sk-explore add-auth-token
+/sk-alternatives for caching API responses
+/sk-planning add-auth-token
+/sk-review-and-fix
+/sk-pr
+/sk-flow auto
 ```
 
-| Shortcut          | What it does                                                                         |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| `/explore <slug>` | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/alternatives`   | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
-| `/plan <slug>`    | Write an executable `2 - PLANNING.md`.                                               |
-| `/review`         | Review and fix the current diff.                                                     |
-| `/pr`             | Create or update a GitHub PR.                                                        |
-| `/flow [mode]`    | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
+| Slash command         | What it does                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| `/sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
+| `/sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
+| `/sk-review-and-fix`  | Review and fix the current diff.                                                     |
+| `/sk-pr`              | Create or update a GitHub PR.                                                        |
+| `/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
 ### In any editor
 
@@ -77,7 +77,7 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 
 ## Caveats
 
-- **Shortcuts only work in Claude Code.** Cursor and Devin can use the skill names or the [runbook](RUNBOOK.md).
+- **Slash commands work in Claude Code.** Cursor and Devin can use the skill names or the [runbook](RUNBOOK.md).
 - **Cursor rules are project-scoped.** Install them into each repo where you want them.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
