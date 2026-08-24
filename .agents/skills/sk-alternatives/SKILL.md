@@ -7,9 +7,10 @@ description: Suggest up to 3 viable alternatives for a code or design decision. 
 
 ## Slug and flow folder
 
-1. If the user provided a slug, use `.agents/flows/sk-<slug>/`. Otherwise derive one from the decision and confirm.
-2. Create the folder if needed. Initialize or update `RUNBOOK.md` with all phases `pending` and row `1` as `in-progress`.
-3. Write the final doc to `1 - ALTERNATIVES.md` and set row `1` to `done`, `skipped`, or `diverged` with a reason.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
+2. If the user gave no clear context, look for a stuck flow: one where `0 - EXPLORE.md` exists and `1 - ALTERNATIVES.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, derive a slug from the decision and confirm.
+3. Create the folder if needed. Initialize or update `RUNBOOK.md` with all phases `pending` and row `1` as `in-progress`.
+4. Write the final doc to `1 - ALTERNATIVES.md` and set row `1` to `done`, `skipped`, or `diverged` with a reason.
 
 This skill can run on its own; it still maintains the flow folder and runbook.
 

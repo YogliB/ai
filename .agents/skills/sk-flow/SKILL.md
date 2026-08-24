@@ -17,10 +17,11 @@ Only run this skill when the user explicitly asks for the workflow.
 
 ## Slug and flow folder
 
-1. Ask for a short kebab-case slug if not provided.
-2. Create `.agents/flows/sk-<slug>/` if needed.
-3. Create or update `RUNBOOK.md` with the checklist below.
-4. Pass the slug to each phase.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
+2. If no slug, look for a stuck flow: any `.agents/flows/sk-*/` where the prior phase doc exists and the next phase doc is missing. If one, suggest continuing from the next pending phase. If several, list them and ask. If none, ask for a short kebab-case slug.
+3. Create `.agents/flows/sk-<slug>/` if needed.
+4. Create or update `RUNBOOK.md` with the checklist below.
+5. Pass the slug to each phase.
 
 ## Runbook template
 

@@ -13,8 +13,9 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 ## Slug and flow folder
 
-1. If the user provided a slug, use `.agents/flows/sk-<slug>/`. Else find the most recent `RUNBOOK.md`. If none, ask for a slug.
-2. Write the verification report to `5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
+2. Else look for a stuck flow: one where `4 - REVIEW.md` exists and `5 - VERIFY.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`. If still none, ask for a slug.
+3. Write the verification report to `5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
 
 ## Steps
 

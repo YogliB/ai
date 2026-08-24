@@ -15,7 +15,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else find the most recent `RUNBOOK.md`.
+2. Else look for a stuck flow: one where `3 - IMPLEMENTATION.md` exists and `4 - REVIEW.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 
 ## Input

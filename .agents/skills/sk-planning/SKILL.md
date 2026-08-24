@@ -13,10 +13,11 @@ description: Draft a self-contained executable technical plan with atomic testab
 
 ## Slug and flow folder
 
-1. Derive a short kebab-case slug from the goal (confirm if not provided).
-2. Create `.agents/flows/sk-<slug>/` if needed.
-3. Create or update `RUNBOOK.md` with row `2` as `in-progress`.
-4. Write the plan to `2 - PLANNING.md` (or `2 - PLANNING-master.md` plus `2 - PLANNING-<pr>.md` for masterplan/sub-plans) and set row `2` to `done`.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
+2. If the user gave no clear context, look for a stuck flow: one where `1 - ALTERNATIVES.md` exists and `2 - PLANNING*.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, derive a short kebab-case slug from the goal and confirm.
+3. Create `.agents/flows/sk-<slug>/` if needed.
+4. Create or update `RUNBOOK.md` with row `2` as `in-progress`.
+5. Write the plan to `2 - PLANNING.md` (or `2 - PLANNING-master.md` plus `2 - PLANNING-<pr>.md` for masterplan/sub-plans) and set row `2` to `done`.
 
 ## Core requirements
 

@@ -49,7 +49,7 @@ Each numbered doc is self-contained so the next phase can start from it without 
 
 ## Finding the active flow
 
-If the user did not name a slug, the active flow is the one whose `RUNBOOK.md` has the most recent mtime.
+If the user did not name a slug, look for a stuck flow: one where the prior phase doc exists and the current skill's phase doc is missing. If one, suggest continuing it. If several, list them and ask. If none, fall back to the `RUNBOOK.md` with the most recent mtime.
 
 ## Not committed by default
 

@@ -9,9 +9,10 @@ Create or update a GitHub PR for the current branch.
 
 ## Slug and flow folder
 
-1. If the user provided a slug, use `.agents/flows/sk-<slug>/`. Else find the most recent `RUNBOOK.md`.
-2. Read the active plan (`2 - PLANNING*.md`) and other phase docs for context.
-3. After creating/updating the PR, write `6 - PR.md` and set `RUNBOOK.md` row `6` to `done`.
+1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
+2. Else look for a stuck flow: one where `4 - REVIEW.md` exists and `6 - PR.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
+3. Read the active plan (`2 - PLANNING*.md`) and other phase docs for context.
+4. After creating/updating the PR, write `6 - PR.md` and set `RUNBOOK.md` row `6` to `done`.
 
 ## Route: update or new
 
