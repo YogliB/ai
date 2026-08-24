@@ -153,7 +153,7 @@ uninstall_global() {
 
 	if [ $# -gt 0 ]; then
 		if command -v npx >/dev/null 2>&1; then
-			npx --yes skills remove -g -a universal -y "$@"
+			npx --yes skills remove -g -a universal -a claude-code -y "$@"
 		else
 			echo "npx not found; removing skill directories manually." >&2
 			for skill in "$@"; do

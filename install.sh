@@ -38,7 +38,7 @@ install_global() {
 	mkdir -p "$HOME/.agents/skills"
 	remove_legacy_skills "$HOME/.agents/skills"
 
-	npx --yes skills add "$REPO_ROOT" -g -a universal -y
+	npx --yes skills add "$REPO_ROOT" -g -a universal -a claude-code -y
 
 	if command -v claude >/dev/null 2>&1; then
 		echo "Registering the ai repo as a Claude Code marketplace and installing the slash-kit plugin..."
