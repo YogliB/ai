@@ -81,6 +81,7 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 - **Cursor rules are project-scoped.** Install them into each repo where you want them.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
+- **Cross-editor rules are not fully unified yet.** Claude Code supports rule `@` includes from `AGENTS.md`/`CLAUDE.md`, so agent-only rules can live in `.agents/rules/`. Cursor and Devin require rules in their own project-scoped directories and do not reliably load global or shared rule files. The install script copies editor-specific rules as a workaround; a single `.agents/rules/` source for all editors is a known gap.
 
 ## More
 
