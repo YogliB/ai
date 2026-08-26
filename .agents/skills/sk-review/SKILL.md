@@ -106,12 +106,7 @@ End with exactly one line:
 If the diff is empty, stop in one sentence.
 
 1. **Resolve scope** — repository, diff target, base branch, custom focus, out-of-scope exclusions, and known validation gaps.
-2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt and different models:
-    - `model: haiku` — fast pass for obvious issues
-    - `model: sonnet` — balanced pass
-    - `model: opus` — deep pass
-
-    If the harness does not support per-invocation model overrides, run all three with the session default.
+2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides and it helps surface diverse findings; the orchestrator chooses the models (e.g. fast, balanced, deep). If model selection is unavailable, run all three with the session default.
 
 3. **Triage** — label every returned finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
 4. **Display** — output a single `### Review Findings` block containing only the `valid` findings, deduplicated by file:line:tag. If no `valid` findings remain, output exactly `Lean & valid. Ship.`.
