@@ -79,12 +79,15 @@ End with exactly one line:
 11. **Masterplan ↔ sub-plan consistency**: sub-plans repeat every fact they need from the masterplan.
 12. **Ponytail complexity reduction**: the plan is as small as it can be while still correct.
 
+## Triage
+
+Label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. If zero `valid` findings remain, output exactly `Lean & valid. Ship.`.
+
 ## Rules
 
 - Read-only: do not edit the plan or any repo files.
 - Single block: emit exactly one `### Plan Review Findings` block.
 - Sort findings by section, then line.
 - One finding per line; problem then fix, separated by ". ".
-- If no issues, output exactly `Lean & valid. Ship.`.
 - Do not add new sections or rewrite the plan.
 - Minor wording issues are not findings unless they mislead.

@@ -86,7 +86,7 @@ After the plan matches the template and the pre-finalization pass is done, revie
 3. **Fix** — resolve every `valid` finding before the next review. Prefer minimal edits.
 4. **Repeat** — dispatch a new subagent on the updated plan. Continue until the latest pass is clean.
 
-**Exit rule:** hand off only when the latest `### Plan Review Findings` is `Lean & valid. Ship.` or all findings are `false_positive`.
+**Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
 ## Delivery notes
 

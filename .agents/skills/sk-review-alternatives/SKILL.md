@@ -58,11 +58,14 @@ Lean & valid. Ship.
 4. **Completeness**: each option mentions the main cost/risk/limitation.
 5. **Recommendation support**: the recommendation follows from the comparisons.
 
+## Triage
+
+Label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. If zero `valid` findings remain, output exactly `Lean & valid. Ship.` and `verdict: pass`.
+
 ## Rules
 
 - One finding per line; problem then fix, separated by ". ".
 - Sort findings by `option:<n>` ascending.
 - Repeat issues per option if they span multiple options.
-- If no issues, output exactly `Lean & valid. Ship.`.
 - Do not add new options; only review what is provided.
 - Minor wording or disagreements are not findings unless they mislead.

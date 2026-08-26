@@ -5,7 +5,7 @@ description: One-shot, read-only code review. Use when the user asks for sk-revi
 
 # Review
 
-One-shot, read-only diff review. Dispatch a single `readonly` `generalPurpose` Task subagent, write `4 - REVIEW.md`, and stop. Do not fix or loop.
+One-shot, read-only diff review. Run three parallel `readonly` `general-purpose` Task subagents on the same diff, triage their findings, and display only the `valid` findings. Do not fix or loop.
 
 ## When to use
 
@@ -30,7 +30,7 @@ One-shot, read-only diff review. Dispatch a single `readonly` `generalPurpose` T
 
 ## Output contract
 
-The subagent returns ONLY the findings block below.
+Each subagent returns ONLY the findings block below.
 
 ```text
 You are a read-only diff reviewer. Produce ONLY the findings block below; do not implement fixes.
@@ -101,13 +101,28 @@ End with exactly one line:
 - Naming and style
 - Missing context (cite the gap)
 
+## Parallel review
+
+If the diff is empty, stop in one sentence.
+
+1. **Resolve scope** — repository, diff target, base branch, custom focus, out-of-scope exclusions, and known validation gaps.
+2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt and different models:
+    - `model: haiku` — fast pass for obvious issues
+    - `model: sonnet` — balanced pass
+    - `model: opus` — deep pass
+
+    If the harness does not support per-invocation model overrides, run all three with the session default.
+
+3. **Triage** — label every returned finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
+4. **Display** — output a single `### Review Findings` block containing only the `valid` findings, deduplicated by file:line:tag. If no `valid` findings remain, output exactly `Lean & valid. Ship.`.
+5. **Stop** — do not fix. Write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`.
+
 ## Output destination
 
-Write the final report to `.agents/flows/sk-<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
+Write the `valid`-only report to `.agents/flows/sk-<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
 
 ## Rules
 
 - Read-only: no file edits or code changes.
-- Single pass: output findings and stop.
 - Do not suppress findings because they are hard to fix.
 - If the user asks for fixes, switch to `sk-review-and-fix`.
