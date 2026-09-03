@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-End-to-end flow: **sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
+End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
@@ -64,7 +64,7 @@ Every flow lives in its own folder:
 **Output:** `1 - ALTERNATIVES.md` in `.agents/flows/sk-<slug>/`.
 
 - Generate up to 3 reviewed options. In the full flow, this phase is mandatory; if there is only one viable approach, produce a `1 - ALTERNATIVES.md` that documents why.
-- The options are first reviewed by the `sk-review-alternatives` skill to catch irrelevant, duplicate, or weak options.
+- Run `sk-review-alternatives` on the options and resolve every `valid` finding before finalizing. This review is mandatory; do not skip it.
 - The user picks one.
 - Update `RUNBOOK.md` row `1` to `done` or `skipped` with reason.
 
@@ -77,7 +77,7 @@ Every flow lives in its own folder:
 **Output:** `2 - PLANNING.md` in `.agents/flows/sk-<slug>/`.
 
 - The plan must be fully executable from the file alone.
-- The `sk-planning` skill dispatches `sk-review-plan` in a review loop before finalizing.
+- Run `sk-review-plan` in a review loop and resolve every `valid` finding before finalizing `2 - PLANNING.md`. This review is mandatory; do not skip it.
 - Update `RUNBOOK.md` row `2` to `done`.
 
 ### 3. Implementation
