@@ -16,11 +16,11 @@ This skill can run on its own; it still maintains the flow folder and runbook.
 
 ## Steps
 
-1. **Identify** — up to 3 distinct approaches. If only one is viable, document that and skip to planning.
+1. **Identify** — up to 3 distinct approaches. If only one is viable, document that in `1 - ALTERNATIVES.md` and still produce the file.
 2. **Present** — for each option: idea, snippet (if relevant), pros, cons.
-3. **Review** — run the `sk-review-alternatives` skill. Triage each finding `valid`, `false_positive`, or `unvalidated`; resolve every `valid` finding and re-review. Continue until the latest pass has zero `valid` findings after triage.
+3. **Review** — run the `sk-review-alternatives` skill at least once. Do not self-review or skip this step. Triage each finding `valid`, `false_positive`, or `unvalidated`; resolve every `valid` finding and re-review. Continue until the latest `sk-review-alternatives` pass has zero `valid` findings after triage.
 
-    **Exit rule:** stop when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
+    **Exit rule:** stop when the latest `sk-review-alternatives` pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
 4. **Recommend** — one clear choice based on clarity and maintainability.
 5. **Write** — save options, review findings, recommendation, and decision to `1 - ALTERNATIVES.md`. Update `RUNBOOK.md`.
