@@ -1,15 +1,16 @@
 ---
 name: sk-review
-description: One-shot, read-only code review. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
+description: One-shot, read-only code review, posted as inline comments on the PR lines like a human reviewer. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
 ---
 
 # Review
 
-One-shot, read-only diff review. Run three parallel `readonly` `general-purpose` Task subagents on the same diff, triage their findings, and display only the `valid` findings. Do not fix or loop.
+One-shot, read-only diff review. Run three parallel `readonly` `general-purpose` Task subagents on the same diff, triage their findings, and deliver only the `valid` findings. When the target is a PR, post them as inline comments on the PR lines, like a human reviewer. Do not fix or loop.
 
 ## When to use
 
 - User asks for `sk-review`, a read-only review, or review without fixing.
+- Reviewing a PR: findings land as inline comments on the exact lines; general remarks go in one top-level comment.
 - Before `sk-pr` when only a report is needed.
 - As a lighter alternative to `sk-review-and-fix`.
 
@@ -22,7 +23,7 @@ One-shot, read-only diff review. Run three parallel `readonly` `general-purpose`
 ## Input
 
 - **Repository:** absolute path to repo root
-- **Diff target:** `branch changes` (default), `uncommitted changes`, or explicit branch/PR
+- **Diff target:** `branch changes` (default), `uncommitted changes`, or an explicit branch/PR (number or URL)
 - **Base branch:** only when non-default
 - **Custom focus / out of scope:** only when the user gave constraints
 - **Active plan:** newest `2 - PLANNING*.md` in the active flow
@@ -109,15 +110,55 @@ If the diff is empty, stop in one sentence.
 2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides and it helps surface diverse findings; the orchestrator chooses the models (e.g. fast, balanced, deep). If model selection is unavailable, run all three with the session default.
 
 3. **Triage** — label every returned finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
-4. **Display** — output a single `### Review Findings` block containing only the `valid` findings, deduplicated by file:line:tag. If no `valid` findings remain, output exactly `Lean & valid. Ship.`.
-5. **Stop** — do not fix. Write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`.
+4. **Display** — build a single `### Review Findings` block containing only the `valid` findings, deduplicated by file:line:tag. If no `valid` findings remain, the result is exactly `Lean & valid. Ship.`.
+5. **Deliver** — if the user asked for a PR review, post the findings to it (see below); otherwise display the block locally. Write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. Do not fix.
+
+## Posting the review to a PR
+
+Post only when the user triggers PR mode: they passed a PR link or number, or explicitly asked for it (e.g. `/sk-review review the pr`). Any other target gets the findings block displayed locally, nothing posted.
+
+- **Inline comments, like a human reviewer** — one review comment per `valid` finding, anchored to the exact file and line. Multi-line findings use the line range. The line must be part of the PR diff; if it is not, anchor to the nearest changed line it concerns, and if none fits, move the finding to the general remarks.
+- **General remarks in one place** — overall verdict, validation gaps, and anything not tied to a line go in the review body, not scattered across inline comments.
+- **One review, one notification** — submit all inline comments plus the general remarks as a single PR review:
+
+    ```bash
+    sha=$(gh pr view <n> --json headRefOid -q .headRefOid)
+    gh api repos/{owner}/{repo}/pulls/<n>/reviews --input review.json
+    ```
+
+    ```json
+    {
+        "commit_id": "<sha>",
+        "event": "COMMENT",
+        "body": "<general remarks>",
+        "comments": [
+            { "path": "src/file.ts", "line": 42, "side": "RIGHT", "body": "<problem>. <fix>." },
+            { "path": "src/file.ts", "start_line": 10, "line": 15, "side": "RIGHT", "body": "<problem>. <fix>." }
+        ]
+    }
+    ```
+
+    Delete `review.json` after the call, even on failure.
+- **No duplicates** — skim existing review comments first (`gh api repos/{owner}/{repo}/pulls/<n>/comments --paginate`) and skip findings already raised.
+- If posting fails, display the findings block locally and say the PR post failed.
+
+## Writing for the PR
+
+Everything posted to the PR is short, clear, concise, and human-readable:
+
+- Write like a person reviewing a colleague's PR: one or two plain sentences per comment - the problem, then the fix.
+- No emoji tags, totals, or report scaffolding in PR comments; those stay in the local findings block and `4 - REVIEW.md`.
+- No filler, no praise padding, no restating the code back to the author.
+- `❓` findings become plain questions to the author.
 
 ## Output destination
 
-Write the `valid`-only report to `.agents/flows/sk-<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
+Write the `valid`-only report to `.agents/flows/sk-<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. When the target is a PR, add the posted review URL. If you depart from read-only review, use `diverged`.
 
 ## Rules
 
 - Read-only: no file edits or code changes.
+- When reviewing a PR: inline comments on the exact lines, general remarks in the review body, all submitted as a single review.
+- Everything posted to a PR is short, clear, concise, and human-readable.
 - Do not suppress findings because they are hard to fix.
 - If the user asks for fixes, switch to `sk-review-and-fix`.
