@@ -1,11 +1,11 @@
 ---
 name: sk-review
-description: One-shot, read-only code review. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
+description: One-shot, read-only code review, posted as inline comments on the PR lines like a human reviewer. Use when the user asks for sk-review, a read-only review, or a PR/branch/diff review without editing.
 ---
 
 # Review
 
-One-shot, read-only diff review. Run three parallel `readonly` `general-purpose` Task subagents on the same diff, triage their findings, and display only the `valid` findings. Do not fix or loop.
+One-shot, read-only diff review: run three parallel `readonly` `general-purpose` Task subagents on the same diff, triage their findings, deliver only the `valid` ones. On a PR, they land as inline comments like a human reviewer. Do not fix or loop.
 
 ## When to use
 
@@ -22,7 +22,7 @@ One-shot, read-only diff review. Run three parallel `readonly` `general-purpose`
 ## Input
 
 - **Repository:** absolute path to repo root
-- **Diff target:** `branch changes` (default), `uncommitted changes`, or explicit branch/PR
+- **Diff target:** `branch changes` (default), `uncommitted changes`, or an explicit branch/PR (number or URL)
 - **Base branch:** only when non-default
 - **Custom focus / out of scope:** only when the user gave constraints
 - **Active plan:** newest `2 - PLANNING*.md` in the active flow
@@ -76,45 +76,55 @@ Examples (tone only):
 - L12-38: ⚡ simplify: 27-line email validator class. Use standard shape check or rely on confirmation mail.
 - repo.py:L88: 🪵 yagni: AbstractRepository with one implementation. Inline until a second backend exists.
 - L52-71: ✂️ cut: retry wrapper around an idempotent local call. Remove wrapper.
-
-End with exactly one line:
-- totals: N🔴 N🟡 N✂️ N🪵 N⚡ N🔵 N❓ | net: -<N> lines possible
-- Or: Lean & valid. Ship.
 ```
-
-## Tags
-
-- `🔴 bug`: correctness bug, security risk, broken logic, regression
-- `🟡 gap`: missing/error-prone test, error handling gap, maintainability defect
-- `✂️ cut`: dead code, unused feature/dependency, speculative code
-- `🪵 yagni`: single-caller layer, unset config, premature abstraction
-- `⚡ simplify`: hand-rolled stdlib behavior, native platform duplicate, complex pattern
-- `🔵 nit`: naming, minor style, formatting
-- `❓ question`: unclear logic, missing spec/context
-
-## Review criteria
-
-- Correctness, security, and broken logic
-- Tests and error handling
-- Maintainability and dead code
-- Unnecessary abstraction vs native/standard alternatives
-- Naming and style
-- Missing context (cite the gap)
 
 ## Parallel review
 
 If the diff is empty, stop in one sentence.
 
-1. **Resolve scope** — repository, diff target, base branch, custom focus, out-of-scope exclusions, and known validation gaps.
-2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides and it helps surface diverse findings; the orchestrator chooses the models (e.g. fast, balanced, deep). If model selection is unavailable, run all three with the session default.
+1. **Resolve scope** — repository, diff target, base branch, custom focus, out-of-scope exclusions, known validation gaps.
+2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
+3. **Triage** — label every finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only; record `unvalidated` items as validation gaps.
+4. **Display** — one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, the result is exactly `Lean & valid. Ship.`
+5. **Deliver** — PR mode: post the findings (see below); otherwise display the block locally. Either way write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`diverged` if you departed from read-only review; PR mode: add the posted review URL). Do not fix.
 
-3. **Triage** — label every returned finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
-4. **Display** — output a single `### Review Findings` block containing only the `valid` findings, deduplicated by file:line:tag. If no `valid` findings remain, output exactly `Lean & valid. Ship.`.
-5. **Stop** — do not fix. Write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`.
+## Posting the review to a PR
 
-## Output destination
+PR mode only when the user passed a PR link/number or explicitly asked (e.g. `/sk-review review the pr`). Any other target stays local, nothing posted.
 
-Write the `valid`-only report to `.agents/flows/sk-<slug>/4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done`. If you depart from read-only review, use `diverged`.
+- **Inline comments, like a human reviewer** — one review comment per `valid` finding on the exact file and line (line range for multi-line). The line must be part of the PR diff; if not, anchor to the nearest changed line it concerns, and if none fits, move the finding to the general remarks.
+- **General remarks in one place** — verdict, validation gaps, and anything not tied to a line go in the review body, not scattered across inline comments.
+- **One review, one notification** — submit all inline comments plus the general remarks as a single PR review:
+
+    ```bash
+    sha=$(gh pr view <n> --json headRefOid -q .headRefOid)
+    gh api repos/{owner}/{repo}/pulls/<n>/reviews --input review.json
+    ```
+
+    ```json
+    {
+        "commit_id": "<sha>",
+        "event": "COMMENT",
+        "body": "<general remarks>",
+        "comments": [
+            { "path": "src/file.ts", "line": 42, "side": "RIGHT", "body": "<problem>. <fix>." },
+            { "path": "src/file.ts", "start_line": 10, "line": 15, "side": "RIGHT", "body": "<problem>. <fix>." }
+        ]
+    }
+    ```
+
+    Delete `review.json` after the call, even on failure.
+- **No duplicates** — skim existing review comments first (`gh api repos/{owner}/{repo}/pulls/<n>/comments --paginate`) and skip findings already raised.
+- If posting fails, display the findings block locally and say the PR post failed.
+
+## Writing for the PR
+
+Everything posted to the PR is short, clear, concise, and human-readable - write like a person reviewing a colleague's PR.
+
+- One or two plain sentences per comment: the problem, then the fix.
+- No emoji tags, totals, or report scaffolding in PR comments; those stay in the local findings block and `4 - REVIEW.md`.
+- No filler, no praise padding, no restating the code back to the author.
+- `❓` findings become plain questions to the author.
 
 ## Rules
 
