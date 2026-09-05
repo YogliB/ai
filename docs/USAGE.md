@@ -63,6 +63,7 @@ Use the sk-explore skill to understand the repo.
 Use the sk-alternatives skill for caching API responses.
 Use the sk-planning skill to write a plan for pagination.
 Use the sk-review-plan skill to review the plan.
+Use the sk-implement skill to implement the plan.
 Use the sk-review-and-fix skill on the current diff.
 Use the sk-pr skill to open a pull request.
 ```
@@ -74,6 +75,7 @@ Use the sk-pr skill to open a pull request.
 | [sk-review-alternatives](../.agents/skills/sk-review-alternatives/SKILL.md) | You are reviewing a list of alternatives.                 |
 | [sk-planning](../.agents/skills/sk-planning/SKILL.md)                       | You want an executable plan.                              |
 | [sk-review-plan](../.agents/skills/sk-review-plan/SKILL.md)                 | You want a second opinion on a plan.                      |
+| [sk-implement](../.agents/skills/sk-implement/SKILL.md)                     | You have an approved plan to execute.                     |
 | [sk-review-and-fix](../.agents/skills/sk-review-and-fix/SKILL.md)           | You want a diff reviewed and fixed.                       |
 | [sk-review](../.agents/skills/sk-review/SKILL.md)                           | You want a read-only review, posted inline on the PR.     |
 | [sk-pr](../.agents/skills/sk-pr/SKILL.md)                                   | You want a PR.                                            |

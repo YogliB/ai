@@ -107,6 +107,10 @@ Planning covers what to build, how to sequence it, delivery shape, and plan revi
 - Do not commit or push unless requested.
 - After writing, update `RUNBOOK.md` row `2` to `done` with a one-line summary.
 
+## Next step
+
+Once the user approves the plan, hand off to `sk-implement`.
+
 ## Bundled templates
 
 - `templates/plan.md`

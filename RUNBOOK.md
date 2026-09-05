@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → implementation → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
+End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
@@ -84,13 +84,13 @@ Every flow lives in its own folder:
 
 **When:** the plan is finalized and you are ready to code.
 
-**Approach:** read the plan file and implement one atomic TODO at a time.
+**Skill:** `sk-implement`
 
 **Output:** `3 - IMPLEMENTATION.md` in `.agents/flows/sk-<slug>/`.
 
-- Run tests after each implementation step.
-- Do not jump ahead; complete each TODO before marking it done.
-- If the implementation departs from the plan, document the divergence in `3 - IMPLEMENTATION.md` and `RUNBOOK.md`.
+- Executes the plan one atomic TODO at a time, with checks after each step and atomic commits.
+- Plan gaps stop the work and are flagged, not improvised around.
+- Deviations and gaps are documented in `3 - IMPLEMENTATION.md`; divergence also goes in `RUNBOOK.md`.
 - Update `RUNBOOK.md` row `3` to `done`.
 
 ### 4. Review
@@ -135,6 +135,7 @@ You do not have to run the full flow. Each skill is self-contained:
 - `/sk-alternatives` or "use the sk-alternatives skill" — reviewed options for any decision, writes `1 - ALTERNATIVES.md`
 - `/sk-planning <slug>` or "use the sk-planning skill" — write `2 - PLANNING.md`
 - "use the sk-review-plan skill" — review an existing plan
+- `/sk-implement` or "use the sk-implement skill" — execute an approved plan, writes `3 - IMPLEMENTATION.md`
 - `/sk-review-and-fix` or "use the sk-review-and-fix skill" — review the current diff, writes `4 - REVIEW.md`
 - `/sk-pr` or "use the sk-pr skill" — create or update a PR, writes `6 - PR.md`
 - `/sk-flow [auto|manual]` or "use the sk-flow skill" — run the full workflow

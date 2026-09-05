@@ -4,8 +4,8 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 
 ## What you get
 
-- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-review-plan`, `sk-review-and-fix`, and `sk-pr`.
-- **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
+- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-implement`, `sk-review-plan`, `sk-review-and-fix`, and `sk-pr`.
+- **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-implement`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
 - **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude, Cursor, and Devin.
 
@@ -52,6 +52,7 @@ Type the skill name as a slash command at the start of a prompt:
 | `/sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
 | `/sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
 | `/sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
+| `/sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
 | `/sk-review-and-fix`  | Review and fix the current diff.                                                     |
 | `/sk-pr`              | Create or update a GitHub PR.                                                        |
 | `/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
@@ -63,6 +64,7 @@ Name the skill directly:
 ```text
 Use the sk-planning skill to write a plan for pagination.
 Use the sk-review-plan skill to review the plan.
+Use the sk-implement skill to implement the plan.
 Use the sk-review-and-fix skill on the current diff.
 Use the sk-pr skill to open a pull request.
 ```
@@ -70,7 +72,7 @@ Use the sk-pr skill to open a pull request.
 ## The flow
 
 ```text
-sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix → optional sk-verify → sk-pr
+sk-explore → sk-alternatives → sk-planning → sk-implement → sk-review-and-fix → optional sk-verify → sk-pr
 ```
 
 Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.

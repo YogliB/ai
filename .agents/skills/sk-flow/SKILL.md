@@ -1,7 +1,7 @@
 ---
 name: sk-flow
 argument-hint: '[auto|manual]'
-description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, implement, sk-review-and-fix (or sk-review), optional sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
+description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review-and-fix (or sk-review), optional sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
 ---
 
 # Flow
@@ -57,7 +57,7 @@ State values: `done`, `skipped` (with reason), `diverged` (with reason), `blocke
 4. (manual) Ask to continue.
 5. **Plan** — `sk-planning`. Writes `2 - PLANNING.md`; updates row `2`.
 6. (manual) Ask to continue.
-7. **Implement** — execute the plan one TODO at a time. Writes `3 - IMPLEMENTATION.md`; updates row `3`. Run tests after each step. Record divergence if the plan changes.
+7. **Implement** — `sk-implement`. Writes `3 - IMPLEMENTATION.md`; updates row `3`.
 8. (manual) Ask to continue.
 9. **Review** — `sk-review-and-fix` by default, or `sk-review` if read-only. Writes `4 - REVIEW.md`; updates row `4`.
 10. (manual) Ask to continue.

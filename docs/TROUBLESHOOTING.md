@@ -4,7 +4,7 @@
 
 - Make sure the skill is installed: `ls ~/.claude/skills/sk-<name>/SKILL.md`.
 - Restart Claude Code after installing.
-- Use the exact skill name as the slash command: `/sk-explore`, `/sk-alternatives`, `/sk-planning`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow`.
+- Use the exact skill name as the slash command: `/sk-explore`, `/sk-alternatives`, `/sk-planning`, `/sk-implement`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow`.
 - Skills only respond to known names; arbitrary messages are not modified.
 
 ## Cursor does not use the rules

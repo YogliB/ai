@@ -8,22 +8,26 @@
 
 {{branch name}}
 
-## Commits
+## Goal
 
-- {{sha}}: {{message}}
+{{one line, from the plan}}
 
-## Changed files
+## Steps
 
-- `path/to/file` — one-line note
+- {{plan TODO}}: {{what was done}} — checks: {{commands and results}} — commit {{sha}}
 
-## Test results
+## Deviations
 
-{{commands and output}}
+{{every departure from the plan text, with one-line reasons; "None" if none}}
 
-## Blockers / Gaps
+## Plan Gaps
 
-{{}}
+{{unresolved gaps flagged to the user: what the plan said, what the repo actually shows, what was tried}}
 
-## Divergence
+## Final verification
 
-{{if the implementation departed from the plan, document what and why}}
+{{the full check suite the plan names - build, tests, lint, typecheck, format - and its result}}
+
+## Next Step Recommendation
+
+`sk-review` (or `sk-review-and-fix`) — {{one-line reason}}
