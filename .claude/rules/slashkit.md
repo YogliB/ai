@@ -9,6 +9,7 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 - `sk-review-alternatives` — review options before presenting them
 - `sk-planning` — write executable plans
 - `sk-review-plan` — review plans
+- `sk-implement` — execute approved plans
 - `sk-review-and-fix` — review and fix code
 - `sk-review` — read-only review, posted inline on PRs
 - `sk-pr` — create or update PRs

@@ -11,6 +11,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── sk-alternatives/
 │   ├── sk-explore/
 │   ├── sk-flow/
+│   ├── sk-implement/
 │   ├── sk-planning/
 │   ├── sk-pr/
 │   ├── sk-project-docs/
@@ -64,7 +65,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    ▼
 [sk-planning] → [sk-review-plan] → 2 - PLANNING.md
    ▼
-[implementation] (code changes + tests) → 3 - IMPLEMENTATION.md
+[sk-implement] (code changes + tests) → 3 - IMPLEMENTATION.md
    ▼
 [sk-review-and-fix or sk-review] → 4 - REVIEW.md
    ▼
