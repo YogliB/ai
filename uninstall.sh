@@ -215,14 +215,6 @@ uninstall_project() {
 	done
 	remove_legacy_rules "$TARGET/.claude/rules" conventions.md workflow.md
 
-	# Devin rules
-	for rule in "$REPO_ROOT"/.devin/rules/*.md; do
-		if [ -f "$rule" ]; then
-			rm -f "$TARGET/.devin/rules/$(basename "$rule")"
-		fi
-	done
-	remove_legacy_rules "$TARGET/.devin/rules" ai-conventions.md ai-workflow.md
-
 	# Runbook and flow runbooks README if unchanged
 	remove_if_unchanged "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
 	remove_if_unchanged "$REPO_ROOT/.agents/flows/README.md" "$TARGET/.agents/flows/README.md"
@@ -262,8 +254,6 @@ uninstall_project() {
 	rmdir "$TARGET/.cursor" 2>/dev/null || true
 	rmdir "$TARGET/.claude/rules" 2>/dev/null || true
 	rmdir "$TARGET/.claude" 2>/dev/null || true
-	rmdir "$TARGET/.devin/rules" 2>/dev/null || true
-	rmdir "$TARGET/.devin" 2>/dev/null || true
 
 	echo "Done."
 }

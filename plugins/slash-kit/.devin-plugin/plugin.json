@@ -1,0 +1,13 @@
+{
+	"name": "slash-kit",
+	"version": "0.1.0",
+	"description": "Reusable agent skills and an optional end-to-end workflow for Devin.",
+	"author": {
+		"name": "Yogev Boaron Ben-Har",
+		"url": "https://github.com/yboaron"
+	},
+	"homepage": "https://github.com/YogliB/ai",
+	"repository": "https://github.com/YogliB/ai",
+	"license": "MIT",
+	"keywords": ["skills", "workflow", "code-review", "planning"]
+}

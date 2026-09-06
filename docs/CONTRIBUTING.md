@@ -19,8 +19,8 @@ nub install
 - `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
-- `.devin/rules/` — Devin project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
+- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from `.agents/skills/`).
 - `install.sh` — Install globally or into another project.
 - `uninstall.sh` — Uninstall globally or from another project.
 - `README.md` — Human-facing overview.
@@ -35,7 +35,7 @@ Keep these files aligned:
 - `README.md` — user-facing install, usage, and caveats
 - `AGENTS.md` — rules index, docs index, and condensed docs
 - `CLAUDE.md` — Claude rule `@` includes
-- `.claude/rules/`, `.cursor/rules/`, and `.devin/rules/` — cross-agent rules
+- `.claude/rules/` and `.cursor/rules/` — cross-agent rules
 - `RUNBOOK.md` — full workflow
 - `.agents/flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`

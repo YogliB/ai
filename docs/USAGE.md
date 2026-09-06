@@ -33,6 +33,14 @@ npx skills add YogliB/ai --skill sk-planning --skill sk-verify -g
 
 Run `npx skills add YogliB/ai --list` to see the list.
 
+### Devin plugin
+
+```bash
+devin plugins install YogliB/ai#plugins/slash-kit
+```
+
+Installs all skills as one plugin from `plugins/slash-kit/`. Requires access to Devin's plugin beta.
+
 ## Uninstall
 
 ### Full install
@@ -52,6 +60,12 @@ If you used `npx skills add`, remove with `npx skills remove`:
 npx skills remove sk-planning
 npx skills remove -g sk-planning
 npx skills remove --all
+```
+
+### Devin plugin
+
+```bash
+devin plugins remove slash-kit
 ```
 
 ## Use the skills
@@ -108,6 +122,19 @@ Type the skill name as a slash command:
 
 Slash commands only work in Claude Code.
 
+### In Devin
+
+With the plugin installed, prefix the skill name with `/slash-kit:`:
+
+```text
+/slash-kit:sk-explore add-user-auth
+/slash-kit:sk-planning add-user-auth
+/slash-kit:sk-implement
+/slash-kit:sk-review-and-fix
+/slash-kit:sk-pr
+/slash-kit:sk-flow
+```
+
 ## Run the workflow
 
 ```text
@@ -121,7 +148,7 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 - Plans live in `.agents/flows/sk-<slug>/2 - PLANNING.md`.
 - Claude rules live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - Cursor rules live in `.cursor/rules/*.mdc`.
-- Devin rules live in `.devin/rules/*.md`.
+- The Devin plugin lives in `plugins/slash-kit/` (see the install section above).
 - The runbook is in [RUNBOOK.md](../RUNBOOK.md).
 
 ## Example session

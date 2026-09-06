@@ -71,8 +71,8 @@ nub run format
 - `.agents/rules/` — shared always-on rules.
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
-- `.devin/rules/` — Devin project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
+- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from `.agents/skills/`).
 - `install.sh` — install globally or into a project.
 - `uninstall.sh` — uninstall globally or from a project.
 - `RUNBOOK.md` — optional end-to-end workflow.

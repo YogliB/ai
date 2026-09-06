@@ -23,8 +23,8 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .agents/flows/           # Flow output directory (actual flow dirs are sk-*)
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
-├── .devin/rules/            # Devin project rules
 ├── .claude-plugin/          # Claude Code plugin manifest
+├── plugins/slash-kit/       # Devin plugin (manifest, skills symlinked from .agents/skills/)
 ├── install.sh               # Install globally or per project
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
@@ -44,7 +44,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    │
    ├── Cursor: .cursor/rules/*.mdc loaded as context
    │
-   ├── Devin: .devin/rules/*.md loaded as context, user invokes skill tool
+   ├── Devin: slash-kit plugin (plugins/slash-kit/) provides the skills as /slash-kit:* commands
    │
    ▼
 [relevant .agents/skills/sk-*/SKILL.md]
@@ -80,7 +80,7 @@ Each phase can run in an independent subagent. The parent passes the plan or dif
 
 ### Skills are source of truth
 
-Each skill in `.agents/skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin and Cursor use the same skill files through the skill tool or rules.
+Each skill in `.agents/skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin loads the same skill files through the slash-kit plugin; Cursor uses them through the skill tool or rules.
 
 ### Flow runbooks are durable artifacts
 
