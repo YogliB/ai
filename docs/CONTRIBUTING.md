@@ -15,14 +15,14 @@ nub install
 
 ## Project Layout
 
-- `.agents/skills/` — Skills (source of truth for all agents).
+- `skills/` — Skills (source of truth for all agents).
 - `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from `.agents/skills/`).
-- `install.sh` — Install globally or into another project.
-- `uninstall.sh` — Uninstall globally or from another project.
+- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from root `skills/`).
+- `install.sh` — Install skills and Cursor rules into a project (Cursor-only).
+- `uninstall.sh` — Remove skills and Cursor rules from a project.
 - `README.md` — Human-facing overview.
 - `AGENTS.md` — Agent-facing index.
 - `RUNBOOK.md` — End-to-end workflow.

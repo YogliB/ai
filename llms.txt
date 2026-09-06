@@ -10,20 +10,20 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 
 ## Skills
 
-- .agents/skills/sk-ai-toolbelt/SKILL.md
-- .agents/skills/sk-alternatives/SKILL.md
-- .agents/skills/sk-explore/SKILL.md
-- .agents/skills/sk-flow/SKILL.md
-- .agents/skills/sk-implement/SKILL.md
-- .agents/skills/sk-planning/SKILL.md
-- .agents/skills/sk-planning/templates/masterplan.md
-- .agents/skills/sk-planning/templates/plan.md
-- .agents/skills/sk-pr/SKILL.md
-- .agents/skills/sk-project-docs/SKILL.md
-- .agents/skills/sk-review-alternatives/SKILL.md
-- .agents/skills/sk-review-and-fix/SKILL.md
-- .agents/skills/sk-review/SKILL.md
-- .agents/skills/sk-verify/SKILL.md
+- skills/sk-ai-toolbelt/SKILL.md
+- skills/sk-alternatives/SKILL.md
+- skills/sk-explore/SKILL.md
+- skills/sk-flow/SKILL.md
+- skills/sk-implement/SKILL.md
+- skills/sk-planning/SKILL.md
+- skills/sk-planning/templates/masterplan.md
+- skills/sk-planning/templates/plan.md
+- skills/sk-pr/SKILL.md
+- skills/sk-project-docs/SKILL.md
+- skills/sk-review-alternatives/SKILL.md
+- skills/sk-review-and-fix/SKILL.md
+- skills/sk-review/SKILL.md
+- skills/sk-verify/SKILL.md
 
 ## Subagents
 

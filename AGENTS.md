@@ -35,7 +35,7 @@ These rules are always-on. Read them before every task:
 
 ## Condensed docs
 
-slashkit is a cross-agent AI workflow toolkit. Skills live in `.agents/skills/sk-*/SKILL.md` and are the source of truth for all agents.
+slashkit is a cross-agent AI workflow toolkit. Skills live in `skills/sk-*/SKILL.md` and are the source of truth for all agents.
 
 ### Setup
 
@@ -55,26 +55,24 @@ nub run format
 
 ### Common commands
 
-| Command                        | Purpose                                          |
-| ------------------------------ | ------------------------------------------------ |
-| `./install.sh`                 | Install skills and Claude Code plugin globally   |
-| `./install.sh /path/to/repo`   | Install skills and rules into a project          |
-| `./uninstall.sh`               | Uninstall skills and Claude Code plugin globally |
-| `./uninstall.sh /path/to/repo` | Uninstall skills and rules from a project        |
-| `nub run format`               | Format with `oxfmt`                              |
-| `nub run lint`                 | Run the pre-commit lint step                     |
+| Command                        | Purpose                                        |
+| ------------------------------ | ---------------------------------------------- |
+| `./install.sh /path/to/repo`   | Install skills and Cursor rules into a project |
+| `./uninstall.sh /path/to/repo` | Remove skills and Cursor rules from a project  |
+| `nub run format`               | Format with `oxfmt`                            |
+| `nub run lint`                 | Run the pre-commit lint step                   |
 
 ### Project layout
 
-- `.agents/skills/` — skills, source of truth for all agents.
+- `skills/` — skills, source of truth for all agents.
 - `.agents/flows/` — flow output directory (actual flow dirs are `sk-*`).
 - `.agents/rules/` — shared always-on rules.
 - `.claude/rules/` — Claude rule modules.
 - `.cursor/rules/` — Cursor project rules.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from `.agents/skills/`).
-- `install.sh` — install globally or into a project.
-- `uninstall.sh` — uninstall globally or from a project.
+- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from root `skills/`).
+- `install.sh` — install skills and Cursor rules into a project (Cursor-only).
+- `uninstall.sh` — remove skills and Cursor rules from a project.
 - `RUNBOOK.md` — optional end-to-end workflow.
 - `docs/` — contributor and user documentation.
 

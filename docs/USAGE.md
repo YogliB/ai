@@ -2,21 +2,38 @@
 
 ## Install
 
-### Global
+### Claude Code plugin
 
 ```bash
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh
+claude plugin marketplace add YogliB/ai
+claude plugin install slash-kit@ai
 ```
 
-Installs skills to `~/.agents/skills` and registers the Claude Code plugin if `claude` is installed. Requires `npx`.
+Installs the slash-kit plugin: the skills plus `/sk-*` slash commands.
 
-### Per-project
+### Devin plugin
+
+```bash
+devin plugins install YogliB/ai#plugins/slash-kit
+```
+
+Installs all skills as one plugin from `plugins/slash-kit/`. Requires access to Devin's plugin beta.
+
+### Global skills
+
+```bash
+npx skills add YogliB/ai -g
+```
+
+Installs the skills globally for every agent the skills CLI supports. Requires `npx`.
+
+### Cursor (per project)
 
 ```bash
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
 ```
 
-Copies skills, editor rules, the runbook, and a flow directory into the target project.
+Copies skills, Cursor rules, the runbook, and a flow directory into the target project. `install.sh` exists only for Cursor, until Cursor gets a proper plugin system.
 
 ### Specific skills
 
@@ -33,22 +50,24 @@ npx skills add YogliB/ai --skill sk-planning --skill sk-verify -g
 
 Run `npx skills add YogliB/ai --list` to see the list.
 
+## Uninstall
+
+### Claude Code plugin
+
+```bash
+claude plugin uninstall slash-kit@ai
+claude plugin marketplace remove ai
+```
+
 ### Devin plugin
 
 ```bash
-devin plugins install YogliB/ai#plugins/slash-kit
+devin plugins remove slash-kit
 ```
 
-Installs all skills as one plugin from `plugins/slash-kit/`. Requires access to Devin's plugin beta.
-
-## Uninstall
-
-### Full install
-
-If you used `install.sh`, use `uninstall.sh`:
+### Cursor (per project)
 
 ```bash
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh /path/to/your/repo
 ```
 
@@ -60,12 +79,6 @@ If you used `npx skills add`, remove with `npx skills remove`:
 npx skills remove sk-planning
 npx skills remove -g sk-planning
 npx skills remove --all
-```
-
-### Devin plugin
-
-```bash
-devin plugins remove slash-kit
 ```
 
 ## Use the skills
@@ -82,45 +95,45 @@ Use the sk-review-and-fix skill on the current diff.
 Use the sk-pr skill to open a pull request.
 ```
 
-| Skill                                                                       | Use when                                                  |
-| --------------------------------------------------------------------------- | --------------------------------------------------------- |
-| [sk-explore](../.agents/skills/sk-explore/SKILL.md)                         | You need to understand the repo first.                    |
-| [sk-alternatives](../.agents/skills/sk-alternatives/SKILL.md)               | You want options before deciding.                         |
-| [sk-review-alternatives](../.agents/skills/sk-review-alternatives/SKILL.md) | You are reviewing a list of alternatives.                 |
-| [sk-planning](../.agents/skills/sk-planning/SKILL.md)                       | You want an executable plan.                              |
-| [sk-review-plan](../.agents/skills/sk-review-plan/SKILL.md)                 | You want a second opinion on a plan.                      |
-| [sk-implement](../.agents/skills/sk-implement/SKILL.md)                     | You have an approved plan to execute.                     |
-| [sk-review-and-fix](../.agents/skills/sk-review-and-fix/SKILL.md)           | You want a diff reviewed and fixed.                       |
-| [sk-review](../.agents/skills/sk-review/SKILL.md)                           | You want a read-only review, posted inline on the PR.     |
-| [sk-pr](../.agents/skills/sk-pr/SKILL.md)                                   | You want a PR.                                            |
-| [sk-verify](../.agents/skills/sk-verify/SKILL.md)                           | You want to verify changes.                               |
-| [sk-project-docs](../.agents/skills/sk-project-docs/SKILL.md)               | You want to scaffold a project's docs structure.          |
-| [sk-ai-toolbelt](../.agents/skills/sk-ai-toolbelt/SKILL.md)                 | You want pointers to recommended external tools and MCPs. |
-| [sk-flow](../.agents/skills/sk-flow/SKILL.md)                               | You want the full workflow.                               |
+| Skill                                                               | Use when                                                  |
+| ------------------------------------------------------------------- | --------------------------------------------------------- |
+| [sk-explore](../skills/sk-explore/SKILL.md)                         | You need to understand the repo first.                    |
+| [sk-alternatives](../skills/sk-alternatives/SKILL.md)               | You want options before deciding.                         |
+| [sk-review-alternatives](../skills/sk-review-alternatives/SKILL.md) | You are reviewing a list of alternatives.                 |
+| [sk-planning](../skills/sk-planning/SKILL.md)                       | You want an executable plan.                              |
+| [sk-review-plan](../skills/sk-review-plan/SKILL.md)                 | You want a second opinion on a plan.                      |
+| [sk-implement](../skills/sk-implement/SKILL.md)                     | You have an approved plan to execute.                     |
+| [sk-review-and-fix](../skills/sk-review-and-fix/SKILL.md)           | You want a diff reviewed and fixed.                       |
+| [sk-review](../skills/sk-review/SKILL.md)                           | You want a read-only review, posted inline on the PR.     |
+| [sk-pr](../skills/sk-pr/SKILL.md)                                   | You want a PR.                                            |
+| [sk-verify](../skills/sk-verify/SKILL.md)                           | You want to verify changes.                               |
+| [sk-project-docs](../skills/sk-project-docs/SKILL.md)               | You want to scaffold a project's docs structure.          |
+| [sk-ai-toolbelt](../skills/sk-ai-toolbelt/SKILL.md)                 | You want pointers to recommended external tools and MCPs. |
+| [sk-flow](../skills/sk-flow/SKILL.md)                               | You want the full workflow.                               |
 
 ### In Claude Code
 
-Type the skill name as a slash command:
+Plugin skills are namespaced:
 
 ```text
-/sk-explore add-user-auth
-/sk-alternatives for caching API responses
-/sk-planning add-user-auth
-/sk-review-and-fix my branch
-/sk-pr
-/sk-flow
+/slash-kit:sk-explore add-user-auth
+/slash-kit:sk-alternatives for caching API responses
+/slash-kit:sk-planning add-user-auth
+/slash-kit:sk-review-and-fix my branch
+/slash-kit:sk-pr
+/slash-kit:sk-flow
 ```
 
-| Slash command        | What happens                                                                              |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| `/sk-explore`        | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/sk-alternatives`   | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
-| `/sk-planning`       | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
-| `/sk-review-and-fix` | Invoke `sk-review-and-fix` on the current diff.                                           |
-| `/sk-pr`             | Invoke `sk-pr` to create or update a PR.                                                  |
-| `/sk-flow [mode]`    | Run the full workflow. `auto` runs without confirmation; `manual` asks before each phase. |
+Installed a skill individually with `npx skills add`? Drop the `/slash-kit:` prefix (`/sk-planning`).
 
-Slash commands only work in Claude Code.
+| Slash command                   | What happens                                                                              |
+| ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `/slash-kit:/sk-explore`        | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/slash-kit:/sk-alternatives`   | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
+| `/slash-kit:/sk-planning`       | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
+| `/slash-kit:/sk-review-and-fix` | Invoke `sk-review-and-fix` on the current diff.                                           |
+| `/slash-kit:/sk-pr`             | Invoke `sk-pr` to create or update a PR.                                                  |
+| `/slash-kit:/sk-flow [mode]`    | Run the full workflow. `auto` runs without confirmation; `manual` asks before each phase. |
 
 ### In Devin
 

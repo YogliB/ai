@@ -13,15 +13,24 @@ Everything lives in plain Markdown. No magic binaries, no cloud services, no tra
 
 ## Quick start
 
-```bash
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh
-```
-
-That installs skills globally and registers the Claude Code plugin. For a single project, pass the repo path:
+Pick your agent:
 
 ```bash
+# Claude Code - plugin with /sk-* slash commands
+claude plugin marketplace add YogliB/ai
+claude plugin install slash-kit@ai
+
+# Devin - plugin with /slash-kit:* commands
+devin plugins install YogliB/ai#plugins/slash-kit
+
+# Any agent - skills only, global
+npx skills add YogliB/ai -g
+
+# Cursor - per project
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
 ```
+
+`install.sh` exists only for Cursor, until Cursor gets a proper plugin system.
 
 Want just one skill?
 
@@ -30,32 +39,35 @@ npx skills add YogliB/ai --skill sk-planning
 ```
 
 To remove one skill: `npx skills remove sk-planning` (add `-g` if you installed globally).
-To remove the full install: `sh /tmp/ai/uninstall.sh` (or pass a repo path).
+To remove a plugin, use the agent's own remove command (`claude plugin uninstall slash-kit@ai`, `devin plugins remove slash-kit`).
+To remove a Cursor project install: `sh /tmp/ai/uninstall.sh /path/to/your/repo`.
 
 ## Use it
 
 ### In Claude Code
 
-Type the skill name as a slash command at the start of a prompt:
+Plugin skills are namespaced. Type the command at the start of a prompt:
 
 ```text
-/sk-explore add-auth-token
-/sk-alternatives for caching API responses
-/sk-planning add-auth-token
-/sk-review-and-fix
-/sk-pr
-/sk-flow auto
+/slash-kit:sk-explore add-auth-token
+/slash-kit:sk-alternatives for caching API responses
+/slash-kit:sk-planning add-auth-token
+/slash-kit:sk-review-and-fix
+/slash-kit:sk-pr
+/slash-kit:sk-flow auto
 ```
 
-| Slash command         | What it does                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------ |
-| `/sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
-| `/sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
-| `/sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
-| `/sk-review-and-fix`  | Review and fix the current diff.                                                     |
-| `/sk-pr`              | Create or update a GitHub PR.                                                        |
-| `/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
+Installed a skill individually with `npx skills add`? Drop the `/slash-kit:` prefix (`/sk-planning`).
+
+| Slash command                    | What it does                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------ |
+| `/slash-kit:/sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/slash-kit:/sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
+| `/slash-kit:/sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
+| `/slash-kit:/sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
+| `/slash-kit:/sk-review-and-fix`  | Review and fix the current diff.                                                     |
+| `/slash-kit:/sk-pr`              | Create or update a GitHub PR.                                                        |
+| `/slash-kit:/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
 ### In Devin
 

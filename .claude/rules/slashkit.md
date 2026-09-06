@@ -1,6 +1,6 @@
 # slashkit
 
-slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills listed below; they may live alongside other skills in `.agents/skills/`.
+slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills listed below; they live in `skills/` in this repo and in `.agents/skills/` when installed into a project.
 
 ## Skills
 
@@ -21,6 +21,6 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 ## Conventions
 
 - Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations.
-- Before using a slashkit skill, read `.agents/skills/<skill>/SKILL.md`.
+- Before using a slashkit skill, read `skills/<skill>/SKILL.md` (or `.agents/skills/<skill>/SKILL.md` in an installed project).
 - Invoke slashkit skills by name. Do not run the full workflow (`sk-flow`) unless the user explicitly asks for it.
 - Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `RUNBOOK.md`. The actual flow directory name starts with `sk-` and is short, clear, and concise.
