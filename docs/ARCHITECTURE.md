@@ -6,7 +6,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 
 ```text
 ./
-├── .agents/skills/          # On-demand skills (source of truth)
+├── skills/                  # Skills (source of truth for all agents)
 │   ├── sk-ai-toolbelt/
 │   ├── sk-alternatives/
 │   ├── sk-explore/
@@ -24,8 +24,8 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
 ├── .claude-plugin/          # Claude Code plugin manifest
-├── plugins/slash-kit/       # Devin plugin (manifest, skills symlinked from .agents/skills/)
-├── install.sh               # Install globally or per project
+├── plugins/slash-kit/       # Devin plugin (manifest, skills symlinked from root skills/)
+├── install.sh               # Install skills and Cursor rules into a project
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
 ├── README.md                # Human-facing overview
@@ -40,14 +40,14 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ```text
 [user prompt]
    │
-   ├── Claude: slash command or description match loads the matching .agents/skills/sk-*/SKILL.md
+   ├── Claude: slash command or description match loads the matching skills/sk-*/SKILL.md
    │
    ├── Cursor: .cursor/rules/*.mdc loaded as context
    │
    ├── Devin: slash-kit plugin (plugins/slash-kit/) provides the skills as /slash-kit:* commands
    │
    ▼
-[relevant .agents/skills/sk-*/SKILL.md]
+[relevant skills/sk-*/SKILL.md]
    ▼
 [output or file artifact]
 ```
@@ -80,7 +80,7 @@ Each phase can run in an independent subagent. The parent passes the plan or dif
 
 ### Skills are source of truth
 
-Each skill in `.agents/skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin loads the same skill files through the slash-kit plugin; Cursor uses them through the skill tool or rules.
+Each skill in `skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin loads the same skill files through the slash-kit plugin; Cursor uses them through the skill tool or rules.
 
 ### Flow runbooks are durable artifacts
 

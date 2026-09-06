@@ -1,9 +1,14 @@
 #!/usr/bin/env sh
-# Uninstall the ai workflow skills, Claude Code plugin, and rules.
+# Remove the ai workflow skills and Cursor rules from a project.
+# uninstall.sh exists only for Cursor, until Cursor gets a proper plugin system.
 #
 # Usage:
-#   ./uninstall.sh                    # uninstall skills, plugin, and rules globally
-#   ./uninstall.sh /path/to/repo      # uninstall rules and skills from a target project
+#   ./uninstall.sh /path/to/repo      # remove skills and Cursor rules from a target project
+#
+# Other agents have their own removal paths:
+#   Claude Code:    claude plugin uninstall slash-kit@ai && claude plugin marketplace remove ai
+#   Devin:          devin plugins remove slash-kit
+#   Global skills:  npx skills remove -g
 
 set -e
 
@@ -140,42 +145,6 @@ remove_legacy_rules() {
 	done
 }
 
-uninstall_global() {
-	echo "Uninstalling ai workflow skills, Claude Code plugin, and rules..."
-
-	# Collect the skill names defined in this repo.
-	set --
-	for skill_dir in "$REPO_ROOT"/.agents/skills/*; do
-		if [ -d "$skill_dir" ]; then
-			set -- "$@" "$(basename "$skill_dir")"
-		fi
-	done
-
-	if [ $# -gt 0 ]; then
-		if command -v npx >/dev/null 2>&1; then
-			npx --yes skills remove -g -a universal -a claude-code -y "$@"
-		else
-			echo "npx not found; removing skill directories manually." >&2
-			for skill in "$@"; do
-				rm -rf "$HOME/.agents/skills/$skill"
-			done
-		fi
-	fi
-
-	# Also remove legacy (unprefixed) skill directories.
-	remove_legacy_skills "$HOME/.agents/skills"
-
-	if command -v claude >/dev/null 2>&1; then
-		echo "Removing the slash-kit Claude Code plugin and marketplace..."
-		claude plugin uninstall slash-kit@ai --scope user -y || true
-		claude plugin marketplace remove ai --scope user || true
-	else
-		echo "Claude Code CLI not found; skipping Claude plugin removal."
-	fi
-
-	echo "Done."
-}
-
 uninstall_project() {
 	target_raw="$1"
 	TARGET=$(resolve_dir "$target_raw") || {
@@ -191,7 +160,7 @@ uninstall_project() {
 	echo "Uninstalling ai workflow from $TARGET"
 
 	# Skills
-	for skill_dir in "$REPO_ROOT"/.agents/skills/*; do
+	for skill_dir in "$REPO_ROOT"/skills/*; do
 		if [ -d "$skill_dir" ]; then
 			name=$(basename "$skill_dir")
 			rm -rf "$TARGET/.agents/skills/$name"
@@ -207,13 +176,14 @@ uninstall_project() {
 	done
 	remove_legacy_rules "$TARGET/.cursor/rules" ai-conventions.mdc ai-workflow.mdc
 
-	# Claude rules
+	# Rules left by previous installs (Claude and Devin)
 	for rule in "$REPO_ROOT"/.claude/rules/*.md; do
 		if [ -f "$rule" ]; then
 			rm -f "$TARGET/.claude/rules/$(basename "$rule")"
 		fi
 	done
 	remove_legacy_rules "$TARGET/.claude/rules" conventions.md workflow.md
+	remove_legacy_rules "$TARGET/.devin/rules" slashkit.md ai-conventions.md ai-workflow.md
 
 	# Runbook and flow runbooks README if unchanged
 	remove_if_unchanged "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
@@ -254,15 +224,15 @@ uninstall_project() {
 	rmdir "$TARGET/.cursor" 2>/dev/null || true
 	rmdir "$TARGET/.claude/rules" 2>/dev/null || true
 	rmdir "$TARGET/.claude" 2>/dev/null || true
+	rmdir "$TARGET/.devin/rules" 2>/dev/null || true
+	rmdir "$TARGET/.devin" 2>/dev/null || true
 
 	echo "Done."
 }
 
-case "${1:-}" in
-	"" | --global)
-		uninstall_global
-		;;
-	*)
-		uninstall_project "$1"
-		;;
-esac
+if [ $# -ne 1 ]; then
+	echo "Usage: $0 /path/to/repo" >&2
+	exit 1
+fi
+
+uninstall_project "$1"

@@ -18,4 +18,4 @@ This directory holds durable, self-contained technical plans produced by the `pl
 
 ## Plan content
 
-Plans follow the template in `.agents/skills/planning/templates/plan.md` (or `masterplan.md` for multi-PR work). They must be fully self-contained: an implementer should be able to execute using only the plan plus a normal repo checkout.
+Plans follow the template in `skills/sk-planning/templates/plan.md` (or `masterplan.md` for multi-PR work). They must be fully self-contained: an implementer should be able to execute using only the plan plus a normal repo checkout.
