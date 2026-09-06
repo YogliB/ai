@@ -24,7 +24,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .claude/rules/           # Claude rule modules
 ├── .cursor/rules/           # Cursor project rules
 ├── .claude-plugin/          # Claude Code plugin manifest
-├── plugins/slash-kit/       # Devin plugin (manifest, skills symlinked from root skills/)
+├── plugins/slash-kit/       # Devin plugin (manifest, skills synced from root skills/ by scripts/sync-devin-plugin.sh)
 ├── install.sh               # Install skills and Cursor rules into a project
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
