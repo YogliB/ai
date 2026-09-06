@@ -7,7 +7,7 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 - **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-implement`, `sk-review-plan`, `sk-review-and-fix`, and `sk-pr`.
 - **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-implement`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
 - **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
-- **Rules** — editor-specific conventions for Claude, Cursor, and Devin.
+- **Rules** — editor-specific conventions for Claude and Cursor.
 
 Everything lives in plain Markdown. No magic binaries, no cloud services, no tracking.
 
@@ -57,6 +57,20 @@ Type the skill name as a slash command at the start of a prompt:
 | `/sk-pr`              | Create or update a GitHub PR.                                                        |
 | `/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
+### In Devin
+
+Install the plugin, then prefix the skill name with `/slash-kit:`:
+
+```bash
+devin plugins install YogliB/ai#plugins/slash-kit
+```
+
+```text
+/slash-kit:sk-planning add-auth-token
+/slash-kit:sk-implement
+/slash-kit:sk-flow auto
+```
+
 ### In any editor
 
 Name the skill directly:
@@ -79,11 +93,11 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 
 ## Caveats
 
-- **Slash commands work in Claude Code.** Cursor and Devin can use the skill names or the [runbook](RUNBOOK.md).
+- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/slash-kit:sk-*`). Cursor can use the skill names or the [runbook](RUNBOOK.md).
 - **Cursor rules are project-scoped.** Install them into each repo where you want them.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
-- **Cross-editor rules are not fully unified yet.** Claude Code supports rule `@` includes from `AGENTS.md`/`CLAUDE.md`, so agent-only rules can live in `.agents/rules/`. Cursor and Devin require rules in their own project-scoped directories and do not reliably load global or shared rule files. The install script copies editor-specific rules as a workaround; a single `.agents/rules/` source for all editors is a known gap.
+- **Cross-editor rules are not fully unified yet.** Claude Code supports rule `@` includes from `AGENTS.md`/`CLAUDE.md`, so agent-only rules can live in `.agents/rules/`. Cursor requires rules in its own project-scoped directory and does not reliably load global or shared rule files. The install script copies editor-specific rules as a workaround; a single `.agents/rules/` source for all editors is a known gap.
 
 ## More
 
