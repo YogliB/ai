@@ -17,6 +17,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. Else look for a stuck flow: one where `3 - IMPLEMENTATION.md` exists and `4 - REVIEW.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
+4. If `4 - REVIEW.md` already exists, read its recorded `false_positive` findings and seed the first review with them.
 
 ## Input
 
@@ -26,6 +27,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 - **Custom focus / out of scope:** only when the user gave constraints
 - **Active plan:** newest `2 - PLANNING*.md` in the active flow
 - **Known validation gaps:** list missing plan/spec/Figma/tests/browser; do not claim those areas verified
+- **False positives from previous reviews:** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. One per line as `file:line | tag | original finding | why it was dismissed`. File plus finding text is the identity: the line alone is not, since numbers drift and one line can yield several findings under the same tag.
 
 ## Output contract
 
@@ -40,6 +42,7 @@ Base branch: <only when non-default>
 Custom focus: <only when user gave constraints>
 Out of scope: <only when user excluded areas>
 Known validation gaps: <only when context/capability missing — list each; do not claim those areas verified>
+False positives from previous reviews: <only when earlier passes produced some; one per line as `file:line | tag | original finding | why it was dismissed`. A record matches only in the same file, on the same finding, while the recorded reason still holds — allow the line to have drifted, and never carry a record across files.>
 
 Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files as needed.
 
@@ -70,6 +73,7 @@ Rules for Review Findings:
   - ❓ question: unclear logic, missing spec/context (cite gap if missing)
 - Do not report style-only nits outside project norms unless indicating real bugs.
 - Do not flag a single smoke test, one assert-based self-check, or the smallest runnable check guarding changed logic.
+- Do not re-report a finding listed under "False positives from previous reviews" when it recurs in the same file and the recorded reason still holds. Do report it if the reason no longer applies, or if the same problem appears in another file — note the changed premise.
 
 Examples (tone only):
 - L12-38: ⚡ simplify: 27-line email validator class. Use standard shape check or rely on confirmation mail.
@@ -105,9 +109,9 @@ End with exactly one line:
 If the diff is empty, stop in one sentence.
 
 1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent with the prompt above.
-2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated`. Count `valid` only. `unvalidated` items are recorded as validation gaps.
+2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
 3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for ≤2 surgical files; parent edits for 3+ files or cross-cutting changes.
-4. **Repeat** — dispatch a new subagent on the current tree. Continue until the latest pass has zero `valid` findings after triage.
+4. **Repeat** — dispatch a new subagent on the current tree. Carry forward every `false_positive` in the record shape above into `False positives from previous reviews` in the next review prompt. Continue until the latest pass has zero `valid` findings after triage.
 
 **Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
@@ -127,6 +131,7 @@ When the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOO
 - Review rounds completed
 - `valid` findings fixed (count and one-line summary)
 - `false_positive` count
+- `false_positive` findings from each round in the record shape above, under a `## False positives` heading, so future `sk-review-and-fix` runs can seed from them
 - Any `unvalidated` items / validation gaps
 - Test and browser/visual status, if available
 
