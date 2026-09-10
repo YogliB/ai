@@ -19,6 +19,10 @@
 
 {{valid / false_positive / unvalidated counts}}
 
+## False positives
+
+{{one per line as `file:line | tag | original finding | why it was dismissed`; later runs seed from this}}
+
 ## Fixes
 
 {{what was changed to resolve findings}}

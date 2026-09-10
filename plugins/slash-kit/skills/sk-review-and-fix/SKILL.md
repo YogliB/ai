@@ -27,7 +27,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 - **Custom focus / out of scope:** only when the user gave constraints
 - **Active plan:** newest `2 - PLANNING*.md` in the active flow
 - **Known validation gaps:** list missing plan/spec/Figma/tests/browser; do not claim those areas verified
-- **False positives from previous reviews:** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. List each with file:line, tag, and one-line triage reason.
+- **False positives from previous reviews:** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. One per line as `file:line | tag | original finding | why it was dismissed`; the finding text is what identifies it, since line numbers move and one line can produce several findings under the same tag.
 
 ## Output contract
 
@@ -42,7 +42,7 @@ Base branch: <only when non-default>
 Custom focus: <only when user gave constraints>
 Out of scope: <only when user excluded areas>
 Known validation gaps: <only when context/capability missing — list each; do not claim those areas verified>
-False positives from previous reviews: <only when earlier passes or an existing 4 - REVIEW.md produced some; list each with file:line, tag, and the one-line triage reason. Do not re-report these findings unless the diff or context has changed so materially that the original reason no longer applies.>
+False positives from previous reviews: <only when earlier passes produced some; one per line as `file:line | tag | original finding | why it was dismissed`. Match on the finding text, not the location — line numbers move between passes.>
 
 Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files as needed.
 
@@ -111,7 +111,7 @@ If the diff is empty, stop in one sentence.
 1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent with the prompt above.
 2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated`. Count `valid` only. `unvalidated` items are recorded as validation gaps.
 3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for ≤2 surgical files; parent edits for 3+ files or cross-cutting changes.
-4. **Repeat** — dispatch a new subagent on the current tree. Carry forward every `false_positive` finding with its file:line, tag, and triage reason into `False positives from previous reviews` in the next review prompt. Continue until the latest pass has zero `valid` findings after triage.
+4. **Repeat** — dispatch a new subagent on the current tree. Carry forward every `false_positive` in the record shape above into `False positives from previous reviews` in the next review prompt. Continue until the latest pass has zero `valid` findings after triage.
 
 **Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
@@ -131,7 +131,7 @@ When the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOO
 - Review rounds completed
 - `valid` findings fixed (count and one-line summary)
 - `false_positive` count
-- `false_positive` findings from each round, with file:line, tag, and triage reason, so later passes or future `sk-review-and-fix` runs can start with them
+- `false_positive` findings from each round in the record shape above, under a `## False positives` heading, so future `sk-review-and-fix` runs can seed from them
 - Any `unvalidated` items / validation gaps
 - Test and browser/visual status, if available
 
