@@ -27,7 +27,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 - **Custom focus / out of scope:** only when the user gave constraints
 - **Active plan:** newest `2 - PLANNING*.md` in the active flow
 - **Known validation gaps:** list missing plan/spec/Figma/tests/browser; do not claim those areas verified
-- **False positives from previous reviews:** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. One per line as `file:line | tag | original finding | why it was dismissed`; the finding text is what identifies it, since line numbers move and one line can produce several findings under the same tag.
+- **False positives from previous reviews:** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. One per line as `file:line | tag | original finding | why it was dismissed`. File plus finding text is the identity: the line alone is not, since numbers drift and one line can yield several findings under the same tag.
 
 ## Output contract
 
@@ -42,7 +42,7 @@ Base branch: <only when non-default>
 Custom focus: <only when user gave constraints>
 Out of scope: <only when user excluded areas>
 Known validation gaps: <only when context/capability missing — list each; do not claim those areas verified>
-False positives from previous reviews: <only when earlier passes produced some; one per line as `file:line | tag | original finding | why it was dismissed`. Match on the finding text, not the location — line numbers move between passes.>
+False positives from previous reviews: <only when earlier passes produced some; one per line as `file:line | tag | original finding | why it was dismissed`. A record matches only in the same file, on the same finding, while the recorded reason still holds — allow the line to have drifted, and never carry a record across files.>
 
 Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files as needed.
 
@@ -73,7 +73,7 @@ Rules for Review Findings:
   - ❓ question: unclear logic, missing spec/context (cite gap if missing)
 - Do not report style-only nits outside project norms unless indicating real bugs.
 - Do not flag a single smoke test, one assert-based self-check, or the smallest runnable check guarding changed logic.
-- Do not re-report a finding listed under "False positives from previous reviews". If the same code still triggers it, treat it as a false positive again and skip it. Only report it again if the diff or context has changed materially enough that the original reason no longer applies; note the changed premise.
+- Do not re-report a finding listed under "False positives from previous reviews" when it recurs in the same file and the recorded reason still holds. Do report it if the reason no longer applies, or if the same problem appears in another file — note the changed premise.
 
 Examples (tone only):
 - L12-38: ⚡ simplify: 27-line email validator class. Use standard shape check or rely on confirmation mail.
