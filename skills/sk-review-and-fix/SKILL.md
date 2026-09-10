@@ -109,7 +109,7 @@ End with exactly one line:
 If the diff is empty, stop in one sentence.
 
 1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent with the prompt above.
-2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated`. Count `valid` only. `unvalidated` items are recorded as validation gaps.
+2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
 3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for ≤2 surgical files; parent edits for 3+ files or cross-cutting changes.
 4. **Repeat** — dispatch a new subagent on the current tree. Carry forward every `false_positive` in the record shape above into `False positives from previous reviews` in the next review prompt. Continue until the latest pass has zero `valid` findings after triage.
 
