@@ -8,7 +8,9 @@ These rules are always-on. Read them before every task:
 
 {{rules_table}}
 
-{{rules_includes}}
+<!-- rules:start -->
+<!-- generated from .agents/rules/ — do not edit, run scripts/sync-agents.sh -->
+<!-- rules:end -->
 
 ## Docs index
 
