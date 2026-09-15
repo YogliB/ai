@@ -66,7 +66,7 @@ Before opening a pull request, run:
 
 ### Improving The Documentation
 
-Documentation lives in `README.md`, `AGENTS.md`, and `docs/`. Keep them aligned when changing workflows or navigation.
+Documentation lives in `README.md`, `AGENTS.md`, and `docs/`. Keep them aligned when changing workflows or navigation. CONTRIBUTING documents process only — architecture rules belong in `docs/ARCHITECTURE.md` or `docs/architecture/`.
 
 ## Styleguides
 

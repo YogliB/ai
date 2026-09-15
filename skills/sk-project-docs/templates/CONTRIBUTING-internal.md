@@ -18,7 +18,7 @@
 
 - Keep changes focused on one concern.
 - Run `{{format}}` before committing.
-- Update `README.md`, `AGENTS.md`, and any affected docs.
+- Update `README.md`, `AGENTS.md`, and any affected docs. Architecture rules belong in `docs/ARCHITECTURE.md` or `docs/architecture/`, not here.
 
 ## Commit messages
 

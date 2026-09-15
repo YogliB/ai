@@ -20,7 +20,7 @@ Scaffold only the docs the project needs. Audit existing docs, move overlapping 
 
 `AGENTS.md` and `CLAUDE.md` are agent-only. `AGENTS.md` must be three things: a docs index, an AI rules index, and a highly condensed version of the docs. `CLAUDE.md` is a symlink (or fallback `@AGENTS.md` file) to `AGENTS.md`.
 
-Docs are human- and agent-facing. Agent-only rules go in `.agents/rules/` and are referenced explicitly in `AGENTS.md`/`CLAUDE.md` with `@.agents/rules/<file>.md`. Do not use globs like `@.agents/rules/*.md`.
+Docs are human- and agent-facing. Agent-only rules go in `.agents/rules/`, one rule per file, and are concatenated into the `<!-- rules -->` block of `AGENTS.md` by `scripts/sync-agents.sh` — `@`-includes only work on agents that resolve them, the generated block works everywhere.
 
 ## Output
 
@@ -38,6 +38,8 @@ These files may be created or updated:
 - `docs/CODE_OF_CONDUCT.md`
 - `docs/CHANGELOG.md`
 - `docs/TROUBLESHOOTING.md`
+- `docs/<name>/*.md` (optional deep dives under a parent doc)
+- `scripts/check-docs.sh` + `scripts/check-docs.d/` + `scripts/sync-agents.sh`
 
 ## Decision grid
 
@@ -79,22 +81,40 @@ A project should hold only these docs:
 - `CLAUDE.md` — symlink or `@AGENTS.md` fallback.
 - `llms.txt` — public projects only.
 - `LICENSE.md` — open/public projects.
-- `docs/ARCHITECTURE.md` — structure and data flow.
+- `docs/ARCHITECTURE.md` — structure and data flow. Template follows the [architecture.md](https://architecture.md/) spec.
 - `docs/USAGE.md` — detailed usage.
 - `docs/CONTRIBUTING.md` — setup, conventions, and PRs.
 - `docs/SECURITY.md` — security policy.
 - `docs/CODE_OF_CONDUCT.md` — open/corp policy.
 - `docs/CHANGELOG.md` — versioned releases.
 - `docs/TROUBLESHOOTING.md` — common problems.
+- `docs/<name>/*.md` — optional deep-dive overflow for one `docs/<NAME>.md`. Exists only when the parent can't hold the content. Must stay flat, and every file must be linked from the parent.
 
-Anything outside this tree that overlaps with a standard doc is a candidate for merging, not indexing.
+Anything outside this tree that overlaps with a standard doc is a candidate for merging, not indexing. Anything that doesn't fit a standard doc and earns its keep goes under `docs/<name>/` — never a new top-level file.
+
+## Audit checks
+
+Deterministic lint, not editorial judgment. `templates/check-docs.sh` runs every check in `templates/check-docs.d/` from the repo root and prints `FAIL <file>: <msg>` / `warn <file>: <msg>` lines. Run it first, read only the flagged files, fix, re-run until clean.
+
+| Check              | Catches                                                             | Level              |
+| ------------------ | ------------------------------------------------------------------- | ------------------ |
+| `line-budget`      | `docs/ARCHITECTURE.md` / `docs/CONTRIBUTING.md` over 300 lines      | FAIL (core) / warn |
+| `quarantine`       | top-level `docs/*.md` outside the standard tree                     | FAIL               |
+| `overflow-parent`  | `docs/<name>/` dir with no `docs/<NAME>.md` parent                  | FAIL               |
+| `overflow-orphan`  | `docs/<name>/*.md` not linked from its parent                       | FAIL               |
+| `overflow-flat`    | nested dirs or non-md files inside `docs/<name>/`                   | FAIL / warn        |
+| `overflow-count`   | one `docs/<name>/` holding over 5 files                             | warn               |
+| `no-ast-mirroring` | markdown tables of code identifiers (env vars, dotted names, paths) | warn               |
+| `process-boundary` | architecture-style headings in CONTRIBUTING/USAGE                   | warn               |
+| `agents-sync`      | AGENTS.md rules block out of sync with `.agents/rules/`             | FAIL               |
+
+Each file in `check-docs.d/` is self-documenting: header comment states the rule, body implements it. Budgets tune via `DOCS_BUDGET` and `DOCS_OVERFLOW_MAX` env vars.
 
 ## Placeholders
 
-Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setup}}`, `{{run}}`, `{{format}}`, `{{rules_table}}`, `{{rules_includes}}`, `{{docs_table}}`, `{{what}}`, `{{how}}`, and `{{conventions}}` from `package.json`, git remote, or by asking/inferring.
+Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setup}}`, `{{run}}`, `{{format}}`, `{{rules_table}}`, `{{docs_table}}`, `{{what}}`, `{{how}}`, and `{{conventions}}` from `package.json`, git remote, or by asking/inferring.
 
 - `{{rules_table}}` — full markdown table with columns `Rule`, `File`, `What it covers`.
-- `{{rules_includes}}` — explicit `@.agents/rules/<file>.md` lines, one per rule file.
 - `{{docs_table}}` — full markdown table with columns `Doc`, `Purpose`.
 - `{{what}}` — one-paragraph summary of what the project is.
 - `{{how}}` — short setup, conventions, common commands, and project layout.
@@ -103,24 +123,26 @@ Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setu
 ## Conventions
 
 - `AGENTS.md` is agent-only. No long prose, no human tutorial, no pull-request section. Just docs index, rules index, condensed docs.
-- Agent-only rules live in `.agents/rules/`.
-- Reference each rule file explicitly: `@.agents/rules/<file>.md`.
+- Agent-only rules live in `.agents/rules/`, one rule per file. `AGENTS.md` never references them with `@`-includes — `scripts/sync-agents.sh` splices them into the rules block instead.
 - Start `AGENTS.md` with a strong instruction to read the rules before doing any work.
 - Docs are human- and agent-facing. Do not duplicate `AGENTS.md` content in `README.md` or `docs/*`.
+- Do not mirror code into docs. No tables of env vars, schema columns, or file inventories — link the source of truth.
 
 ## Steps
 
-1. **Inspect** the repo for existing docs, rules, and source of truth.
-2. **Audit** docs against the standard tree. Identify files that overlap, duplicate, or belong elsewhere (e.g. `docs/ai_guidelines.md` that should fold into `docs/CONTRIBUTING.md` or an `.agents/rules/` file).
-3. **Propose** a list of docs and a cleanup plan. Ask which to create, update, move, or remove.
+1. **Lint first.** Run `scripts/check-docs.sh` in the target repo; if absent, run `templates/check-docs.sh` from this skill with the repo root as argument. The report is the audit.
+2. **Inspect** flagged files plus the repo's decision-grid signals and source of truth.
+3. **Propose** fixes: which docs to create, update, merge, move under `docs/<name>/`, or remove. Ask before proceeding.
 4. **Do not remove files** without explicit user approval. Move content first, then ask whether to delete the source.
 5. **Read** the relevant templates from `templates/`.
 6. **Substitute** placeholders.
 7. **Write** each doc.
-8. **Create or update** `AGENTS.md` from `templates/template-agents.md`. It must be a rules-first index, then a docs index, then a highly condensed version of the docs. Reference rule files explicitly with `@.agents/rules/<file>.md`.
-9. **Create or update** `llms.txt` if `audience` is `public`.
-10. **Create or update** `CLAUDE.md`: try `ln -s AGENTS.md CLAUDE.md`, fall back to a one-line `@AGENTS.md` file.
-11. **Report** what changed and suggest using the `documentation` skill to fill prose.
+8. **Create or update** `AGENTS.md` from `templates/template-agents.md`. It must be a rules-first index, then a docs index, then a highly condensed version of the docs.
+9. **Emit the scripts**: copy `check-docs.sh`, `check-docs.d/`, and `sync-agents.sh` into the repo's `scripts/` (skip only if the repo can't run bash). Run `sync-agents.sh` once `.agents/rules/` exists.
+10. **Create or update** `llms.txt` if `audience` is `public`.
+11. **Create or update** `CLAUDE.md`: try `ln -s AGENTS.md CLAUDE.md`, fall back to a one-line `@AGENTS.md` file.
+12. **Re-run `check-docs.sh`.** Clean exit is the done condition, not your judgment.
+13. **Report** what changed and suggest using the `documentation` skill to fill prose.
 
 Do not create rule files; only reference what already exists.
 

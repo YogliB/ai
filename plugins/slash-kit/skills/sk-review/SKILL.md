@@ -103,17 +103,24 @@ PR mode only when the user passed a PR link/number or explicitly asked (e.g. `/s
 
     ```json
     {
-        "commit_id": "<sha>",
-        "event": "COMMENT",
-        "body": "<general remarks>",
-        "comments": [
-            { "path": "src/file.ts", "line": 42, "side": "RIGHT", "body": "<problem>. <fix>." },
-            { "path": "src/file.ts", "start_line": 10, "line": 15, "side": "RIGHT", "body": "<problem>. <fix>." }
-        ]
+    	"commit_id": "<sha>",
+    	"event": "COMMENT",
+    	"body": "<general remarks>",
+    	"comments": [
+    		{ "path": "src/file.ts", "line": 42, "side": "RIGHT", "body": "<problem>. <fix>." },
+    		{
+    			"path": "src/file.ts",
+    			"start_line": 10,
+    			"line": 15,
+    			"side": "RIGHT",
+    			"body": "<problem>. <fix>."
+    		}
+    	]
     }
     ```
 
     Delete `review.json` after the call, even on failure.
+
 - **No duplicates** — skim existing review comments first (`gh api repos/{owner}/{repo}/pulls/<n>/comments --paginate`) and skip findings already raised.
 - If posting fails, display the findings block locally and say the PR post failed.
 
