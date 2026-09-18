@@ -2,7 +2,7 @@
 
 This is the executable plan for the flow. It must be fully self-contained: an implementer should be able to execute using only this document plus a normal repo checkout.
 
-Use the full plan template from `.agents/skills/sk-planning/templates/plan.md` (or `masterplan.md` for multi-repo/multi-PR work), keeping every required `##` section.
+Use the full plan template from the `sk-planning` skill's own `templates/plan.md` (or `templates/masterplan.md` for multi-repo/multi-PR work), keeping every required `##` section.
 
 ## Goal
 
