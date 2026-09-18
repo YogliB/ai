@@ -9,15 +9,19 @@ Execute the plan. This skill encodes execution discipline, not coding ability: t
 
 ## When to use
 
-- A `2 - PLANNING*.md` plan exists and has been approved by the user.
+- An exact `2 - PLANNING.md` exists in the active flow or PR directory and has been approved by the user.
 - The user asks to implement, build, or execute the plan.
 
 Do not use this skill to fill in for a missing plan. If there is no approved plan, stop and point the user to `sk-planning`.
 
+## Active PR handoff
+
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else look for a stuck flow: one where `2 - PLANNING*.md` exists and `3 - IMPLEMENTATION.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Then require exact `2 - PLANNING.md` and missing `3 - IMPLEMENTATION.md`. Never select from `2 - PLANNING*.md` or modification time.
 3. Read the plan in full before touching any file. Read `0 - EXPLORE.md` and `1 - ALTERNATIVES.md` only for context; the plan overrules them on any conflict.
 4. Set `RUNBOOK.md` row `3` to `in-progress`. Write `3 - IMPLEMENTATION.md` and set row `3` to `done` when finished.
 

@@ -17,12 +17,12 @@ description: Draft a self-contained executable technical plan with atomic testab
 2. If the user gave no clear context, look for a stuck flow: one where `1 - ALTERNATIVES.md` exists and `2 - PLANNING*.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, derive a short kebab-case slug from the goal and confirm.
 3. Create `.agents/flows/sk-<slug>/` if needed.
 4. Create or update `RUNBOOK.md` with row `2` as `in-progress`.
-5. Write the plan to `2 - PLANNING.md` (or `2 - PLANNING-master.md` plus `2 - PLANNING-<pr>.md` for masterplan/sub-plans) and set row `2` to `done`.
+5. Write a single-PR plan to `2 - PLANNING.md`. For multi-PR work, write the masterplan to root `2 - PLANNING.md` and each self-contained sub-plan to `pr-<stable-slug>/2 - PLANNING.md`; initialize the root and per-PR runbooks described below.
 
 ## Core requirements
 
 - **Self-contained**: an implementer can execute using only this document plus a normal repo checkout. No pointer-only references to Confluence, Jira, Figma, sibling plans, or chat history.
-- **Durable**: the plan is written to `2 - PLANNING*.md` so later phases can read it without chat context.
+- **Durable**: the active plan always has the exact name `2 - PLANNING.md` in its flow or PR directory, so later phases never guess from a glob.
 - **Inlined context**: API/data shapes, field mappings, env vars, flags, acceptance thresholds, before→after snippets, cross-PR contracts, and verification commands. Links are only optional attribution after the facts are inlined.
 - **Executable**: every step can be done without guessing missing context.
 - **Atomic TODOs**: each `Implementation Plan (TODOs)` item is one focused, testable action.
@@ -50,7 +50,7 @@ Note meaningful chances for refactors, performance, or security — even if defe
 ## Plan shape
 
 - **one repo, one PR** → use `templates/plan.md`.
-- **multi-repo or multi-PR** → use `templates/masterplan.md` plus one `templates/plan.md` per PR. Sub-plans repeat every fact they need from the masterplan.
+- **multi-repo or multi-PR** → use `templates/masterplan.md` at the initiative root plus one `templates/plan.md` in each PR directory. Sub-plans repeat every fact they need from the masterplan.
 
 ## Complexity split
 
@@ -101,11 +101,22 @@ Planning covers what to build, how to sequence it, delivery shape, and plan revi
 
 ## Plan file output
 
-- Default: `.agents/flows/sk-<slug>/2 - PLANNING.md`
-- Masterplan: `.agents/flows/sk-<slug>/2 - PLANNING-master.md`
-- Sub-plan: `.agents/flows/sk-<slug>/2 - PLANNING-<pr>.md`
-- Do not commit or push unless requested.
-- After writing, update `RUNBOOK.md` row `2` to `done` with a one-line summary.
+### Single PR
+
+- Plan: `.agents/flows/sk-<slug>/2 - PLANNING.md`
+- Keep the normal root `RUNBOOK.md`; set row `2` to `done` with a one-line summary.
+
+### Multiple PRs
+
+- Masterplan: `.agents/flows/sk-<slug>/2 - PLANNING.md`
+- Sub-plan: `.agents/flows/sk-<slug>/pr-<stable-slug>/2 - PLANNING.md`
+- Replace the root runbook with the `sk-flow` skill's `templates/MULTI-PR-RUNBOOK.md`. Fill ordered PR rows, repository, dependencies, directory, state, branch/base/HEAD placeholders, and `Active PR`.
+- Create each PR directory from the normal `sk-flow` runbook template. Mark rows `0` and `1` `skipped` with `initiative root`; mark row `2` `done` and link the local `2 - PLANNING.md`.
+- Derive stable slugs from PR purpose. Never use only an ordinal and never rename a slug after it enters the root runbook.
+- Set the first dependency-free PR to `in-progress` and `Active PR`; leave other PRs `pending`. If none is unblocked, use `Active PR: none` and mark the initiative `blocked`.
+- Do not also emit suffixed `2 - PLANNING-*.md` files. The root and each PR directory have one unambiguous `2 - PLANNING.md`.
+
+Do not commit or push unless requested.
 
 ## Next step
 

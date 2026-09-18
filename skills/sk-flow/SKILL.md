@@ -18,54 +18,78 @@ Only run this skill when the user explicitly asks for the workflow.
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. If no slug, look for a stuck flow: any `.agents/flows/sk-*/` where the prior phase doc exists and the next phase doc is missing. If one, suggest continuing from the next pending phase. If several, list them and ask. If none, ask for a short kebab-case slug.
+2. If no slug, look for a stuck flow: any `.agents/flows/sk-*/` where the runbook has pending work. If one, suggest continuing its next pending phase or active PR. If several, list them and ask. If none, ask for a short kebab-case slug.
 3. Create `.agents/flows/sk-<slug>/` if needed.
-4. Create or update `RUNBOOK.md` with the checklist below.
-5. Pass the slug to each phase.
+4. Start as a single-PR flow. Create or update `RUNBOOK.md` from `templates/RUNBOOK.md` and pass the slug to each phase.
+5. If planning decides that the work needs multiple PRs, convert the root runbook to `templates/MULTI-PR-RUNBOOK.md` and follow the multi-PR contract below.
 
-## Runbook template
+## Single-PR contract
 
-```markdown
-# Flow Runbook: <slug>
+Keep the current flat flow unchanged:
 
-Status: in-progress
-
-Goal: <one-line user goal>
-
-| #   | Phase          | State   | Agent / Session | Parent Dispatch / Input | Resulting HEAD | Artifact                                           | Summary | Divergence / Notes |
-| --- | -------------- | ------- | --------------- | ----------------------- | -------------- | -------------------------------------------------- | ------- | ------------------ |
-| 0   | Explore        | pending |                 |                         |                | [0 - EXPLORE.md](0%20-%20EXPLORE.md)               |         |                    |
-| 1   | Alternatives   | pending |                 |                         |                | [1 - ALTERNATIVES.md](1%20-%20ALTERNATIVES.md)     |         |                    |
-| 2   | Planning       | pending |                 |                         |                | [2 - PLANNING.md](2%20-%20PLANNING.md)             |         |                    |
-| 3   | Implementation | pending |                 |                         |                | [3 - IMPLEMENTATION.md](3%20-%20IMPLEMENTATION.md) |         |                    |
-| 4   | Review         | pending |                 |                         |                | [4 - REVIEW.md](4%20-%20REVIEW.md)                 |         |                    |
-| 5   | Verify         | pending |                 |                         |                | [5 - VERIFY.md](5%20-%20VERIFY.md)                 |         |                    |
-| 6   | PR             | pending |                 |                         |                | [6 - PR.md](6%20-%20PR.md)                         |         |                    |
-
-## Divergence log
-
-- none
+```text
+.agents/flows/sk-<slug>/
+├── RUNBOOK.md
+├── 0 - EXPLORE.md
+├── 1 - ALTERNATIVES.md
+├── 2 - PLANNING.md
+├── 3 - IMPLEMENTATION.md
+├── 4 - REVIEW.md
+├── 5 - VERIFY.md
+└── 6 - PR.md
 ```
 
-State values: `done`, `skipped` (with reason), `diverged` (with reason), `blocked`, `pending`. Keep the runbook accurate after each phase.
+The runbook template is `templates/RUNBOOK.md`. State values are `done`, `skipped` (with reason), `diverged` (with reason), `blocked`, `in-progress`, and `pending`.
 
-Dispatch each phase to a fresh isolated worker when the harness supports it. Record its agent or session ID, the parent dispatch ID or input artifact, and the resulting HEAD when the phase can change the repository. If isolated workers are unavailable, record `inline` and explain the fallback in `Divergence / Notes`.
+## Multi-PR contract
 
-## Running the flow
+Planning owns the transition from a single-PR flow to a multi-PR initiative:
 
-1. **Explore** — `sk-explore`. Writes `0 - EXPLORE.md`; updates row `0`.
+```text
+.agents/flows/sk-<slug>/
+├── RUNBOOK.md                 # initiative state and PR order
+├── 0 - EXPLORE.md
+├── 1 - ALTERNATIVES.md
+├── 2 - PLANNING.md            # masterplan
+├── pr-<stable-slug>/
+│   ├── RUNBOOK.md
+│   ├── 2 - PLANNING.md        # self-contained plan for this PR
+│   ├── 3 - IMPLEMENTATION.md
+│   ├── 4 - REVIEW.md
+│   ├── 5 - VERIFY.md
+│   └── 6 - PR.md
+└── pr-<stable-slug>/...
+```
+
+- Use `templates/MULTI-PR-RUNBOOK.md` for the root and the normal `templates/RUNBOOK.md` inside every PR directory. Mark rows `0` and `1` in a PR runbook `skipped` because those artifacts remain at the initiative root.
+- Derive each stable slug from the PR's purpose, not its ordinal number. Once recorded, never rename or reuse it even if PR order changes.
+- Keep `Active PR` equal to exactly one PR slug, or `none` when the initiative is complete or blocked. Downstream phases use this field and the matching `Directory`; they never choose a plan from a glob or modification time.
+- The root PR table is the source of truth for order, repository, dependencies, state, directory, link, branch, base SHA, and HEAD. Dependencies contain PR slugs or `none`.
+- A PR is unblocked only when every dependency is `done`. Run one active PR through planning to PR before starting another.
+- Before each phase, fetch refs and verify the checked-out branch and HEAD against the active PR row. Sync using the harness's supported workflow, then record the resulting HEAD in both runbooks. If safe sync is unavailable or the values disagree unexpectedly, mark the PR `blocked`; do not continue on guessed state.
+- After `sk-pr`, record the PR URL, branch, base SHA, and final HEAD; set that PR to `done`. Then select the first `pending` PR in table order whose dependencies are all `done`. Set it to `in-progress` and update `Active PR`. If none is unblocked, set `Active PR: none` and mark the initiative `completed` or `blocked` as appropriate.
+
+## Dispatch metadata
+
+Dispatch each phase to a fresh isolated worker when the harness supports it. In the runbook for the phase being executed, record its agent or session ID, parent dispatch ID or input artifact, and resulting HEAD when the phase can change the repository. If isolated workers are unavailable, record `inline` and explain the fallback in `Divergence / Notes`.
+
+For multi-PR work, initiative coordination stays in the parent context. Phase dispatch metadata belongs in the active PR's runbook; the root table carries only cross-PR state.
+
+## Running one PR
+
+1. **Explore** — `sk-explore`. Writes root `0 - EXPLORE.md`; updates row `0`.
 2. (manual) Ask to continue.
-3. **Alternatives** — `sk-alternatives`. Writes `1 - ALTERNATIVES.md`; updates row `1`.
+3. **Alternatives** — `sk-alternatives`. Writes root `1 - ALTERNATIVES.md`; updates row `1`.
 4. (manual) Ask to continue.
-5. **Plan** — `sk-planning`. Writes `2 - PLANNING.md`; updates row `2`.
+5. **Plan** — `sk-planning`. For one PR, writes root `2 - PLANNING.md`. For multiple PRs, writes the root masterplan and each PR directory's `2 - PLANNING.md`, initializes all runbooks, and selects the first unblocked PR.
 6. (manual) Ask to continue.
-7. **Implement** — `sk-implement`. Writes `3 - IMPLEMENTATION.md`; updates row `3`.
+7. **Implement** — `sk-implement`. Writes `3 - IMPLEMENTATION.md` in the active flow or PR directory; updates row `3` there.
 8. (manual) Ask to continue.
-9. **Review** — `sk-review-and-fix` by default, or `sk-review` if read-only. Writes `4 - REVIEW.md`; updates row `4`.
+9. **Review** — `sk-review-and-fix` by default, or `sk-review` if read-only. Writes `4 - REVIEW.md` beside the active plan; updates row `4` there.
 10. (manual) Ask to continue.
-11. **Verify** (optional) — `sk-verify` if the plan or user requests it. Writes `5 - VERIFY.md` and updates row `5`; otherwise mark `skipped`.
+11. **Verify** (optional) — `sk-verify` if the plan or user requests it. Writes `5 - VERIFY.md` beside the active plan and updates row `5`; otherwise mark `skipped`.
 12. (manual) Ask to continue.
-13. **PR** — `sk-pr`. Writes `6 - PR.md`; updates row `6`. Set top status to `completed`.
+13. **PR** — `sk-pr`. Writes `6 - PR.md` beside the active plan; updates row `6`. Complete the single-PR flow, or update the initiative root and advance to the next unblocked PR.
 
 ## Example prompts
 
