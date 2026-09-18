@@ -1,4 +1,4 @@
-**Shape:** Umbrella for multi-PR and/or multi-repo work. Each PR has its own sub-plan from [plan.md](plan.md) (one repo, one PR each).
+**Shape:** Root initiative plan for multi-PR and/or multi-repo work. Save this as root `2 - PLANNING.md`; each PR has a self-contained `pr-<stable-slug>/2 - PLANNING.md` from [plan.md](plan.md).
 
 **Overview:** [2–3 short sentences]
 **Approach:** [brief]
@@ -20,15 +20,14 @@ Cross-cutting inlined facts for the whole initiative (shared schemas, rollout fl
 
 > PRs: whole numbers, start at 1, sequential by dependencies.
 
-| PR  | Repo   | Status | Link | Notes |
-| --- | ------ | ------ | ---- | ----- |
-| 1   | repo-a | ⏸️     | -    | ...   |
-| 2   | repo-b | 🟡     | ...  | ...   |
-| 3   | repo-a | 🟢     | ...  | ...   |
+| Order | PR Slug   | Repo   | Dependencies | Status | Directory       | Link | Branch | Base SHA | HEAD | Notes |
+| ----- | --------- | ------ | ------------ | ------ | --------------- | ---- | ------ | -------- | ---- | ----- |
+| 1     | shared    | repo-a | none         | 🟡     | `pr-shared/`    | -    | -      | -        | -    | ...   |
+| 2     | workloads | repo-b | shared       | ⏸️     | `pr-workloads/` | -    | -      | -        | -    | ...   |
 
 Status: 🟢 done · 🟡 in‑progress · 🟠 awaiting review · ⏸️ not‑started · 🔴 blocked · ⚫ canceled
 
-## PR[N]: [Title] — [Status Icon]
+## PR[N]: [Stable Slug] — [Title] — [Status Icon]
 
 **Repo:** [name] · **Link:** [-/URL] · **ETA:** [X–Yh]
 **Files:** `path/one`, `path/two`

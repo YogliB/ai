@@ -13,10 +13,14 @@ One-shot, read-only diff review: run three parallel `readonly` `general-purpose`
 - Before `sk-pr` when only a report is needed.
 - As a lighter alternative to `sk-review-and-fix`.
 
+## Active PR handoff
+
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else look for a stuck flow: one where `3 - IMPLEMENTATION.md` exists and `4 - REVIEW.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` and missing `4 - REVIEW.md` there.
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 
 ## Input
@@ -25,7 +29,7 @@ One-shot, read-only diff review: run three parallel `readonly` `general-purpose`
 - **Diff target:** `branch changes` (default), `uncommitted changes`, or an explicit branch/PR (number or URL)
 - **Base branch:** only when non-default
 - **Custom focus / out of scope:** only when the user gave constraints
-- **Active plan:** newest `2 - PLANNING*.md` in the active flow
+- **Active plan:** exact `2 - PLANNING.md` in the active flow or PR directory; never choose by glob or modification time
 - **Known validation gaps:** list missing plan/spec/Figma/tests; do not claim those areas verified
 
 ## Output contract
@@ -103,17 +107,24 @@ PR mode only when the user passed a PR link/number or explicitly asked (e.g. `/s
 
     ```json
     {
-        "commit_id": "<sha>",
-        "event": "COMMENT",
-        "body": "<general remarks>",
-        "comments": [
-            { "path": "src/file.ts", "line": 42, "side": "RIGHT", "body": "<problem>. <fix>." },
-            { "path": "src/file.ts", "start_line": 10, "line": 15, "side": "RIGHT", "body": "<problem>. <fix>." }
-        ]
+    	"commit_id": "<sha>",
+    	"event": "COMMENT",
+    	"body": "<general remarks>",
+    	"comments": [
+    		{ "path": "src/file.ts", "line": 42, "side": "RIGHT", "body": "<problem>. <fix>." },
+    		{
+    			"path": "src/file.ts",
+    			"start_line": 10,
+    			"line": 15,
+    			"side": "RIGHT",
+    			"body": "<problem>. <fix>."
+    		}
+    	]
     }
     ```
 
     Delete `review.json` after the call, even on failure.
+
 - **No duplicates** — skim existing review comments first (`gh api repos/{owner}/{repo}/pulls/<n>/comments --paginate`) and skip findings already raised.
 - If posting fails, display the findings block locally and say the PR post failed.
 

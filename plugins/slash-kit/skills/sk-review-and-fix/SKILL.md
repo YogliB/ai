@@ -12,10 +12,14 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 - User asks for `sk-review-and-fix`, `/sk-review-and-fix`, or fixing review findings.
 - After implementation, when review and fixes should happen in one pass.
 
+## Active PR handoff
+
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else look for a stuck flow: one where `3 - IMPLEMENTATION.md` exists and `4 - REVIEW.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` and missing `4 - REVIEW.md` there.
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 4. If `4 - REVIEW.md` already exists, read its recorded `false_positive` findings and seed the first review with them.
 
@@ -25,7 +29,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 - **Diff target:** `branch changes` (default), `uncommitted changes`, or explicit branch/PR
 - **Base branch:** only when non-default
 - **Custom focus / out of scope:** only when the user gave constraints
-- **Active plan:** newest `2 - PLANNING*.md` in the active flow
+- **Active plan:** exact `2 - PLANNING.md` in the active flow or PR directory; never choose by glob or modification time
 - **Known validation gaps:** list missing plan/spec/Figma/tests/browser; do not claim those areas verified
 - **False positives from previous reviews:** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. One per line as `file:line | tag | original finding | why it was dismissed`. File plus finding text is the identity: the line alone is not, since numbers drift and one line can yield several findings under the same tag.
 

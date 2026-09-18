@@ -10,9 +10,13 @@ Create or update a GitHub PR for the current branch.
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else look for a stuck flow: one where `4 - REVIEW.md` exists and `6 - PR.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, find the most recent `RUNBOOK.md`.
-3. Read the active plan (`2 - PLANNING*.md`) and other phase docs for context.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `4 - REVIEW.md` and missing `6 - PR.md` there.
+3. Read the exact active plan (`2 - PLANNING.md`) and other phase docs in the selected flow or PR directory.
 4. After creating/updating the PR, write `6 - PR.md` and set `RUNBOOK.md` row `6` to `done`.
+
+## Active PR handoff
+
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
 
 ## Route: update or new
 
@@ -67,3 +71,7 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 - `gh` not found/auth errors: tell the user to run `gh auth login` (and `gh auth refresh` if needed).
 - Wrong repo: run commands from the project root.
 - Ambiguous PR: use `gh pr view <n> --repo owner/name` when the user specifies the repo.
+
+## Multi-PR completion
+
+After writing the active PR's `6 - PR.md`, update its root initiative row with the PR URL, state `done`, branch, base SHA, and final HEAD. Select the first `pending` row in order whose dependencies are all `done`, set it to `in-progress`, and set `Active PR` to that slug. If no pending PR remains, set `Active PR: none` and the initiative status to `completed`. If pending PRs remain but none is unblocked, set `Active PR: none`, mark the initiative `blocked`, and record the unmet dependencies.
