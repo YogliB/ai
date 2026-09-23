@@ -1,6 +1,6 @@
 {
 	"name": "slash-kit",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Reusable agent skills and an optional end-to-end workflow for Devin.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",

@@ -34,3 +34,18 @@ for f in "$SRC_RULES"/*.md; do
 done
 
 echo "sync-devin-plugin: synced $rcount rules to plugins/slash-kit/rules/"
+
+SRC_HOOKS="$ROOT/hooks"
+DST_HOOKS="$ROOT/plugins/slash-kit/hooks"
+
+rm -rf "$DST_HOOKS"
+mkdir -p "$DST_HOOKS"
+
+hcount=0
+for f in "$SRC_HOOKS"/*.py; do
+	[ -f "$f" ] || continue
+	cp "$f" "$DST_HOOKS/"
+	hcount=$((hcount + 1))
+done
+
+echo "sync-devin-plugin: synced $hcount hook scripts to plugins/slash-kit/hooks/"

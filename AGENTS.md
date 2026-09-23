@@ -73,7 +73,8 @@ nub run format
 - `.claude/rules/` — Claude rule modules.
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
+- `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests; injects rules into subagent prompts.
+- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` and `hooks/*.py` synced from root, plus `hooks.json`).
 - `scripts/install.sh` — install the Cursor plugin, optionally seed a project.
 - `scripts/uninstall.sh` — remove the Cursor plugin.
 - `RUNBOOK.md` — optional end-to-end workflow.

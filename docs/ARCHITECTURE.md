@@ -23,9 +23,10 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .agents/flows/           # Flow output directory (actual flow dirs are sk-*)
 ├── .claude/rules/           # Claude rule modules
 ├── rules/                   # Shared rules shipped inside the Cursor and Devin plugins
+├── hooks/                   # inject-rules.py + Claude (hooks.json) and Cursor (cursor/hooks.json) manifests
 ├── .cursor-plugin/          # Cursor plugin manifest (repo root is the plugin)
 ├── .claude-plugin/          # Claude Code plugin manifest
-├── plugins/slash-kit/       # Devin plugin (manifest, skills and rules synced from root by scripts/sync-devin-plugin.sh)
+├── plugins/slash-kit/       # Devin plugin (manifest, skills/rules/hook scripts synced from root by scripts/sync-devin-plugin.sh)
 ├── scripts/                 # install.sh, uninstall.sh, sync-devin-plugin.sh
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
