@@ -1,4 +1,14 @@
 {
+	"SessionStart": [
+		{
+			"hooks": [
+				{
+					"type": "command",
+					"command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/inject-rules.py"
+				}
+			]
+		}
+	],
 	"PreToolUse": [
 		{
 			"matcher": "run_subagent|Task",

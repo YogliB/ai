@@ -11,6 +11,13 @@ RULES = """=== SLASHKIT RULES (apply to all work you produce) ===
 
 
 def transform(data):
+    event = str(data.get("hook_event_name") or data.get("event") or "")
+    if re.search(r"session.?start", event, re.I):
+        return {
+            "hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": RULES},
+            "additional_context": RULES,
+        }
+
     tool = str(data.get("tool_name") or data.get("tool") or data.get("name") or "")
     inp = data.get("tool_input") or data.get("input") or data.get("parameters")
     if not re.search(r"task|subagent", tool, re.I) or not isinstance(inp, dict):
@@ -42,6 +49,11 @@ def self_check():
 
     again = transform({"tool_name": "Task", "tool_input": claude["hookSpecificOutput"]["updatedInput"]})
     assert again["hookSpecificOutput"]["updatedInput"]["prompt"].count(RULES) == 1
+
+    for payload in ({"hook_event_name": "SessionStart"}, {"event": "sessionStart"}):
+        session = transform(payload)
+        assert session["hookSpecificOutput"]["additionalContext"] == RULES
+        assert session["additional_context"] == RULES
     print("inject-rules self-check ok")
 
 

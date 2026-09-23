@@ -1,6 +1,16 @@
 {
 	"description": "Inject slashkit rules into subagent prompts.",
 	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/inject-rules.py"
+					}
+				]
+			}
+		],
 		"PreToolUse": [
 			{
 				"matcher": "Task",
