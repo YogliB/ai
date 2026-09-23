@@ -165,7 +165,7 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 - Shared rules live in `rules/*.md` and ship inside the Cursor and Devin plugins.
 - The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/`, `rules/`, and `hooks/*.py` into it.
 - The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/`, `rules/`, and `hooks/`.
-- `hooks/inject-rules.py` is a `preToolUse` hook that prepends the no-comments and code-search rules to subagent prompts (Claude `Task`, Cursor `Task`, Devin `run_subagent`). The canonical script lives at the repo root; the Devin plugin carries a synced copy.
+- `hooks/inject-rules.py` injects the no-comments and code-search rules where plugin rules can't reach: `sessionStart` adds them to session context (this is how Claude Code sessions get the rules — Claude plugins have no rules channel), and `preToolUse` prepends them to subagent prompts (Claude `Task`, Cursor `Task`, Devin `run_subagent`). The canonical script lives at the repo root; the Devin plugin carries a synced copy.
 - The runbook is in [RUNBOOK.md](../RUNBOOK.md).
 
 ## Example session
