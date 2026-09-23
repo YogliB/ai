@@ -49,14 +49,14 @@ nub run format
 
 ### Common commands
 
-| Command                              | Purpose                                                    |
-| ------------------------------------ | ---------------------------------------------------------- |
-| `./scripts/install.sh`               | Install the Cursor plugin into `~/.cursor/plugins/local/`  |
-| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` and `.agents/flows/` into a project |
-| `./scripts/uninstall.sh`             | Remove the Cursor plugin                                   |
-| `./scripts/sync-devin-plugin.sh`     | Sync `skills/` and `rules/` into `plugins/slash-kit/`      |
-| `nub run format`                     | Format with `oxfmt`                                        |
-| `nub run lint`                       | Run the pre-commit lint step                               |
+| Command                              | Purpose                                                          |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| `./scripts/install.sh`               | Install the Cursor plugin into `~/.cursor/plugins/local/`        |
+| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` and `.agents/flows/` into a project       |
+| `./scripts/uninstall.sh`             | Remove the Cursor plugin                                         |
+| `./scripts/sync-devin-plugin.sh`     | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/` |
+| `nub run format`                     | Format with `oxfmt`                                              |
+| `nub run lint`                       | Run the pre-commit lint step                                     |
 
 ### Project layout
 
@@ -66,7 +66,7 @@ nub run format
 - `.claude/rules/` — Claude rule modules.
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests; injects rules into subagent prompts.
+- `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests; injects rules into session context and subagent prompts.
 - `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` and `hooks/*.py` synced from root, plus `hooks.json`).
 - `scripts/install.sh` — install the Cursor plugin, optionally seed a project.
 - `scripts/uninstall.sh` — remove the Cursor plugin.

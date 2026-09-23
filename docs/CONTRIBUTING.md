@@ -19,9 +19,10 @@ nub install
 - `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
 - `.claude/rules/` — Claude rule modules.
 - `rules/` — Shared rules shipped inside the Cursor and Devin plugins.
+- `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
+- `plugins/slash-kit/` — Devin plugin (manifest, `skills/`, `rules/`, `hooks/*.py` synced from root, plus `hooks.json`).
 - `scripts/install.sh` — Install the Cursor plugin, optionally seed a project.
 - `scripts/uninstall.sh` — Remove the Cursor plugin.
 - `README.md` — Human-facing overview.
