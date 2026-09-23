@@ -64,7 +64,7 @@ Every flow lives in its own folder:
 **Output:** `1 - ALTERNATIVES.md` in `.agents/flows/sk-<slug>/`.
 
 - Generate up to 3 reviewed options. In the full flow, this phase is mandatory; if there is only one viable approach, produce a `1 - ALTERNATIVES.md` that documents why.
-- Run `sk-review-alternatives` on the options and resolve every `valid` finding before finalizing. This review is mandatory; do not skip it.
+- Run `sk-review-alternatives` on the options and resolve every `valid` finding before finalizing. This review is mandatory; do not skip it. Record it in runbook row `1r`.
 - The user picks one.
 - Update `RUNBOOK.md` row `1` to `done` or `skipped` with reason.
 
@@ -77,7 +77,7 @@ Every flow lives in its own folder:
 **Output:** `2 - PLANNING.md` in `.agents/flows/sk-<slug>/`.
 
 - The plan must be fully executable from the file alone.
-- Run `sk-review-plan` in a review loop and resolve every `valid` finding before finalizing `2 - PLANNING.md`. This review is mandatory; do not skip it.
+- Run `sk-review-plan` in a review loop and resolve every `valid` finding before finalizing `2 - PLANNING.md`. This review is mandatory; do not skip it. Record it in runbook row `2r`.
 - Update `RUNBOOK.md` row `2` to `done`.
 
 ### 3. Implementation
@@ -126,6 +126,10 @@ Every flow lives in its own folder:
 
 - Create or update a GitHub pull request with the plan and review evidence reflected in the body.
 - Update `RUNBOOK.md` row `6` to `done` and set the top status to `completed`.
+
+## Delegating to subagents
+
+When dispatching the flow or one phase to a worker or subagent, the prompt must name the skill to invoke (e.g. `sk-flow`, `sk-planning`) plus its inputs (goal, slug, mode). Never paraphrase a phase into an artifact checklist like "write `2 - PLANNING.md`" — artifacts are outputs, and the skills carry mandatory steps (reviews, per-phase dispatch) that a paraphrase drops.
 
 ## Using just one skill
 

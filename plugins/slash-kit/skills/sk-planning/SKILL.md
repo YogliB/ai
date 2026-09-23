@@ -104,14 +104,14 @@ Planning covers what to build, how to sequence it, delivery shape, and plan revi
 ### Single PR
 
 - Plan: `.agents/flows/sk-<slug>/2 - PLANNING.md`
-- Keep the normal root `RUNBOOK.md`; set row `2` to `done` with a one-line summary.
+- Keep the normal root `RUNBOOK.md`; set rows `2` and `2r` to `done` with a one-line summary.
 
 ### Multiple PRs
 
 - Masterplan: `.agents/flows/sk-<slug>/2 - PLANNING.md`
 - Sub-plan: `.agents/flows/sk-<slug>/pr-<stable-slug>/2 - PLANNING.md`
 - Replace the root runbook with the `sk-flow` skill's `templates/MULTI-PR-RUNBOOK.md`. Fill ordered PR rows, repository, dependencies, directory, state, branch/base/HEAD placeholders, and `Active PR`.
-- Create each PR directory from the normal `sk-flow` runbook template. Mark rows `0` and `1` `skipped` with `initiative root`; mark row `2` `done` and link the local `2 - PLANNING.md`.
+- Create each PR directory from the normal `sk-flow` runbook template. Mark rows `0`, `1`, and `1r` `skipped` with `initiative root`; mark rows `2` and `2r` `done` and link the local `2 - PLANNING.md`.
 - Derive stable slugs from PR purpose. Never use only an ordinal and never rename a slug after it enters the root runbook.
 - Set the first dependency-free PR to `in-progress` and `Active PR`; leave other PRs `pending`. If none is unblocked, use `Active PR: none` and mark the initiative `blocked`.
 - Do not also emit suffixed `2 - PLANNING-*.md` files. The root and each PR directory have one unambiguous `2 - PLANNING.md`.

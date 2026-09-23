@@ -153,10 +153,10 @@ With the plugin installed, prefix the skill name with `/slash-kit:`:
 ## Run the workflow
 
 ```text
-sk-explore → sk-alternatives → sk-planning → implementation → sk-review-and-fix → optional sk-verify → sk-pr
+sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review-and-fix → optional sk-verify → sk-pr
 ```
 
-Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full procedure.
+Each step runs in its own subagent; the prompt names the skill to invoke rather than paraphrasing it. The [runbook](../RUNBOOK.md) has the full procedure.
 
 ## Configuration
 

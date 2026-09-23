@@ -30,3 +30,5 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 - Before using a slashkit skill, read its `SKILL.md`.
 - Invoke slashkit skills by name. Do not run the full workflow (`sk-flow`) unless the user explicitly asks for it.
 - Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `RUNBOOK.md`. The actual flow directory name starts with `sk-` and is short, clear, and concise.
+- When delegating the flow or a phase to a subagent, the prompt names the skill to invoke plus its inputs (goal, slug, mode). Never paraphrase a phase into an artifact checklist — artifacts are outputs, not instructions.
+- Each flow phase runs in a fresh subagent when the harness has one.

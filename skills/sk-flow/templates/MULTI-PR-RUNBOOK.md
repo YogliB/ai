@@ -8,11 +8,13 @@ Active PR: {{pr-stable-slug|none}}
 
 ## Initiative phases
 
-| #   | Phase        | State   | Agent / Session | Parent Dispatch / Input | Resulting HEAD | Artifact                                       | Summary | Divergence / Notes |
-| --- | ------------ | ------- | --------------- | ----------------------- | -------------- | ---------------------------------------------- | ------- | ------------------ |
-| 0   | Explore      | pending |                 |                         |                | [0 - EXPLORE.md](0%20-%20EXPLORE.md)           |         |                    |
-| 1   | Alternatives | pending |                 |                         |                | [1 - ALTERNATIVES.md](1%20-%20ALTERNATIVES.md) |         |                    |
-| 2   | Planning     | pending |                 |                         |                | [2 - PLANNING.md](2%20-%20PLANNING.md)         |         |                    |
+| #   | Phase               | State   | Agent / Session | Parent Dispatch / Input | Resulting HEAD | Artifact                                       | Summary | Divergence / Notes |
+| --- | ------------------- | ------- | --------------- | ----------------------- | -------------- | ---------------------------------------------- | ------- | ------------------ |
+| 0   | Explore             | pending |                 |                         |                | [0 - EXPLORE.md](0%20-%20EXPLORE.md)           |         |                    |
+| 1   | Alternatives        | pending |                 |                         |                | [1 - ALTERNATIVES.md](1%20-%20ALTERNATIVES.md) |         |                    |
+| 1r  | Alternatives review | pending |                 |                         |                | [1 - ALTERNATIVES.md](1%20-%20ALTERNATIVES.md) |         |                    |
+| 2   | Planning            | pending |                 |                         |                | [2 - PLANNING.md](2%20-%20PLANNING.md)         |         |                    |
+| 2r  | Plan review         | pending |                 |                         |                | [2 - PLANNING.md](2%20-%20PLANNING.md)         |         |                    |
 
 ## Pull requests
 

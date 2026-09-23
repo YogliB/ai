@@ -71,17 +71,26 @@ Planning owns the transition from a single-PR flow to a multi-PR initiative:
 
 ## Dispatch metadata
 
-Dispatch each phase to a fresh isolated worker when the harness supports it. In the runbook for the phase being executed, record its agent or session ID, parent dispatch ID or input artifact, and resulting HEAD when the phase can change the repository. If isolated workers are unavailable, record `inline` and explain the fallback in `Divergence / Notes`.
+Dispatch each phase to a fresh isolated worker. When the harness has a subagent/task mechanism this is mandatory, not optional. In the runbook for the phase being executed, record its agent or session ID, parent dispatch ID or input artifact, and resulting HEAD when the phase can change the repository. Only when no isolated worker mechanism exists, record `inline` and explain the fallback in `Divergence / Notes`.
 
 For multi-PR work, initiative coordination stays in the parent context. Phase dispatch metadata belongs in the active PR's runbook; the root table carries only cross-PR state.
+
+## Delegating the flow or a phase
+
+Delegate by reference, never by paraphrase. A worker prompt names the skill to invoke and carries only its inputs:
+
+- Whole flow: the goal, the slug, the mode, and "invoke the `sk-flow` skill and follow it verbatim".
+- One phase: the skill name (e.g. `sk-planning`), the slug, and the artifacts it consumes.
+
+Never reduce a phase to "write `<N> - <NAME>.md`" or a checklist of artifacts. Artifacts are outputs, not instructions — a paraphrase silently drops every requirement that lives inside the skill (mandatory reviews, per-phase dispatch, runbook updates).
 
 ## Running one PR
 
 1. **Explore** — `sk-explore`. Writes root `0 - EXPLORE.md`; updates row `0`.
 2. (manual) Ask to continue.
-3. **Alternatives** — `sk-alternatives`. Writes root `1 - ALTERNATIVES.md`; updates row `1`.
+3. **Alternatives** — `sk-alternatives`, including its mandatory `sk-review-alternatives` pass. Writes root `1 - ALTERNATIVES.md`; updates rows `1` and `1r`.
 4. (manual) Ask to continue.
-5. **Plan** — `sk-planning`. For one PR, writes root `2 - PLANNING.md`. For multiple PRs, writes the root masterplan and each PR directory's `2 - PLANNING.md`, initializes all runbooks, and selects the first unblocked PR.
+5. **Plan** — `sk-planning`, including its mandatory `sk-review-plan` loop. For one PR, writes root `2 - PLANNING.md`. For multiple PRs, writes the root masterplan and each PR directory's `2 - PLANNING.md`, initializes all runbooks, and selects the first unblocked PR.
 6. (manual) Ask to continue.
 7. **Implement** — `sk-implement`. Writes `3 - IMPLEMENTATION.md` in the active flow or PR directory; updates row `3` there.
 8. (manual) Ask to continue.

@@ -23,7 +23,7 @@ This skill can run on its own; it still maintains the flow folder and runbook.
     **Exit rule:** stop when the latest `sk-review-alternatives` pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
 4. **Recommend** — one clear choice based on clarity and maintainability.
-5. **Write** — save options, review findings, recommendation, and decision to `1 - ALTERNATIVES.md`. Update `RUNBOOK.md`.
+5. **Write** — save options, review findings, recommendation, and decision to `1 - ALTERNATIVES.md`. Update `RUNBOOK.md` rows `1` and `1r`.
 6. **Wait** — stop for the user's choice. Do not edit code files.
 
 ## Output
