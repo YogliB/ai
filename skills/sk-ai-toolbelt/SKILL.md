@@ -18,6 +18,13 @@ External skills and MCPs used alongside this workflow. They are not installed by
 | documentation | Write clear, maintainable technical docs | Use the `documentation` skill | [skills.sh/documentation](https://www.skills.sh/anthropics/knowledge-work-plugins/documentation)            |
 | humanizer     | Remove signs of AI-generated writing     | Use the `humanizer` skill     | [skills.sh/humanizer](https://www.skills.sh/softaworks/agent-toolkit/humanizer)                             |
 
+## CLIs
+
+| CLI      | Use when                                                            | Trigger                                 | Upstream                                                  |
+| -------- | ------------------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------- |
+| ripwire  | Symbol-level navigation: orientation, callers, blast radius, usages | `ripwire <dir> --for="..."`             | [redhat-et/ripwire](https://github.com/redhat-et/ripwire) |
+| ast-grep | Structural search: declarations, AST patterns, multi-site rewrites  | `ast-grep --lang <lang> -p '<pattern>'` | [ast-grep.github.io](https://ast-grep.github.io)          |
+
 ## MCPs
 
 | MCP                 | Use when                                    | Key tools                                    | Upstream                                                                                                         |

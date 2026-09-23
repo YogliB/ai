@@ -1,7 +1,8 @@
 {
 	"name": "slash-kit",
+	"displayName": "Slash Kit",
 	"version": "0.2.0",
-	"description": "Reusable agent skills and an optional end-to-end workflow for Devin.",
+	"description": "Reusable agent skills, rules, and an optional end-to-end workflow for Cursor.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
 		"url": "https://github.com/yboaron"

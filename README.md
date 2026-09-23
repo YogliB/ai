@@ -26,11 +26,11 @@ devin plugins install YogliB/ai#plugins/slash-kit
 # Any agent - skills only, global
 npx skills add YogliB/ai -g
 
-# Cursor - per project
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
+# Cursor - local plugin (skills + rules)
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 ```
 
-`install.sh` exists only for Cursor, until Cursor gets a proper plugin system.
+`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it. Pass a repo path to also seed `RUNBOOK.md` and `.agents/flows/` into a project.
 
 Want just one skill?
 
@@ -40,7 +40,7 @@ npx skills add YogliB/ai --skill sk-planning
 
 To remove one skill: `npx skills remove sk-planning` (add `-g` if you installed globally).
 To remove a plugin, use the agent's own remove command (`claude plugin uninstall slash-kit@ai`, `devin plugins remove slash-kit`).
-To remove a Cursor project install: `sh /tmp/ai/uninstall.sh /path/to/your/repo`.
+To remove the Cursor plugin: `sh /tmp/ai/scripts/uninstall.sh`.
 
 ## Use it
 
@@ -106,10 +106,9 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 ## Caveats
 
 - **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/slash-kit:sk-*`). Cursor can use the skill names or the [runbook](RUNBOOK.md).
-- **Cursor rules are project-scoped.** Install them into each repo where you want them.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
-- **Cross-editor rules are not fully unified yet.** Claude Code supports rule `@` includes from `AGENTS.md`/`CLAUDE.md`, so agent-only rules can live in `.agents/rules/`. Cursor requires rules in its own project-scoped directory and does not reliably load global or shared rule files. The install script copies editor-specific rules as a workaround; a single `.agents/rules/` source for all editors is a known gap.
+- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel; Claude Code reads `.claude/rules/` via `AGENTS.md`/`CLAUDE.md` includes instead.
 
 ## More
 

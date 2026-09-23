@@ -27,13 +27,13 @@ npx skills add YogliB/ai -g
 
 Installs the skills globally for every agent the skills CLI supports. Requires `npx`.
 
-### Cursor (per project)
+### Cursor (plugin)
 
 ```bash
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/install.sh /path/to/your/repo
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 ```
 
-Copies skills, Cursor rules, the runbook, and a flow directory into the target project. `install.sh` exists only for Cursor, until Cursor gets a proper plugin system.
+Copies the repo's Cursor plugin (`.cursor-plugin/` manifest, `skills/`, `rules/`) into `~/.cursor/plugins/local/slash-kit`. Restart Cursor or run **Developer: Reload Window** to load it. Pass a repo path (`scripts/install.sh /path/to/repo`) to also seed `RUNBOOK.md` and `.agents/flows/` into that project.
 
 ### Specific skills
 
@@ -65,11 +65,13 @@ claude plugin marketplace remove ai
 devin plugins remove slash-kit
 ```
 
-### Cursor (per project)
+### Cursor (plugin)
 
 ```bash
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/uninstall.sh /path/to/your/repo
+npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/uninstall.sh
 ```
+
+Removes `~/.cursor/plugins/local/slash-kit`.
 
 ### Specific skills
 
@@ -160,8 +162,9 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 
 - Plans live in `.agents/flows/sk-<slug>/2 - PLANNING.md`.
 - Claude rules live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
-- Cursor rules live in `.cursor/rules/*.mdc`.
-- The Devin plugin lives in `plugins/slash-kit/` (see the install section above).
+- Shared rules live in `rules/*.md` and ship inside the Cursor and Devin plugins.
+- The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/` and `rules/` into it.
+- The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/` and `rules/`.
 - The runbook is in [RUNBOOK.md](../RUNBOOK.md).
 
 ## Example session

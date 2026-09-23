@@ -24,8 +24,3 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 - skills/sk-review-and-fix/SKILL.md
 - skills/sk-review/SKILL.md
 - skills/sk-verify/SKILL.md
-
-## Subagents
-
-- .claude/agents/chore-runner.md
-- .cursor/.agents/chore-runner.md

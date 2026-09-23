@@ -1,6 +1,6 @@
 #!/bin/sh
-# Syncs the canonical root skills/ into the Devin plugin, which must be
-# self-contained: git-subdir installs fetch only plugins/slash-kit/, so a
+# Syncs the canonical root skills/ and rules/ into the Devin plugin, which must
+# be self-contained: git-subdir installs fetch only plugins/slash-kit/, so a
 # symlink to ../../skills never resolves there.
 set -eu
 
@@ -19,3 +19,18 @@ for d in "$SRC"/sk-*; do
 done
 
 echo "sync-devin-plugin: synced $count skills to plugins/slash-kit/skills/"
+
+SRC_RULES="$ROOT/rules"
+DST_RULES="$ROOT/plugins/slash-kit/rules"
+
+rm -rf "$DST_RULES"
+mkdir -p "$DST_RULES"
+
+rcount=0
+for f in "$SRC_RULES"/*.md; do
+	[ -f "$f" ] || continue
+	cp "$f" "$DST_RULES/"
+	rcount=$((rcount + 1))
+done
+
+echo "sync-devin-plugin: synced $rcount rules to plugins/slash-kit/rules/"
