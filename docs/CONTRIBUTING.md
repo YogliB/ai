@@ -18,11 +18,12 @@ nub install
 - `skills/` — Skills (source of truth for all agents).
 - `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
 - `.claude/rules/` — Claude rule modules.
-- `.cursor/rules/` — Cursor project rules.
+- `rules/` — Shared rules shipped inside the Cursor and Devin plugins.
+- `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, skills symlinked from root `skills/`).
-- `install.sh` — Install skills and Cursor rules into a project (Cursor-only).
-- `uninstall.sh` — Remove skills and Cursor rules from a project.
+- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
+- `scripts/install.sh` — Install the Cursor plugin, optionally seed a project.
+- `scripts/uninstall.sh` — Remove the Cursor plugin.
 - `README.md` — Human-facing overview.
 - `AGENTS.md` — Agent-facing index.
 - `RUNBOOK.md` — End-to-end workflow.
