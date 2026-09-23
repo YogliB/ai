@@ -9,13 +9,7 @@ These rules are always-on. Read them before every task:
 | Rule     | File                                                   | What it covers                  |
 | -------- | ------------------------------------------------------ | ------------------------------- |
 | slashkit | [.claude/rules/slashkit.md](.claude/rules/slashkit.md) | AI workflow toolkit conventions |
-| caveman  | [.agents/rules/caveman.md](.agents/rules/caveman.md)   | Terse output mode               |
-| ponytail | [.agents/rules/ponytail.md](.agents/rules/ponytail.md) | Lazy senior dev code mode       |
-| rtk      | [.agents/rules/rtk.md](.agents/rules/rtk.md)           | Token-optimized CLI proxy       |
 
-@.agents/rules/caveman.md
-@.agents/rules/ponytail.md
-@.agents/rules/rtk.md
 @.claude/rules/slashkit.md
 @RUNBOOK.md
 
@@ -69,7 +63,6 @@ nub run format
 - `skills/` — skills, source of truth for all agents.
 - `rules/` — shared rules shipped inside the Cursor and Devin plugins.
 - `.agents/flows/` — flow output directory (actual flow dirs are `sk-*`).
-- `.agents/rules/` — repo-local always-on rules (not shipped).
 - `.claude/rules/` — Claude rule modules.
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.

@@ -1,7 +1,7 @@
 ---
 description: No comments in source code - refactor for clarity instead
 trigger: glob
-globs: "**/*.{ts,tsx,js,jsx,mjs,cjs,py,pyi,go,rs,java,c,cc,cpp,h,hpp,cs,rb,swift,kt,kts,m,mm,sh,bash,zsh}"
+globs: '**/*.{ts,tsx,js,jsx,mjs,cjs,py,pyi,go,rs,java,c,cc,cpp,h,hpp,cs,rb,swift,kt,kts,m,mm,sh,bash,zsh}'
 alwaysApply: false
 ---
 
