@@ -109,6 +109,7 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
 - **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel; Claude Code reads `.claude/rules/` via `AGENTS.md`/`CLAUDE.md` includes instead.
+- **A `preToolUse` hook injects the rules into subagent prompts** (`hooks/inject-rules.py`), since spawned subagents don't load plugin rules. Manifests: `hooks/hooks.json` (Claude), `hooks/cursor/hooks.json` (Cursor), `plugins/slash-kit/hooks.json` (Devin). Plugin hooks are best-effort and fail open.
 
 ## More
 

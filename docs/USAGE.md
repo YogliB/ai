@@ -163,8 +163,9 @@ Each step can run in its own subagent. The [runbook](../RUNBOOK.md) has the full
 - Plans live in `.agents/flows/sk-<slug>/2 - PLANNING.md`.
 - Claude rules live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - Shared rules live in `rules/*.md` and ship inside the Cursor and Devin plugins.
-- The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/` and `rules/` into it.
-- The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/` and `rules/`.
+- The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/`, `rules/`, and `hooks/*.py` into it.
+- The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/`, `rules/`, and `hooks/`.
+- `hooks/inject-rules.py` is a `preToolUse` hook that prepends the no-comments and code-search rules to subagent prompts (Claude `Task`, Cursor `Task`, Devin `run_subagent`). The canonical script lives at the repo root; the Devin plugin carries a synced copy.
 - The runbook is in [RUNBOOK.md](../RUNBOOK.md).
 
 ## Example session

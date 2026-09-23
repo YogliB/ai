@@ -1,0 +1,13 @@
+{
+	"PreToolUse": [
+		{
+			"matcher": "run_subagent|Task",
+			"hooks": [
+				{
+					"type": "command",
+					"command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/inject-rules.py"
+				}
+			]
+		}
+	]
+}
