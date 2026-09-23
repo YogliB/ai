@@ -19,7 +19,7 @@ echo "Installing slash-kit Cursor plugin into $PLUGIN_HOME"
 
 rm -rf "$PLUGIN_HOME"
 mkdir -p "$PLUGIN_HOME"
-for part in .cursor-plugin skills rules; do
+for part in .cursor-plugin skills rules hooks; do
 	if [ -e "$REPO_ROOT/$part" ]; then
 		cp -R "$REPO_ROOT/$part" "$PLUGIN_HOME/$part"
 	fi
