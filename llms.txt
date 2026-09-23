@@ -24,3 +24,15 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 - skills/sk-review-and-fix/SKILL.md
 - skills/sk-review/SKILL.md
 - skills/sk-verify/SKILL.md
+
+## Rules
+
+- rules/code-search.md
+- rules/no-comments.md
+- rules/slashkit.md
+
+## Hooks
+
+- hooks/inject-rules.py
+- hooks/hooks.json
+- hooks/cursor/hooks.json

@@ -33,7 +33,7 @@ Installs the skills globally for every agent the skills CLI supports. Requires `
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 ```
 
-Copies the repo's Cursor plugin (`.cursor-plugin/` manifest, `skills/`, `rules/`) into `~/.cursor/plugins/local/slash-kit`. Restart Cursor or run **Developer: Reload Window** to load it. Pass a repo path (`scripts/install.sh /path/to/repo`) to also seed `RUNBOOK.md` and `.agents/flows/` into that project.
+Copies the repo's Cursor plugin (`.cursor-plugin/` manifest, `skills/`, `rules/`, `hooks/`) into `~/.cursor/plugins/local/slash-kit`. Restart Cursor or run **Developer: Reload Window** to load it. Pass a repo path (`scripts/install.sh /path/to/repo`) to also seed `RUNBOOK.md` and `.agents/flows/` into that project.
 
 ### Specific skills
 

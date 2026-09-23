@@ -44,7 +44,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    │
    ├── Claude: slash command or description match loads the matching skills/sk-*/SKILL.md
    │
-   ├── Cursor: .cursor/rules/*.mdc loaded as context
+   ├── Cursor: slash-kit plugin (repo root) provides the skill and shared rules as context
    │
    ├── Devin: slash-kit plugin (plugins/slash-kit/) provides the skills as /slash-kit:* commands
    │
@@ -92,9 +92,9 @@ Every flow lives in `.agents/flows/sk-<slug>/` with a mandatory `RUNBOOK.md` che
 
 The `sk-alternatives` skill dispatches `sk-review-alternatives` to catch irrelevant, duplicate, or weak options before the user sees them. This keeps decision quality high without adding much friction.
 
-### Rules are agent-native
+### Rules ship in plugins, hooks fill the gaps
 
-Claude rules use the `@.claude/rules/*.md` include pattern from `CLAUDE.md`. Cursor rules use `.cursor/rules/*.mdc`. The content is the same, but the delivery mechanism matches each agent.
+Shared rules live in `rules/` and ship inside the Cursor and Devin plugins. Claude Code plugins have no rules channel, and spawned subagents load no plugin rules on any platform — `hooks/inject-rules.py` covers both gaps by returning the rules as `additionalContext` on `sessionStart` and prepending them to subagent prompts on `preToolUse`. Repo-local Claude rule modules in `.claude/rules/` are still loaded via `@`-includes from `CLAUDE.md`.
 
 ### Workflow is opt-in
 
