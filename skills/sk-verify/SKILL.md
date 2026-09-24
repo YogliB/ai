@@ -9,7 +9,7 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 - After implementation and before creating a PR.
 - When the user asks "did this work?", "verify the changes", or similar.
-- This skill does **not** run lint, tests, or security checks; use `before-pr` for those.
+- This skill exercises the feature end-to-end. Lint, tests, and security checks are covered by `before-pr` — they are prerequisites here, not the verification.
 
 ## Active PR handoff
 
@@ -38,13 +38,16 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
     - Append the answer to `.agents/verify/VERIFICATION.md`.
     - Do not write to the plan.
 
-4. **Run the steps**
+4. **Exercise the feature**
+    - Run the change the way a user or agent will hit it, not just the test harness. Examples: run the CLI on real input and inspect what it writes; install the plugin and fire its hook through the real hook command; call the new API; serve the UI and hit the route.
+    - Use the plan's steps as the floor. If every step only proves the code compiles or tests pass, add the missing feature-level exercise yourself — that is the point of this skill.
     - Treat each step as a shell command when possible.
     - Stop on the first failure and report it.
     - Do not auto-fix failures.
 
 5. **Report**
     - Print the result of each step and an overall `PASS` or `FAIL`.
+    - If a feature path cannot be exercised in this environment (missing auth, external service, hardware), record the gap in the report instead of passing silently.
     - Write `5 - VERIFY.md` and update `RUNBOOK.md` row `5` to `done` (or `diverged` if departed).
 
 Run this skill in a subagent when the harness supports it.
