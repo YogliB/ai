@@ -1,12 +1,12 @@
 ---
 name: sk-flow
 argument-hint: '[auto|manual]'
-description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review-and-fix (or sk-review), optional sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
+description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review-and-fix (or sk-review), sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
 ---
 
 # Flow
 
-End-to-end flow: **Explore → Alternatives → Planning → Implementation → Review → (Verify) → PR**.
+End-to-end flow: **Explore → Alternatives → Planning → Implementation → Review → Verify → PR**.
 
 Only run this skill when the user explicitly asks for the workflow.
 
@@ -96,7 +96,7 @@ Never reduce a phase to "write `<N> - <NAME>.md`" or a checklist of artifacts. A
 8. (manual) Ask to continue.
 9. **Review** — `sk-review-and-fix` by default, or `sk-review` if read-only. Writes `4 - REVIEW.md` beside the active plan; updates row `4` there.
 10. (manual) Ask to continue.
-11. **Verify** (optional) — `sk-verify` if the plan or user requests it. Writes `5 - VERIFY.md` beside the active plan and updates row `5`; otherwise mark `skipped`.
+11. **Verify** — `sk-verify` is required unless the agent is blocked (e.g. verification needs credentials, services, or an environment it cannot reach). Writes `5 - VERIFY.md` beside the active plan and updates row `5`; when blocked, mark row `5` `skipped` with the blocking reason and continue.
 12. (manual) Ask to continue.
 13. **PR** — `sk-pr`. Writes `6 - PR.md` beside the active plan; updates row `6`. Complete the single-PR flow, or update the initiative root and advance to the next unblocked PR.
 

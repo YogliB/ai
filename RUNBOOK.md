@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review-and-fix (or sk-review) → optional sk-verify → sk-pr**.
+End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review-and-fix (or sk-review) → sk-verify → sk-pr**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
@@ -107,14 +107,14 @@ Every flow lives in its own folder:
 
 ### 5. Verify
 
-**When:** you want to confirm the changes work and introduce no regressions.
+**When:** always — required unless the agent is blocked (e.g. verification needs credentials, services, or an environment it cannot reach).
 
 **Skill:** `sk-verify`
 
 **Output:** `5 - VERIFY.md` in `.agents/flows/sk-<slug>/`.
 
 - Run the verification steps from the plan.
-- If this step is skipped, record the reason in `RUNBOOK.md` row `5`.
+- If blocked, mark `RUNBOOK.md` row `5` `skipped` with the blocking reason and continue.
 
 ### 6. PR
 

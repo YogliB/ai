@@ -71,7 +71,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
    ▼
 [sk-review-and-fix or sk-review] → 4 - REVIEW.md
    ▼
-[sk-verify] (optional) → 5 - VERIFY.md
+[sk-verify] → 5 - VERIFY.md
    ▼
 [sk-pr] → 6 - PR.md
 ```

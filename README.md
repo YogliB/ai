@@ -98,7 +98,7 @@ Use the sk-pr skill to open a pull request.
 ## The flow
 
 ```text
-sk-explore → sk-alternatives → sk-planning → sk-implement → sk-review-and-fix → optional sk-verify → sk-pr
+sk-explore → sk-alternatives → sk-planning → sk-implement → sk-review-and-fix → sk-verify → sk-pr
 ```
 
 Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
