@@ -6,6 +6,8 @@
 nub install
 ```
 
+No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
+
 ## Common Commands
 
 | Command          | Purpose                                |
