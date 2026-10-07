@@ -75,7 +75,7 @@ Keep this section at depth 2 or less. Flatten nested bullets that are details, n
 
 ## Verification
 
-- [ ] [Verification Step 1]
+- [ ] [Exercise the feature end-to-end the way a user or agent will hit it]
 - [ ] [Verification Step 2]
 
 ## Acceptance

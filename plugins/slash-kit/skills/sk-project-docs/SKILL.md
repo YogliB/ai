@@ -18,9 +18,9 @@ Create the docs a project needs, prune the ones it does not, and keep `AGENTS.md
 
 Scaffold only the docs the project needs. Audit existing docs, move overlapping content to the right standard doc, and ask before removing files.
 
-`AGENTS.md` and `CLAUDE.md` are agent-only. `AGENTS.md` must be three things: a docs index, an AI rules index, and a highly condensed version of the docs. `CLAUDE.md` is a symlink (or fallback `@AGENTS.md` file) to `AGENTS.md`.
+`AGENTS.md` and `CLAUDE.md` are agent-only. `AGENTS.md` must be four things: inline rules, a docs index, a skills index, and a highly condensed version of the docs. `CLAUDE.md` is a symlink (or fallback `@AGENTS.md` file) to `AGENTS.md`.
 
-Docs are human- and agent-facing. Agent-only rules go in `.agents/rules/` and are referenced explicitly in `AGENTS.md`/`CLAUDE.md` with `@.agents/rules/<file>.md`. Do not use globs like `@.agents/rules/*.md`.
+Rules are written directly in `AGENTS.md`. Do not put rules in separate files and reference them from `AGENTS.md`.
 
 ## Output
 
@@ -49,7 +49,6 @@ Ask the user or infer from the repo:
 | openness     | oss, proprietary, none                                  |
 | project_type | cli, library, web-app, internal-tool, skill-repo, other |
 | releases     | versioned, continuous, none                             |
-| rules_dir    | does `.agents/rules/` exist?                            |
 
 ## File selection
 
@@ -75,7 +74,7 @@ Choose templates from `templates/` next to this `SKILL.md` (e.g. `README.md` →
 A project should hold only these docs:
 
 - `README.md` — human-facing overview, install, and usage.
-- `AGENTS.md` — agent-only index: docs index, AI rules index, condensed docs.
+- `AGENTS.md` — agent-only file: inline rules, docs index, skills index, condensed docs.
 - `CLAUDE.md` — symlink or `@AGENTS.md` fallback.
 - `llms.txt` — public projects only.
 - `LICENSE.md` — open/public projects.
@@ -91,38 +90,38 @@ Anything outside this tree that overlaps with a standard doc is a candidate for 
 
 ## Placeholders
 
-Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setup}}`, `{{run}}`, `{{format}}`, `{{rules_table}}`, `{{rules_includes}}`, `{{docs_table}}`, `{{what}}`, `{{how}}`, and `{{conventions}}` from `package.json`, git remote, or by asking/inferring.
+Substitute `{{project}}`, `{{repository}}`, `{{author}}`, `{{license}}`, `{{setup}}`, `{{run}}`, `{{format}}`, `{{rules_table}}`, `{{docs_table}}`, `{{skills_table}}`, `{{what}}`, `{{how}}`, and `{{conventions}}` from `package.json`, git remote, or by asking/inferring.
 
-- `{{rules_table}}` — full markdown table with columns `Rule`, `File`, `What it covers`.
-- `{{rules_includes}}` — explicit `@.agents/rules/<file>.md` lines, one per rule file.
+- `{{rules_table}}` — inline rules, typically as a bullet list or table with columns `Rule` and `Guideline`.
 - `{{docs_table}}` — full markdown table with columns `Doc`, `Purpose`.
+- `{{skills_table}}` — full markdown table with columns `Skill`, `Use when`, for agent-specific workflows.
 - `{{what}}` — one-paragraph summary of what the project is.
 - `{{how}}` — short setup, conventions, common commands, and project layout.
 - `{{conventions}}` — bullet list of the conventions an agent must follow.
 
 ## Conventions
 
-- `AGENTS.md` is agent-only. No long prose, no human tutorial, no pull-request section. Just docs index, rules index, condensed docs.
-- Agent-only rules live in `.agents/rules/`.
-- Reference each rule file explicitly: `@.agents/rules/<file>.md`.
+- `AGENTS.md` is agent-only. No long prose, no human tutorial, no pull-request section. Just inline rules, docs index, skills index, and condensed docs.
+- Rules are written directly in `AGENTS.md`.
 - Start `AGENTS.md` with a strong instruction to read the rules before doing any work.
+- If `AGENTS.md` grows hard to scan, move human-facing prose to `docs/` or `README.md`, and move agent-specific workflows to `skills/sk-*/SKILL.md`. Reference those skills in `AGENTS.md` so the agent knows when to invoke them.
 - Docs are human- and agent-facing. Do not duplicate `AGENTS.md` content in `README.md` or `docs/*`.
 
 ## Steps
 
 1. **Inspect** the repo for existing docs, rules, and source of truth.
-2. **Audit** docs against the standard tree. Identify files that overlap, duplicate, or belong elsewhere (e.g. `docs/ai_guidelines.md` that should fold into `docs/CONTRIBUTING.md` or an `.agents/rules/` file).
+2. **Audit** docs against the standard tree. Identify files that overlap, duplicate, or belong elsewhere (e.g. `docs/ai_guidelines.md` that should fold into `docs/CONTRIBUTING.md`).
 3. **Propose** a list of docs and a cleanup plan. Ask which to create, update, move, or remove.
 4. **Do not remove files** without explicit user approval. Move content first, then ask whether to delete the source.
 5. **Read** the relevant templates from `templates/`.
 6. **Substitute** placeholders.
 7. **Write** each doc.
-8. **Create or update** `AGENTS.md` from `templates/template-agents.md`. It must be a rules-first index, then a docs index, then a highly condensed version of the docs. Reference rule files explicitly with `@.agents/rules/<file>.md`.
+8. **Create or update** `AGENTS.md` from `templates/template-agents.md`. It must be inline rules first, then a docs index, then a skills index, then a highly condensed version of the docs.
 9. **Create or update** `llms.txt` if `audience` is `public`.
 10. **Create or update** `CLAUDE.md`: try `ln -s AGENTS.md CLAUDE.md`, fall back to a one-line `@AGENTS.md` file.
 11. **Report** what changed and suggest using the `documentation` skill to fill prose.
 
-Do not create rule files; only reference what already exists.
+Rules are written directly in `AGENTS.md`. Do not create separate rule files and reference them from `AGENTS.md`.
 
 ## CLAUDE.md
 
