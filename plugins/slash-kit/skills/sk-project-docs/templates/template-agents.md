@@ -1,4 +1,4 @@
-# AGENTS.md
+# Project agent rules
 
 Agent-facing entry point. **Read the rules before doing any work in this repo.** For the open format, see [agents.md](https://agents.md/).
 
@@ -8,11 +8,13 @@ These rules are always-on. Read them before every task:
 
 {{rules_table}}
 
-{{rules_includes}}
-
 ## Docs index
 
 {{docs_table}}
+
+## Skills
+
+{{skills_table}}
 
 ## Condensed docs
 
@@ -38,4 +40,4 @@ These rules are always-on. Read them before every task:
 
 ## Documentation sync
 
-Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, rules, `RUNBOOK.md`, and `docs/` aligned when changing workflows or conventions.
+Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, `RUNBOOK.md`, and `docs/` aligned when changing workflows or conventions.

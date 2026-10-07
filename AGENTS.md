@@ -1,4 +1,4 @@
-# AGENTS.md
+# Project agent rules
 
 Agent-facing entry point. **Read the rules before doing any work here.** For the open format, see [agents.md](https://agents.md/).
 
@@ -6,12 +6,13 @@ Agent-facing entry point. **Read the rules before doing any work here.** For the
 
 These rules are always-on. Read them before every task:
 
-| Rule     | File                                                   | What it covers                  |
-| -------- | ------------------------------------------------------ | ------------------------------- |
-| slashkit | [.claude/rules/slashkit.md](.claude/rules/slashkit.md) | AI workflow toolkit conventions |
-
-@.claude/rules/slashkit.md
-@RUNBOOK.md
+| Rule                | Guideline                                                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Skill format        | Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations. |
+| Skill usage         | Before using a slashkit skill, read `skills/<skill>/SKILL.md`.                                                                                                              |
+| Workflow invocation | Do not run `sk-flow` unless the user explicitly asks for it.                                                                                                                |
+| Workflow output     | Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `RUNBOOK.md`.                                                                                |
+| Commits             | Run `nub run format` before committing. Squash to a single Conventional Commit.                                                                                             |
 
 ## Docs index
 
@@ -37,15 +38,6 @@ slashkit is a cross-agent AI workflow toolkit. Skills live in `skills/sk-*/SKILL
 nub install
 nub run format
 ```
-
-### Conventions
-
-- Keep `SKILL.md` files short, clear, and concise.
-- Read a skill's `SKILL.md` before using it.
-- Do not run `sk-flow` unless the user explicitly asks for it.
-- Flow output goes to `.agents/flows/sk-<slug>/`, with numbered phase docs and a `RUNBOOK.md`.
-- Run `nub run format` before committing.
-- Squash to a single Conventional Commit.
 
 ### Common commands
 
@@ -75,4 +67,4 @@ nub run format
 
 ## Documentation sync
 
-Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, rules, `RUNBOOK.md`, and `docs/` aligned when changing workflows or conventions.
+Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, `RUNBOOK.md`, and `docs/` aligned when changing workflows or conventions.
