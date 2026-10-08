@@ -46,7 +46,7 @@ Custom focus: <only when user gave constraints>
 Out of scope: <only when user excluded areas>
 Known validation gaps: <only when context/capability missing — list each; do not claim those areas verified>
 
-Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files as needed.
+Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files, relevant callers, callees, tests, contracts, and existing helpers. Check duplication, cohesion, coupling, control flow, abstraction, naming, data modeling, repository consistency, and change impact.
 
 Output ONLY in this format (no prose intro, no sections swapped).
 
@@ -81,6 +81,22 @@ Examples (tone only):
 - repo.py:L88: 🪵 yagni: AbstractRepository with one implementation. Inline until a second backend exists.
 - L52-71: ✂️ cut: retry wrapper around an idempotent local call. Remove wrapper.
 ```
+
+## Clean-code criteria
+
+Report only concrete violations introduced or exposed by the diff:
+
+- **Duplication**: logic repeated in places that must change together.
+- **Cohesion**: a function, class, or module performs unrelated jobs.
+- **Coupling**: implementation details leak across boundaries or unrelated modules must change together.
+- **Control flow**: nesting, branching, or state transitions obscure behavior.
+- **Abstraction**: wrappers or interfaces add indirection without removing duplication or isolating volatility.
+- **Naming**: names misrepresent behavior, units, ownership, or side effects.
+- **Data modeling**: invalid states are easy to construct or related values travel separately.
+- **Repository consistency**: the change bypasses an existing helper or established local pattern.
+- **Change impact**: inspect affected callers, callees, tests, and contracts outside the diff.
+
+Require a concrete failure, maintenance cost, or smaller replacement. Do not report function length, class size, or subjective style by itself.
 
 ## Parallel review
 

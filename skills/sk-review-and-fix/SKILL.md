@@ -48,7 +48,7 @@ Out of scope: <only when user excluded areas>
 Known validation gaps: <only when context/capability missing — list each; do not claim those areas verified>
 False positives from previous reviews: <only when earlier passes produced some; one per line as `file:line | tag | original finding | why it was dismissed`. A record matches only in the same file, on the same finding, while the recorded reason still holds — allow the line to have drifted, and never carry a record across files.>
 
-Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files as needed.
+Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files, relevant callers, callees, tests, contracts, and existing helpers. Check duplication, cohesion, coupling, control flow, abstraction, naming, data modeling, repository consistency, and change impact.
 
 Output ONLY in this format (no prose intro, no sections swapped).
 
@@ -107,6 +107,22 @@ End with exactly one line:
 - Unnecessary abstraction vs native/standard alternatives
 - Naming and style
 - Missing context (cite the gap)
+
+## Clean-code criteria
+
+Report only concrete violations introduced or exposed by the diff:
+
+- **Duplication**: logic repeated in places that must change together.
+- **Cohesion**: a function, class, or module performs unrelated jobs.
+- **Coupling**: implementation details leak across boundaries or unrelated modules must change together.
+- **Control flow**: nesting, branching, or state transitions obscure behavior.
+- **Abstraction**: wrappers or interfaces add indirection without removing duplication or isolating volatility.
+- **Naming**: names misrepresent behavior, units, ownership, or side effects.
+- **Data modeling**: invalid states are easy to construct or related values travel separately.
+- **Repository consistency**: the change bypasses an existing helper or established local pattern.
+- **Change impact**: inspect affected callers, callees, tests, and contracts outside the diff.
+
+Require a concrete failure, maintenance cost, or smaller replacement. Do not report function length, class size, or subjective style by itself.
 
 ## Loop
 
