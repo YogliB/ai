@@ -27,7 +27,6 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 
 ## Rules
 
-- rules/code-search.md
 - rules/no-comments.md
 - rules/slashkit.md
 
