@@ -5,7 +5,6 @@ import sys
 
 RULES = """=== SLASHKIT RULES (apply to all work you produce) ===
 - NO comments in source code: no inline, block, or TODO comments, no multi-line docstrings. Allowed: auto-generated license headers, Python one-liner docstrings. Rename/extract instead.
-- Code search: ripwire (--legend=compact) or ast-grep via shell for symbols, callers, declarations. Grep/rg only for non-code files, literal strings, or fallback.
 - Terse technical output, drop filler.
 ======================================================"""
 
