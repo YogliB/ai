@@ -21,7 +21,6 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 │   ├── sk-review-plan/
 │   └── sk-verify/
 ├── .agents/flows/           # Flow output directory (actual flow dirs are sk-*)
-├── .claude/rules/           # Claude rule modules
 ├── rules/                   # Shared rules shipped inside the Cursor and Devin plugins
 ├── hooks/                   # inject-rules.py + Claude (hooks.json) and Cursor (cursor/hooks.json) manifests
 ├── .cursor-plugin/          # Cursor plugin manifest (repo root is the plugin)
@@ -94,7 +93,7 @@ The `sk-alternatives` skill dispatches `sk-review-alternatives` to catch irrelev
 
 ### Rules ship in plugins, hooks fill the gaps
 
-Shared rules live in `rules/` and ship inside the Cursor and Devin plugins. Claude Code plugins have no rules channel, and spawned subagents load no plugin rules on any platform — `hooks/inject-rules.py` covers both gaps by returning the rules as `additionalContext` on `sessionStart` and prepending them to subagent prompts on `preToolUse`. Repo-local Claude rule modules in `.claude/rules/` are still loaded via `@`-includes from `CLAUDE.md`.
+Shared rules live in `rules/` and ship inside the Cursor and Devin plugins. Claude Code plugins have no rules channel, and spawned subagents load no plugin rules on any platform — `hooks/inject-rules.py` covers both gaps by returning the rules as `additionalContext` on `sessionStart` and prepending them to subagent prompts on `preToolUse`.
 
 ### Workflow is opt-in
 

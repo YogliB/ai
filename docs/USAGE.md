@@ -161,7 +161,6 @@ Each step runs in its own subagent; the prompt names the skill to invoke rather 
 ## Configuration
 
 - Plans live in `.agents/flows/sk-<slug>/2 - PLANNING.md`.
-- Claude rules live in `.claude/rules/*.md` and are loaded by `CLAUDE.md`.
 - Shared rules live in `rules/*.md` and ship inside the Cursor and Devin plugins.
 - The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/`, `rules/`, and `hooks/*.py` into it.
 - The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/`, `rules/`, and `hooks/`.
