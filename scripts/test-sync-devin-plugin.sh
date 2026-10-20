@@ -29,19 +29,27 @@ sh scripts/sync-devin-plugin.sh --check >/dev/null || fail "--check fails on fre
 git add -A
 git commit -qm init
 
-# Editing a canonical file must make --check fail. This is the hole: before the
-# pre-commit hook staged rules/ and hooks/, a rule change left the plugin copy
-# stale with nothing to catch it.
-echo "edited rule" > rules/demo.md
-if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
-	fail "--check misses drift between rules/ and the plugin copy"
-fi
+# Drift in any one canonical path must make --check fail. This is the hole:
+# before the pre-commit hook staged every synced path, a change could leave
+# the plugin copy stale with nothing to catch it.
+for path in skills/sk-demo/SKILL.md rules/demo.md hooks/demo.py; do
+	git checkout -q -- .
+	echo "edited" > "$path"
+	if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
+		fail "--check misses drift in $path"
+	fi
+done
 
-# The pre-commit hook must stage every synced path, not just skills/.
+# The pre-commit hook must stage every synced path, including new files.
+echo "edited rule" > rules/demo.md
+echo "edited hook" > hooks/demo.py
+mkdir -p skills/sk-new
+echo "# new skill" > skills/sk-new/SKILL.md
 sh scripts/sync-devin-plugin.sh >/dev/null
-ADD_LINE=$(grep '^git add plugins/slash-kit' "$REPO_ROOT/.husky/pre-commit") || fail "no git add line in .husky/pre-commit"
-eval "$ADD_LINE"
-UNSTAGED=$(git diff --name-only -- plugins/slash-kit)
-[ -z "$UNSTAGED" ] || fail "pre-commit staging leaves synced files unstaged: $UNSTAGED"
+grep '^git add plugins/slash-kit' "$REPO_ROOT/.husky/pre-commit" | while IFS= read -r line; do
+	eval "$line"
+done
+UNSTAGED=$(git status --porcelain -- plugins/slash-kit | grep -E '^(.[^ ]|\?\?)' || true)
+[ -z "$UNSTAGED" ] || fail "pre-commit staging leaves synced files unstaged or untracked: $UNSTAGED"
 
 echo "test-sync-devin-plugin: all tests passed"

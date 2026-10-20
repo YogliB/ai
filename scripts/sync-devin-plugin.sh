@@ -12,11 +12,18 @@ SRC="$ROOT/skills"
 SRC_RULES="$ROOT/rules"
 SRC_HOOKS="$ROOT/hooks"
 
+# Every subdirectory the plugin mirrors from the root. sync_all fills these
+# and --check validates them, so a new synced path is added in one place.
+SUBDIRS="skills rules hooks"
+
 sync_all() {
 	DST="$1"
 
-	rm -rf "$DST/skills"
-	mkdir -p "$DST/skills"
+	for sub in $SUBDIRS; do
+		rm -rf "$DST/$sub"
+		mkdir -p "$DST/$sub"
+	done
+
 	count=0
 	for d in "$SRC"/sk-*; do
 		[ -d "$d" ] || continue
@@ -24,8 +31,6 @@ sync_all() {
 		count=$((count + 1))
 	done
 
-	rm -rf "$DST/rules"
-	mkdir -p "$DST/rules"
 	rcount=0
 	for f in "$SRC_RULES"/*.md; do
 		[ -f "$f" ] || continue
@@ -33,8 +38,6 @@ sync_all() {
 		rcount=$((rcount + 1))
 	done
 
-	rm -rf "$DST/hooks"
-	mkdir -p "$DST/hooks"
 	hcount=0
 	for f in "$SRC_HOOKS"/*.py; do
 		[ -f "$f" ] || continue
@@ -48,7 +51,7 @@ if [ "${1:-}" = "--check" ]; then
 	trap 'rm -rf "$TMP"' EXIT
 	sync_all "$TMP"
 	status=0
-	for sub in skills rules hooks; do
+	for sub in $SUBDIRS; do
 		if ! diff -r "$TMP/$sub" "$ROOT/plugins/slash-kit/$sub" >/dev/null 2>&1; then
 			echo "sync-devin-plugin: plugins/slash-kit/$sub is out of sync with $sub/:" >&2
 			diff -r "$TMP/$sub" "$ROOT/plugins/slash-kit/$sub" 2>&1 | head -20 >&2
