@@ -28,7 +28,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 ## Execution rules
 
 1. **Execute the plan as written** - in the plan's order, step by step. Do not reorder, merge, or skip TODOs.
-2. **Check after every change** - after each TODO, run the checks the plan names for that step (build, targeted test, typecheck, lint). Do not defer checks to the end. A step is done only when its checks pass.
+2. **Check after every change** - after each TODO, run the checks the plan names for that step (build, targeted test, typecheck, lint) through the bundled receipt runner: `scripts/run-with-receipt.sh <label> -- <command>` (resolved next to this SKILL.md, like templates). Do not defer checks to the end. A step is done only when its checks pass and the receipt path is recorded in its row; a check without a valid passing receipt did not happen.
 3. **Stay inside the plan's scope** - touch only the files and behavior the plan names. No drive-by refactors, no cleanup of adjacent code, no extra features, no dependency changes the plan does not call for. If the plan's `Files` section exists, treat it as the allowed file set.
 4. **Atomic commits per step** - one commit per TODO (or per plan-named commit unit), using the repo's commit convention. Each commit must leave the tree in a working state: checks that passed before the step still pass after it.
 5. **Keep existing behavior green** - never weaken, skip, or delete an existing test to make a step pass. If an existing check fails on the untouched baseline, stop and flag it (see below) instead of working around it.
@@ -48,10 +48,10 @@ The plan will sometimes be wrong or incomplete: a file that does not exist where
 
 - **Plan reference** and **Branch**.
 - **Goal**: one line, from the plan.
-- **Steps**: one row per plan TODO - what was done, the checks run and their result, the commit hash.
+- **Steps**: one row per plan TODO - what was done, the checks run, their receipt paths and results, the commit hash.
 - **Deviations**: every departure from the plan text, with reasons. `None` if none.
 - **Plan Gaps**: unresolved gaps flagged to the user, if any.
-- **Final verification**: the full check suite the plan names (build, tests, lint, typecheck, format) and its result.
+- **Final verification**: the full check suite the plan names (build, tests, lint, typecheck, format), run through the receipt runner, with receipt paths and results.
 - **Next Step Recommendation**: `sk-review` (or `sk-review-and-fix`) with a one-line reason.
 
 ## Exit rule

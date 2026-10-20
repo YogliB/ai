@@ -14,7 +14,7 @@
 
 ## Steps
 
-- {{plan TODO}}: {{what was done}} — checks: {{commands and results}} — commit {{sha}}
+- {{plan TODO}}: {{what was done}} — checks: {{commands and results}} — receipts: {{receipt paths}} — commit {{sha}}
 
 ## Deviations
 
@@ -26,7 +26,7 @@
 
 ## Final verification
 
-{{the full check suite the plan names - build, tests, lint, typecheck, format - and its result}}
+{{the full check suite the plan names - build, tests, lint, typecheck, format - run through the receipt runner, with receipt paths and results}}
 
 ## Next Step Recommendation
 
