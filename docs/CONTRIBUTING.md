@@ -10,10 +10,11 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 
 ## Common Commands
 
-| Command          | Purpose                                |
-| ---------------- | -------------------------------------- |
-| `nub run format` | Format Markdown and JSON with `oxfmt`. |
-| `nub run lint`   | Run the pre-commit lint step.          |
+| Command                                   | Purpose                                           |
+| ----------------------------------------- | ------------------------------------------------- |
+| `nub run format`                          | Format Markdown and JSON with `oxfmt`.            |
+| `nub run lint`                            | Run the pre-commit lint step.                     |
+| `sh scripts/sync-devin-plugin.sh --check` | Fail if the Devin plugin copies differ from root. |
 
 ## Project Layout
 
