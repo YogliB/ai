@@ -7,3 +7,4 @@ logs/
 .agents/plans/
 .agents/reports/
 .agents/flows/sk-*/
+.agents/*.md
