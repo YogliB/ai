@@ -1,7 +1,7 @@
 {
 	"name": "slash-kit",
 	"displayName": "Slash Kit",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "Reusable agent skills, rules, and an optional end-to-end workflow for Cursor.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
