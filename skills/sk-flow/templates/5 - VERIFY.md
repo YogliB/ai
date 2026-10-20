@@ -6,7 +6,7 @@
 
 ## Commands
 
-- `...`
+- {{command}} — receipt: {{receipt path}}
 
 ## Results
 

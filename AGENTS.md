@@ -21,6 +21,7 @@ These rules are always-on. Read them before every task:
 | [README.md](README.md)                             | User-facing overview, install, and usage |
 | [RUNBOOK.md](RUNBOOK.md)                           | End-to-end workflow                      |
 | [docs/USAGE.md](docs/USAGE.md)                     | Install options and advanced usage       |
+| [docs/GATES.md](docs/GATES.md)                     | Check receipts and gate design           |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | Structure and data flow                  |
 | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup, conventions, and PRs              |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems                          |

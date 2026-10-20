@@ -41,7 +41,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 4. **Exercise the feature**
     - Run the change the way a user or agent will hit it, not just the test harness. Examples: run the CLI on real input and inspect what it writes; install the plugin and fire its hook through the real hook command; call the new API; serve the UI and hit the route.
     - Use the plan's steps as the floor. If every step only proves the code compiles or tests pass, add the missing feature-level exercise yourself — that is the point of this skill.
-    - Treat each step as a shell command when possible.
+    - Treat each step as a shell command when possible, and run it through the receipt runner bundled with `sk-implement` (`scripts/run-with-receipt.sh` in that skill's directory). Record each command's receipt path in the report; a step without a valid passing receipt did not pass.
     - Stop on the first failure and report it.
     - Do not auto-fix failures.
 

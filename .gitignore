@@ -8,3 +8,4 @@ logs/
 .agents/reports/
 .agents/flows/sk-*/
 .agents/*.md
+.agents/receipts/
