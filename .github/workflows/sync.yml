@@ -1,0 +1,19 @@
+name: sync
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    plugin-sync:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Test sync script
+              run: sh scripts/test-sync-devin-plugin.sh
+            - name: Check plugin copies are in sync
+              run: sh scripts/sync-devin-plugin.sh --check
