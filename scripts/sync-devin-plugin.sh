@@ -2,9 +2,6 @@
 # Syncs the canonical root skills/ and rules/ into the Devin plugin, which must
 # be self-contained: git-subdir installs fetch only plugins/slash-kit/, so a
 # symlink to ../../skills never resolves there.
-#
-# Usage: sync-devin-plugin.sh [--check]
-#   --check  Write nothing; fail if the plugin copies differ from the root.
 set -eu
 
 ROOT=$(git rev-parse --show-toplevel)
@@ -12,8 +9,6 @@ SRC="$ROOT/skills"
 SRC_RULES="$ROOT/rules"
 SRC_HOOKS="$ROOT/hooks"
 
-# Every subdirectory the plugin mirrors from the root. sync_all fills these
-# and --check validates them, so a new synced path is added in one place.
 SUBDIRS="skills rules hooks"
 
 sync_all() {
