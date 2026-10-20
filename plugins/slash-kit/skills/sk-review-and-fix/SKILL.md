@@ -35,6 +35,8 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 
 ## Output contract
 
+Start every review output (including subagent results, local reports, and the PR review body) with `AI review. harness: <harness>, model: <model>`. Fill each field from the running environment; use `unknown` when unavailable, never guess. Every inline PR comment starts with `[AI review]`.
+
 The subagent is read-only and returns ONLY the findings block below.
 
 ```text
@@ -50,7 +52,9 @@ False positives from previous reviews: <only when earlier passes produced some; 
 
 Run the diff yourself (e.g. git diff <base>...<head> or git diff for uncommitted). Read changed files, relevant callers, callees, tests, contracts, and existing helpers. Check duplication, cohesion, coupling, control flow, abstraction, naming, data modeling, repository consistency, and change impact.
 
-Output ONLY in this format (no prose intro, no sections swapped).
+Output ONLY in this format (no prose intro, no sections swapped). Fill the header from your running environment; use `unknown` for unavailable fields, never guess.
+
+AI review. harness: <harness>, model: <model>
 
 ### Review Findings
 
@@ -58,6 +62,8 @@ section:line: <emoji> <tag>: <problem/over-engineering>. <fix/replacement>.
 totals: N🔴 N🟡 N✂️ N🪵 N⚡ N🔵 N❓ | net: -<N> lines possible
 
 Or exactly when no findings:
+
+AI review. harness: <harness>, model: <model>
 
 ### Review Findings
 
@@ -126,7 +132,7 @@ Require a concrete failure, maintenance cost, or smaller replacement. Do not rep
 
 ## Loop
 
-If the diff is empty, stop in one sentence.
+If the diff is empty, keep the disclosure header and stop in one sentence.
 
 1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent with the prompt above.
 2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only. `unvalidated` items are recorded as validation gaps.
