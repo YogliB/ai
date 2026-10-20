@@ -46,4 +46,10 @@ if sh scripts/gen-skills-index.sh >/dev/null 2>&1; then
 	fail "missing markers are not reported"
 fi
 
+printf '<!-- skills:end -->\nmiddle\n<!-- skills:start -->\n' > rules/slashkit.md
+if sh scripts/gen-skills-index.sh >/dev/null 2>&1; then
+	fail "reversed markers are not reported"
+fi
+grep -qx 'middle' rules/slashkit.md || fail "reversed markers deleted content"
+
 echo "test-gen-skills-index: all tests passed"

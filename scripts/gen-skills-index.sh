@@ -31,8 +31,12 @@ render() {
 	' "$FILE"
 }
 
-grep -qxF "$START" "$FILE" && grep -qxF "$END" "$FILE" || {
-	echo "gen-skills-index: markers missing in rules/slashkit.md" >&2
+awk -v s="$START" -v e="$END" '
+	$0 == s { sl = NR; ns++ }
+	$0 == e { el = NR; ne++ }
+	END { exit !(ns == 1 && ne == 1 && sl < el) }
+' "$FILE" || {
+	echo "gen-skills-index: markers missing or out of order in rules/slashkit.md" >&2
 	exit 1
 }
 
