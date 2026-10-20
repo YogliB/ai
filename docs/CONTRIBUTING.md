@@ -39,7 +39,7 @@ Keep these files aligned:
 - `README.md` — user-facing install, usage, and caveats
 - `AGENTS.md` — rules index, docs index, and condensed docs
 - `CLAUDE.md` — Claude rule `@` includes
-- `.cursor/rules/` — cross-agent rules
+- `rules/` — cross-agent rules
 - `RUNBOOK.md` — full workflow
 - `.agents/flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
