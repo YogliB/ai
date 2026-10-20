@@ -1,7 +1,4 @@
 #!/bin/sh
-# Runs a check command and records a receipt: what ran, when, on which
-# commit, and how it ended. A check without a valid passing receipt did
-# not happen. See docs/GATES.md.
 set -eu
 
 usage() {
@@ -15,6 +12,8 @@ shift
 [ "${1:-}" = "--" ] || usage
 shift
 [ $# -ge 1 ] || usage
+
+[ -n "$LABEL" ] || usage
 
 case $LABEL in
 	*[!A-Za-z0-9._-]*)
@@ -45,13 +44,10 @@ if [ "$CODE" -eq 0 ]; then RESULT=pass; else RESULT=fail; fi
 HEAD=$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo none)
 BRANCH=$(git -C "$ROOT" rev-parse --abbrev-ref HEAD 2>/dev/null || echo none)
 
-RECEIPT="$DIR/$STAMP-$LABEL.receipt"
+RECEIPT="$DIR/$STAMP-$LABEL-$$.receipt"
 {
 	echo "receipt-version: 1"
 	echo "label: $LABEL"
-	printf 'command:'
-	for a in "$@"; do printf ' %s' "$a"; done
-	echo
 	echo "exit-code: $CODE"
 	echo "result: $RESULT"
 	echo "started-at: $STARTED"
@@ -60,11 +56,13 @@ RECEIPT="$DIR/$STAMP-$LABEL.receipt"
 	echo "git-head: $HEAD"
 	echo "git-branch: $BRANCH"
 	echo "cwd: $(pwd)"
+	printf 'command:'
+	for a in "$@"; do printf ' %s' "$a"; done
+	echo
 	echo
 	echo "--- output (last 30 lines) ---"
 	tail -30 "$OUT"
 } >"$RECEIPT"
 
-cat "$RECEIPT"
 echo "run-with-receipt: receipt written to $RECEIPT" >&2
 exit "$CODE"

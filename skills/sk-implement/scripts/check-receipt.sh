@@ -1,6 +1,4 @@
 #!/bin/sh
-# Validates a receipt written by run-with-receipt.sh: it must be a passing
-# receipt, and with --head it must have been recorded on the current commit.
 set -eu
 
 usage() {
@@ -43,7 +41,7 @@ HEAD=$(get git-head)
 grep -q '^--- output' "$RECEIPT" || fail "missing output section"
 
 if [ "$CHECK_HEAD" -eq 1 ]; then
-	CURRENT=$(git rev-parse HEAD)
+	CURRENT=$(git -C "$(dirname "$RECEIPT")" rev-parse HEAD)
 	[ "$HEAD" = "$CURRENT" ] || fail "receipt was recorded on $HEAD, current HEAD is $CURRENT"
 fi
 
