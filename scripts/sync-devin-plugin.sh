@@ -2,50 +2,64 @@
 # Syncs the canonical root skills/ and rules/ into the Devin plugin, which must
 # be self-contained: git-subdir installs fetch only plugins/slash-kit/, so a
 # symlink to ../../skills never resolves there.
+#
+# Usage: sync-devin-plugin.sh [--check]
+#   --check  Write nothing; fail if the plugin copies differ from the root.
 set -eu
 
 ROOT=$(git rev-parse --show-toplevel)
 SRC="$ROOT/skills"
-DST="$ROOT/plugins/slash-kit/skills"
-
-rm -rf "$DST"
-mkdir -p "$DST"
-
-count=0
-for d in "$SRC"/sk-*; do
-	[ -d "$d" ] || continue
-	cp -R "$d" "$DST/"
-	count=$((count + 1))
-done
-
-echo "sync-devin-plugin: synced $count skills to plugins/slash-kit/skills/"
-
 SRC_RULES="$ROOT/rules"
-DST_RULES="$ROOT/plugins/slash-kit/rules"
-
-rm -rf "$DST_RULES"
-mkdir -p "$DST_RULES"
-
-rcount=0
-for f in "$SRC_RULES"/*.md; do
-	[ -f "$f" ] || continue
-	cp "$f" "$DST_RULES/"
-	rcount=$((rcount + 1))
-done
-
-echo "sync-devin-plugin: synced $rcount rules to plugins/slash-kit/rules/"
-
 SRC_HOOKS="$ROOT/hooks"
-DST_HOOKS="$ROOT/plugins/slash-kit/hooks"
 
-rm -rf "$DST_HOOKS"
-mkdir -p "$DST_HOOKS"
+sync_all() {
+	DST="$1"
 
-hcount=0
-for f in "$SRC_HOOKS"/*.py; do
-	[ -f "$f" ] || continue
-	cp "$f" "$DST_HOOKS/"
-	hcount=$((hcount + 1))
-done
+	rm -rf "$DST/skills"
+	mkdir -p "$DST/skills"
+	count=0
+	for d in "$SRC"/sk-*; do
+		[ -d "$d" ] || continue
+		cp -R "$d" "$DST/skills/"
+		count=$((count + 1))
+	done
 
-echo "sync-devin-plugin: synced $hcount hook scripts to plugins/slash-kit/hooks/"
+	rm -rf "$DST/rules"
+	mkdir -p "$DST/rules"
+	rcount=0
+	for f in "$SRC_RULES"/*.md; do
+		[ -f "$f" ] || continue
+		cp "$f" "$DST/rules/"
+		rcount=$((rcount + 1))
+	done
+
+	rm -rf "$DST/hooks"
+	mkdir -p "$DST/hooks"
+	hcount=0
+	for f in "$SRC_HOOKS"/*.py; do
+		[ -f "$f" ] || continue
+		cp "$f" "$DST/hooks/"
+		hcount=$((hcount + 1))
+	done
+}
+
+if [ "${1:-}" = "--check" ]; then
+	TMP=$(mktemp -d)
+	trap 'rm -rf "$TMP"' EXIT
+	sync_all "$TMP"
+	status=0
+	for sub in skills rules hooks; do
+		if ! diff -r "$TMP/$sub" "$ROOT/plugins/slash-kit/$sub" >/dev/null 2>&1; then
+			echo "sync-devin-plugin: plugins/slash-kit/$sub is out of sync with $sub/:" >&2
+			diff -r "$TMP/$sub" "$ROOT/plugins/slash-kit/$sub" 2>&1 | head -20 >&2
+			status=1
+		fi
+	done
+	if [ "$status" -eq 0 ]; then
+		echo "sync-devin-plugin: plugin copies are in sync"
+	fi
+	exit "$status"
+fi
+
+sync_all "$ROOT/plugins/slash-kit"
+echo "sync-devin-plugin: synced $count skills, $rcount rules, $hcount hook scripts to plugins/slash-kit/"
