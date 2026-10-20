@@ -41,6 +41,7 @@ Note meaningful chances for refactors, performance, or security — even if defe
 
 ## Self-audit before review
 
+- The structure lint passes on every emitted document: `scripts/lint-plan.sh <plan file>` (bundled next to this SKILL.md), with `--masterplan` for the masterplan and `--allow-draft` for draft-only plans that omit `Branch setup`, `Delivery`, and `Complexity Check`. A plan that fails lint is not ready for the review loop.
 - `Context` snippets are current code, not desired state.
 - Every file path and line number was verified.
 - Test changes name the runner and expected call count.
