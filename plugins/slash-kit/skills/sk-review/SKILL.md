@@ -34,12 +34,12 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 
 ## Output contract
 
-Start every review output (including subagent results, local reports, and the PR review body) with `AI review. harness: <harness>, model: <model>`. Fill each field from the running environment; use `unknown` when unavailable, never guess. Every inline PR comment starts with `[AI review]`.
+Start every review output (including subagent results, local reports, and the PR review body) with `AI review. harness: <harness>, model: <model>`. In `4 - REVIEW.md` the header goes on the line directly under the title. Fill each field from the running environment; use `unknown` when unavailable, never guess. Every inline PR comment starts with `[AI review]`.
 
-Each subagent returns ONLY the findings block below.
+Each subagent returns ONLY the disclosure header plus the findings block below.
 
 ```text
-You are a read-only diff reviewer. Produce ONLY the findings block below; do not implement fixes.
+You are a read-only diff reviewer. Produce ONLY the disclosure header and findings block below; do not implement fixes.
 
 Repository: <absolute path>
 Diff: <branch changes | uncommitted changes>
@@ -106,12 +106,12 @@ Require a concrete failure, maintenance cost, or smaller replacement. Do not rep
 
 ## Parallel review
 
-If the diff is empty, keep the disclosure header and stop in one sentence.
+If the diff is empty, reply with `AI review. harness: <harness>, model: <model>` plus one sentence and stop.
 
 1. **Resolve scope** — repository, diff target, base branch, custom focus, out-of-scope exclusions, known validation gaps.
 2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
 3. **Triage** — label every finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only; record `unvalidated` items as validation gaps.
-4. **Display** — one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, keep the disclosure header and report `Lean & valid. Ship.`
+4. **Display** — the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
 5. **Deliver** — PR mode: post the findings (see below); otherwise display the block locally. Either way write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`diverged` if you departed from read-only review; PR mode: add the posted review URL). Do not fix.
 
 ## Posting the review to a PR
