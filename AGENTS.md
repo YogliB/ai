@@ -56,7 +56,6 @@ nub run format
 - `skills/` — skills, source of truth for all agents.
 - `rules/` — shared rules shipped inside the Cursor and Devin plugins.
 - `.agents/flows/` — flow output directory (actual flow dirs are `sk-*`).
-- `.claude/rules/` — Claude rule modules.
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests; injects rules into session context and subagent prompts.

@@ -20,7 +20,6 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 
 - `skills/` — Skills (source of truth for all agents).
 - `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
-- `.claude/rules/` — Claude rule modules.
 - `rules/` — Shared rules shipped inside the Cursor and Devin plugins.
 - `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
@@ -40,7 +39,7 @@ Keep these files aligned:
 - `README.md` — user-facing install, usage, and caveats
 - `AGENTS.md` — rules index, docs index, and condensed docs
 - `CLAUDE.md` — Claude rule `@` includes
-- `.claude/rules/` and `.cursor/rules/` — cross-agent rules
+- `rules/` — cross-agent rules
 - `RUNBOOK.md` — full workflow
 - `.agents/flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
