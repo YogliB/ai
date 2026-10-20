@@ -17,3 +17,11 @@ jobs:
               run: sh scripts/test-sync-devin-plugin.sh
             - name: Check plugin copies are in sync
               run: sh scripts/sync-devin-plugin.sh --check
+    skills-index:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Test skills index script
+              run: sh scripts/test-gen-skills-index.sh
+            - name: Check skills index is up to date
+              run: sh scripts/gen-skills-index.sh --check

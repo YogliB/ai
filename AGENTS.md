@@ -41,14 +41,15 @@ nub run format
 
 ### Common commands
 
-| Command                              | Purpose                                                          |
-| ------------------------------------ | ---------------------------------------------------------------- |
-| `./scripts/install.sh`               | Install the Cursor plugin into `~/.cursor/plugins/local/`        |
-| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` and `.agents/flows/` into a project       |
-| `./scripts/uninstall.sh`             | Remove the Cursor plugin                                         |
-| `./scripts/sync-devin-plugin.sh`     | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/` |
-| `nub run format`                     | Format with `oxfmt`                                              |
-| `nub run lint`                       | Run the pre-commit lint step                                     |
+| Command                              | Purpose                                                                |
+| ------------------------------------ | ---------------------------------------------------------------------- |
+| `./scripts/install.sh`               | Install the Cursor plugin into `~/.cursor/plugins/local/`              |
+| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` and `.agents/flows/` into a project             |
+| `./scripts/uninstall.sh`             | Remove the Cursor plugin                                               |
+| `./scripts/sync-devin-plugin.sh`     | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/`       |
+| `./scripts/gen-skills-index.sh`      | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |
+| `nub run format`                     | Format with `oxfmt`                                                    |
+| `nub run lint`                       | Run the pre-commit lint step                                           |
 
 ### Project layout
 

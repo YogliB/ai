@@ -11,18 +11,23 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 
 ## Skills
 
-- `sk-explore` — gather repo context
-- `sk-alternatives` — compare approaches
-- `sk-review-alternatives` — review options before presenting them
-- `sk-planning` — write executable plans
-- `sk-review-plan` — review plans
-- `sk-review-and-fix` — review and fix code
-- `sk-review` — read-only review, posted inline on PRs
-- `sk-pr` — create or update PRs
-- `sk-verify` — verify changes
-- `sk-project-docs` — scaffold docs
-- `sk-ai-toolbelt` — external tool pointers
-- `sk-flow` — run the full end-to-end workflow
+<!-- skills:start -->
+
+- `sk-ai-toolbelt` — Pointer to external AI tools and MCPs
+- `sk-alternatives` — Suggest up to 3 viable alternatives for a code or design decision
+- `sk-explore` — First-link discovery
+- `sk-flow` — End-to-end slashkit workflow
+- `sk-implement` — Execute an approved plan exactly as written, with per-step checks and atomic commits
+- `sk-planning` — Draft a self-contained executable technical plan with atomic testable TODOs
+- `sk-pr` — Create or update a GitHub pull request via gh CLI
+- `sk-project-docs` — Scaffold, audit, or nudge a project's documentation structure
+- `sk-review-alternatives` — Independent review of proposed alternatives before they are presented to the user
+- `sk-review-and-fix` — Closed-loop code review through review, triage, fix, and re-review until the latest pass is clean
+- `sk-review-plan` — Read-only review of a technical plan
+- `sk-review` — One-shot, read-only code review, posted as inline comments on the PR lines like a human reviewer
+- `sk-verify` — Verify that changes do what they aim to do and introduce no regressions
+
+<!-- skills:end -->
 
 ## Conventions
 
