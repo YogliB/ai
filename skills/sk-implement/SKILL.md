@@ -16,7 +16,7 @@ Do not use this skill to fill in for a missing plan. If there is no approved pla
 
 ## Active PR handoff
 
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+Follow `../sk-flow/SKILL.md` section "Active PR handoff".
 
 ## Slug and flow folder
 

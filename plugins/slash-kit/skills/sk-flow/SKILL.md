@@ -76,6 +76,10 @@ Planning owns the transition from a single-PR flow to a multi-PR initiative:
 - Before each phase, fetch refs and verify the checked-out branch and HEAD against the active PR row. Sync using the harness's supported workflow, then record the resulting HEAD in both runbooks. If safe sync is unavailable or the values disagree unexpectedly, mark the PR `blocked`; do not continue on guessed state.
 - After `sk-pr`, record the PR URL, branch, base SHA, and final HEAD; set that PR to `done`. Then select the first `pending` PR in table order whose dependencies are all `done`. Set it to `in-progress` and update `Active PR`. If none is unblocked, set `Active PR: none` and mark the initiative `completed` or `blocked` as appropriate.
 
+## Active PR handoff
+
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+
 ## Dispatch metadata
 
 Dispatch each phase to a fresh isolated worker. When the harness has a subagent/task mechanism this is mandatory, not optional. In the runbook for the phase being executed, record its agent or session ID, parent dispatch ID or input artifact, and resulting HEAD when the phase can change the repository. Only when no isolated worker mechanism exists, record `inline` and explain the fallback in `Divergence / Notes`.

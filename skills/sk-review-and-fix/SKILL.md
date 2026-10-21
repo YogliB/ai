@@ -14,7 +14,7 @@ Closed-loop diff review: **review → triage → fix → re-review** until the l
 
 ## Active PR handoff
 
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+Follow `../sk-flow/SKILL.md` section "Active PR handoff".
 
 ## Flow context
 
@@ -110,19 +110,7 @@ End with exactly one line:
 
 ## Clean-code criteria
 
-Report only concrete violations introduced or exposed by the diff:
-
-- **Duplication**: logic repeated in places that must change together.
-- **Cohesion**: a function, class, or module performs unrelated jobs.
-- **Coupling**: implementation details leak across boundaries or unrelated modules must change together.
-- **Control flow**: nesting, branching, or state transitions obscure behavior.
-- **Abstraction**: wrappers or interfaces add indirection without removing duplication or isolating volatility.
-- **Naming**: names misrepresent behavior, units, ownership, or side effects.
-- **Data modeling**: invalid states are easy to construct or related values travel separately.
-- **Repository consistency**: the change bypasses an existing helper or established local pattern.
-- **Change impact**: inspect affected callers, callees, tests, and contracts outside the diff.
-
-Require a concrete failure, maintenance cost, or smaller replacement. Do not report function length, class size, or subjective style by itself.
+Same as `../sk-review/SKILL.md` section "Clean-code criteria".
 
 ## Loop
 
