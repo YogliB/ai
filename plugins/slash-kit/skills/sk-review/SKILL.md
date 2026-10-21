@@ -132,7 +132,7 @@ If the diff is empty, reply with `AI review. harness: <harness>, model: <model>`
 
 If the diff is empty, stop in one sentence. The disclosure header goes on the final report and `4 - REVIEW.md`.
 
-1. **Review** — dispatch ONE new `readonly` `general-purpose` Task subagent with the prompt above, on the current tree; tell it to review the base-to-working-tree diff (`git diff <base>`), so uncommitted fixes count.
+1. **Review** — dispatch ONE new `readonly` `general-purpose` Task subagent with the prompt above, on the current tree; tell it to review the same diff target as pass one including fixes made since (branch changes: merge base to working tree; uncommitted changes: the HEAD from pass one to working tree), so uncommitted fixes count.
 2. **Triage** — as above.
 3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for 2 files or fewer; the parent edits for 3+ files or cross-cutting changes.
 4. **Repeat** — dispatch a new subagent on the current tree. Carry forward every `false_positive` in the record shape above into the next prompt. Continue until the latest pass has zero `valid` findings after triage.
