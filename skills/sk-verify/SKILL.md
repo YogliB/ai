@@ -18,7 +18,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `4 - REVIEW.md` and missing `5 - VERIFY.md` there. If no runbook identifies the work, ask for a slug.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `4 - REVIEW.md` (unless row `4` is `skipped` in a `Size: light` runbook) and missing `5 - VERIFY.md` there. If no runbook identifies the work, ask for a slug.
 3. Write the verification report to `5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
 
 ## Steps
@@ -29,7 +29,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
     - If intent is unclear, ask the user for a one-line expected outcome.
 
 2. **Find verification steps**
-    - Use the plan's `## Verification` section.
+    - Use the plan's `## Verification` section (a light plan's per-step check commands serve).
     - If missing, read `.agents/verify/VERIFICATION.md`.
 
 3. **Ask if nothing is known**
@@ -50,4 +50,4 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
     - If a feature path cannot be exercised in this environment (missing auth, external service, hardware), record the gap in the report instead of passing silently.
     - Write `5 - VERIFY.md` and update `RUNBOOK.md` row `5` to `done` (or `diverged` if departed).
 
-Run this skill in a subagent when the harness supports it.
+Run this skill in a subagent when the harness supports it (a `Size: light` flow may run it inline).

@@ -75,7 +75,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 [sk-pr] → 6 - PR.md
 ```
 
-Each phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (e.g. `sk-planning`) instead of paraphrasing it, so mandatory steps inside the skill — reviews, sub-dispatch — cannot be dropped. The parent triages the output and dispatches the next phase.
+`sk-flow` first assesses size. A small change takes the light path: short plan, `sk-implement`, `sk-verify`, `sk-pr`, with explore, alternatives, both plan reviews and the code review skipped and the work allowed to run inline. Everything above is the full path. Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (e.g. `sk-planning`) instead of paraphrasing it, so mandatory steps inside the skill — reviews, sub-dispatch — cannot be dropped. The parent triages the output and dispatches the next phase.
 
 ## Key Decisions
 

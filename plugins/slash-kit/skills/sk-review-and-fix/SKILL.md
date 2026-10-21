@@ -146,7 +146,7 @@ If the diff is empty, stop in one sentence.
 
 ## Output destination
 
-When the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` with:
+When the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` with (on a `Size: light` runbook row `4` stays `skipped`: write nothing and tell the user a review needs `Size: full`):
 
 - Review rounds completed
 - `valid` findings fixed (count and one-line summary)

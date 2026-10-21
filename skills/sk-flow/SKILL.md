@@ -10,6 +10,28 @@ End-to-end flow: **Explore → Alternatives → Planning → Implementation → 
 
 Only run this skill when the user explicitly asks for the workflow.
 
+## Size triage
+
+Once this skill is invoked, the work runs on exactly one path: **light** or **full**. Never implement outside both. Assess size first, before any phase, by reading only what you need (no `0 - EXPLORE.md`).
+
+Light only if **all** hold; otherwise full. When unsure, full.
+
+- at most 3 files change and roughly 50 changed lines
+- no new dependency, public interface, schema, migration, or security-sensitive code
+- the approach is obvious (no real alternatives to weigh)
+
+Record the result as `Size: light` or `Size: full` in `RUNBOOK.md` and give the user one line of reasoning. In `manual` mode the user may override it.
+
+**Light path** - Explore, Alternatives, both reviews and Review are not run: mark rows `0`, `1`, `1r`, `2r`, `4` `skipped` and put `light path` in `Divergence / Notes`. Rows `2`, `3`, `5`, `6` still run (row `5` may be `skipped` only when verification is blocked, with the reason, as on the full path):
+
+1. Plan: write a short `2 - PLANNING.md` (goal, files, steps, the check command per step). No `sk-planning` template or lint.
+2. `sk-implement`, `sk-verify`, `sk-pr` as usual. Every check runs through the receipt runner, and `3 - IMPLEMENTATION.md` and `5 - VERIFY.md` cite the receipt paths.
+3. Dispatch metadata: the light path may run its phases inline in one worker. Record `inline (light path)` in each row; this is the one exception to the mandatory dispatch below.
+
+If the work grows past the criterion before implementation starts, set `Size: full`, reset the skipped rows to `pending`, and continue on the full path. After implementation has started, stop and tell the user.
+
+**Full path** - the phases below. Modes, state checks and dispatch metadata apply to both paths.
+
 ## Modes
 
 - **manual** (default): ask before each phase.
@@ -20,7 +42,7 @@ Only run this skill when the user explicitly asks for the workflow.
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. If no slug, look for a stuck flow: any `.agents/flows/sk-*/` where the runbook has pending work. If one, suggest continuing its next pending phase or active PR. If several, list them and ask. If none, ask for a short kebab-case slug.
 3. Create `.agents/flows/sk-<slug>/` if needed.
-4. Start as a single-PR flow. Create or update `RUNBOOK.md` from `templates/RUNBOOK.md` and pass the slug to each phase.
+4. Start as a single-PR flow with the `Size` decided above. Create or update `RUNBOOK.md` from `templates/RUNBOOK.md` and pass the slug to each phase.
 5. If planning decides that the work needs multiple PRs, convert the root runbook to `templates/MULTI-PR-RUNBOOK.md` and follow the multi-PR contract below.
 
 ## State checks
@@ -28,6 +50,7 @@ Only run this skill when the user explicitly asks for the workflow.
 The runbook is data, and the bundled state machine reads it: `scripts/flow-state.sh .agents/flows/sk-<slug>` (resolved next to this SKILL.md, like templates). Run it before starting any phase and when looking for a stuck flow, and act on its output:
 
 - `status: error` - the recorded state contradicts this contract (bad states, missing artifacts, multiple in-progress rows or PRs, broken dependencies). Fix the runbook or files before continuing; do not continue on guessed state.
+- `size` (single-PR runbooks) - `light` or `full` (`full` when there is no `Size` line). `Size: light` fixes which rows are skipped and requires cited, existing receipts in the implementation and verify reports. A full runbook cannot skip rows `2`, `3`, `4` or `6`, so the light route cannot be taken without `Size: light`.
 - `next` / `next-phase` - the phase to run. Never pick a phase by globbing artifacts or modification time.
 
 ## Single-PR contract
@@ -68,7 +91,7 @@ Planning owns the transition from a single-PR flow to a multi-PR initiative:
 └── pr-<stable-slug>/...
 ```
 
-- Use `templates/MULTI-PR-RUNBOOK.md` for the root and the normal `templates/RUNBOOK.md` inside every PR directory. Mark rows `0` and `1` in a PR runbook `skipped` because those artifacts remain at the initiative root.
+- Use `templates/MULTI-PR-RUNBOOK.md` for the root and the normal `templates/RUNBOOK.md` inside every PR directory. Mark rows `0` and `1` in a PR runbook `skipped` because those artifacts remain at the initiative root. PR runbooks record `Size: full`; the light path is single-PR only.
 - Derive each stable slug from the PR's purpose, not its ordinal number. Once recorded, never rename or reuse it even if PR order changes.
 - Keep `Active PR` equal to exactly one PR slug, or `none` when the initiative is complete or blocked. Downstream phases use this field and the matching `Directory`; they never choose a plan from a glob or modification time.
 - The root PR table is the source of truth for order, repository, dependencies, state, directory, link, branch, base SHA, and HEAD. Dependencies contain PR slugs or `none`.

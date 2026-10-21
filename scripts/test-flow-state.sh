@@ -158,6 +158,12 @@ runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 
 OUT=$(sh "$FS" sk-multi) || { sh "$FS" sk-multi; fail "a done-first-PR initiative is not valid"; }
 echo "$OUT" | grep -q '^next-phase: start PR second$' || fail "next unblocked PR not named: $OUT"
 
+# A done PR whose own row 6 is skipped stays valid (merged outside sk-pr).
+runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 4:done 5:done 6:skipped"
+rm -f "sk-multi/pr-first/6 - PR.md"
+sh "$FS" sk-multi >/dev/null || { sh "$FS" sk-multi 2>&1 | tail -3; fail "a done PR with a skipped row 6 is rejected"; }
+runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 4:done 5:done 6:done"
+
 # Usage errors.
 CODE=0
 sh "$FS" 2>/dev/null || CODE=$?
@@ -197,5 +203,90 @@ if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a duplicate PR slug passes"; fi
 runbook sk-bad4 "$ROWS_ALL 7:pending"
 if sh "$FS" sk-bad4 2>"$TMP/err"; then fail "an unexpected row ID is not reported"; fi
 grep -q 'unexpected row' "$TMP/err" || fail "the unexpected row ID is not named"
+
+
+# Size: light. Light flows live at .agents/flows/<slug>, receipts under .agents/receipts.
+mkdir -p .agents/receipts .agents/flows
+printf 'result: pass\nexit-code: 0\n' > .agents/receipts/run.receipt
+printf 'result: fail\nexit-code: 1\n' > .agents/receipts/bad.receipt
+LF=.agents/flows
+RCPT=".agents/receipts/run.receipt"
+light_runbook() { # name rows
+	runbook "$LF/$1" "$2"
+	sed -i 's/^Goal: test$/Goal: test/; s/^Status: \(.*\)$/Status: \1\n\nSize: light/' "$LF/$1/RUNBOOK.md"
+	echo "see $RCPT" > "$LF/$1/3 - IMPLEMENTATION.md"
+	echo "see $RCPT" > "$LF/$1/5 - VERIFY.md"
+}
+LIGHT_OK="0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:done 6:pending"
+
+light_runbook ok "$LIGHT_OK"
+OUT=$(sh "$FS" $LF/ok) || { sh "$FS" $LF/ok; fail "a valid light flow is not valid"; }
+echo "$OUT" | grep -q '^size: light$' || fail "light size not reported"
+echo "$OUT" | grep -q '^next: 6$' || fail "light flow next phase is not 6"
+(cd / && sh "$FS" "$TMP/$LF/ok" >/dev/null) || fail "receipts do not resolve from another working directory"
+sh "$FS" sk-fresh | grep -q '^size: full$' || fail "a runbook without Size is not full"
+
+light_runbook skip "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:skipped 4:skipped 5:pending 6:pending"
+if sh "$FS" $LF/skip 2>"$TMP/err"; then fail "a light flow skipping implementation passes"; fi
+grep -q 'cannot skip row 3' "$TMP/err" || fail "skipped implementation not named"
+
+light_runbook rev "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:in-progress 4:pending 5:pending 6:pending"
+if sh "$FS" $LF/rev 2>"$TMP/err"; then fail "a light flow with review pending passes"; fi
+grep -q 'requires row 4 skipped' "$TMP/err" || fail "unskipped review not named"
+
+light_runbook norec5 "$LIGHT_OK"
+echo "no proof" > "$LF/norec5/5 - VERIFY.md"
+if sh "$FS" $LF/norec5 2>"$TMP/err"; then fail "a light verify report without a receipt passes"; fi
+grep -q 'row 5 artifact cites no receipt' "$TMP/err" || fail "missing receipt not named"
+
+light_runbook norec3 "$LIGHT_OK"
+echo "no proof" > "$LF/norec3/3 - IMPLEMENTATION.md"
+if sh "$FS" $LF/norec3 2>"$TMP/err"; then fail "a light implementation report without a receipt passes"; fi
+grep -q 'row 3 artifact cites no receipt' "$TMP/err" || fail "missing row 3 receipt not named"
+
+light_runbook ghost "$LIGHT_OK"
+echo "see .agents/receipts/ghost.receipt" > "$LF/ghost/5 - VERIFY.md"
+if sh "$FS" $LF/ghost 2>"$TMP/err"; then fail "a missing cited receipt passes"; fi
+grep -q 'missing receipt' "$TMP/err" || fail "missing cited receipt not named"
+
+light_runbook failed "$LIGHT_OK"
+echo "see .agents/receipts/bad.receipt" > "$LF/failed/5 - VERIFY.md"
+if sh "$FS" $LF/failed 2>"$TMP/err"; then fail "a failing receipt passes"; fi
+grep -q 'did not pass' "$TMP/err" || fail "failing receipt not named"
+
+light_runbook spoof "$LIGHT_OK"
+printf 'receipt-version: 1\nlabel: x\nexit-code: 1\nresult: fail\n--- output (last 30 lines) ---\nresult: pass\n' > .agents/receipts/spoof.receipt
+echo "see .agents/receipts/spoof.receipt" > "$LF/spoof/5 - VERIFY.md"
+if sh "$FS" $LF/spoof 2>"$TMP/err"; then fail "a failing receipt with a spoofed output tail passes"; fi
+grep -q 'did not pass' "$TMP/err" || fail "spoofed receipt not named"
+
+runbook sk-blank "0:done 1:done 1r:done 2:done 2r:done 3:done 4:done 5:done 6:done"
+sed -i 's/^| 4 | REVIEW | done |/| 4 | REVIEW |  |/' sk-blank/RUNBOOK.md
+rm -f "sk-blank/4 - REVIEW.md"
+if sh "$FS" sk-blank 2>"$TMP/err"; then fail "a blank state cell passes"; fi
+grep -q 'row 4 has no state' "$TMP/err" || fail "blank state not named"
+
+light_runbook blocked "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:skipped 6:pending"
+rm "$LF/blocked/5 - VERIFY.md"
+sh "$FS" $LF/blocked >/dev/null || fail "a light flow with blocked verify is not valid"
+
+# The light route is closed without Size: light (the bypass), in root and PR runbooks.
+runbook sk-bypass "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:pending 6:pending"
+if sh "$FS" sk-bypass 2>"$TMP/err"; then fail "light-shaped skips without Size: light pass"; fi
+grep -q 'without Size: light' "$TMP/err" || fail "the bypass is not named"
+
+# Only a Size line in the header counts.
+runbook sk-sizeblock "$ROWS_ALL"
+printf '\n```\nSize: light\n```\n' >> sk-sizeblock/RUNBOOK.md
+sh "$FS" sk-sizeblock | grep -q '^size: full$' || fail "a Size line in a code block changes the size"
+runbook sk-sizefirst "$ROWS_ALL"
+sed -i 's/^Goal: test$/Size: full\n\nGoal: test\n\nSize: light/' sk-sizefirst/RUNBOOK.md
+sh "$FS" sk-sizefirst | grep -q '^size: full$' || fail "a Size line after the header changes the size"
+
+# Size: light is single-PR only.
+sed -i 's/^Goal: test$/Size: light\n\nGoal: test/' sk-multi/pr-first/RUNBOOK.md
+sed -i 's/^Status: completed$/Status: in-progress/' sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "Size: light in a PR runbook passes"; fi
+grep -q 'single-PR runbooks only' "$TMP/err" || fail "light in a PR runbook not named"
 
 echo "test-flow-state: all tests passed"
