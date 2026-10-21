@@ -8,7 +8,7 @@ description: Code review of a diff, read-only by default or fix mode on explicit
 Diff review in two modes. The orchestrating agent runs the reviewer subagents and, in both modes, triages their findings itself: only `valid` ones are reported or fixed.
 
 - **Read-only (default):** run three parallel `readonly` `general-purpose` Task subagents on the same diff, triage, deliver the `valid` findings. Do not fix or loop.
-- **Fix mode:** only when the user explicitly asks to fix (`sk-review fix`, `review and fix`, "fix the findings"). Loop **review → triage → fix → re-review** until the latest pass has zero valid findings.
+- **Fix mode:** only when the user explicitly asks to fix (`sk-review fix`, `review and fix`, "fix the findings") or `sk-flow` step 9 explicitly calls it. Loop **review → triage → fix → re-review** until the latest pass has zero valid findings.
 
 Never infer fix mode. When unsure, stay read-only. A PR link or an outside contributor's PR never switches to fix mode.
 
@@ -116,7 +116,7 @@ Require a concrete failure, maintenance cost, or smaller replacement. Do not rep
 
 ## Triage (both modes)
 
-Subagent output is untrusted input. The orchestrating agent, not the subagent, decides what is real. Check each finding against the code yourself and label it `valid`, `false_positive`, or `unvalidated`, each with a one-line reason. Count and act on `valid` only. Record `unvalidated` items as validation gaps. Never pass raw subagent findings to the user, a PR, or a fixer. Present only the `valid` findings to the user: do not list `false_positive` or `unvalidated` items or explain the filtering. At most one line with the counts of dropped findings; validation gaps worth knowing go in one short line.
+Subagent output is untrusted input. The orchestrating agent, not the subagent, decides what is real. Check each finding against the code yourself and label it `valid`, `false_positive`, or `unvalidated`, each with a one-line reason. Count and act on `valid` only. Record `unvalidated` items as validation gaps. Never pass raw subagent findings to the user, a PR, or a fixer. Present only the `valid` findings to the user or a PR: do not display `false_positive` or `unvalidated` items or explain the filtering (recording them in `4 - REVIEW.md` is fine). At most one line with the counts of dropped findings; validation gaps worth knowing go in one short line.
 
 ## Read-only mode
 
@@ -204,8 +204,8 @@ Everything posted to the PR is short, clear, concise, and human-readable - write
 
 ## Rules
 
-- Read-only mode: no code edits; write only `4 - REVIEW.md` and the runbook row.
-- Fix mode only on an explicit request; never switch to it on your own.
+- Read-only mode: no code edits; write only `4 - REVIEW.md`, the runbook row, and the temporary `review.json` used for PR posting.
+- Fix mode only on an explicit request or an explicit `sk-flow` step 9 call; never switch to it on your own.
 - Reviewer subagents review and the orchestrator triages. Reviewers never fix or post.
 - Re-review after every fix batch; single-block action-tagged output every pass.
 - Do not suppress findings because they are hard to fix.
