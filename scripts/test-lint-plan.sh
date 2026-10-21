@@ -159,4 +159,12 @@ CODE=0
 sh "$LINT" "$TMP/missing.md" >/dev/null 2>&1 || CODE=$?
 [ "$CODE" -eq 1 ] || fail "a missing file does not exit 1"
 
+sed 's/^## Implementation Plan (TODOs)$/## Implementation Plan (TODOs) ##/' "$TMP/deep.md" > "$TMP/deep-closing.md"
+if sh "$LINT" "$TMP/deep-closing.md" 2>"$TMP/err"; then
+	fail "closing hashes bypass TODO depth checks"
+fi
+grep -q 'deeper than 2 levels' "$TMP/err" || fail "closing-hash TODO depth problem is not named"
+sed 's/^## Complexity Check$/## Complexity Check ##/' "$TMP/good.md" > "$TMP/decision-closing.md"
+sh "$LINT" "$TMP/decision-closing.md" >/dev/null || fail "closing hashes break decision parsing"
+
 echo "test-lint-plan: all tests passed"

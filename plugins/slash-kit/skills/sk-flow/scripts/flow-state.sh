@@ -147,12 +147,13 @@ validate_rows() {
 	for row in $EXPECTED; do
 		state=$(row_state "$FACTS" "$row")
 		case $state in
-			pending | blocked) seen_unfinished=1 ;;
-			done | diverged)
-				[ "$seen_unfinished" = 1 ] && err "$LABEL: row $row is $state while an earlier row is pending or blocked"
+			done | diverged | in-progress)
+				[ "$seen_unfinished" = 1 ] && err "$LABEL: row $row is $state while an earlier row is unfinished"
 				;;
 		esac
+		case $state in pending | blocked | in-progress) seen_unfinished=1 ;; esac
 	done
+	[ "$status" = completed ] && [ "$seen_unfinished" = 1 ] && err "$LABEL: completed status has unfinished phases"
 
 	# At most one row in progress.
 	n=$(awk -F'|' '$1 == "ROW" && $3 == "in-progress" { n++ } END { print n+0 }' "$FACTS")
@@ -232,6 +233,12 @@ awk -F'|' '$1 == "PR" { print $2 "|" $3 "|" $4 "|" $5 "|" $6 }' "$TMP/root" > "$
 SLUGS=$(awk -F'|' '{ print $2 }' "$TMP/prs" | tr '\n' ' ')
 INPROGRESS=""
 while IFS='|' read -r order slug deps state dirlink; do
+	case $slug in
+		'' | *[!a-z0-9-]* | -* | *-) err "initiative: invalid PR slug '$slug'"; continue ;;
+	esac
+	n=$(awk -F'|' -v s="$slug" '$2 == s { n++ } END { print n+0 }' "$TMP/prs")
+	[ "$n" -eq 1 ] || err "initiative: duplicate PR slug '$slug'"
+	[ "$dirlink" = "[pr-$slug/](pr-$slug/)" ] || err "initiative: PR $slug Directory must link to pr-$slug/"
 	# Deps must be existing slugs or none.
 	if [ "$deps" != "none" ] && [ "$deps" != "-" ]; then
 		for dep in $(echo "$deps" | tr ',' ' '); do
@@ -253,9 +260,11 @@ while IFS='|' read -r order slug deps state dirlink; do
 		err "initiative: PR $slug has no pr-$slug/RUNBOOK.md"
 		continue
 	fi
+	PR_STATE=$state
 	parse_runbook "$DIR/pr-$slug/RUNBOOK.md" > "$TMP/pr-$slug"
 	validate_rows "$TMP/pr-$slug" "$DIR/pr-$slug" "$ROWS_SINGLE" "PR $slug"
 	check_files "$DIR/pr-$slug" "PR $slug"
+	state=$PR_STATE
 	s6=$(row_state "$TMP/pr-$slug" 6)
 	[ "$state" = "done" ] && [ "$s6" != "done" ] && [ "$s6" != "skipped" ] && err "initiative: PR $slug is done but its runbook row 6 is ${s6:-missing}"
 	[ "$state" = "in-progress" ] && [ "$s6" = "done" ] && err "initiative: PR $slug is in-progress but its runbook row 6 is done"
@@ -285,6 +294,13 @@ else
 	[ "$ACTIVE" = "none" ] || err "initiative: Active PR is '$ACTIVE' but no PR is in-progress"
 fi
 
+INIT_NEXT=$(next_from_rows "$TMP/root" "$ROWS_INITIATIVE")
+[ -n "$INIT_NEXT" ] && [ "$ACTIVE" != none ] && err "initiative: active PR cannot start before initiative phases finish"
+ROOT_STATUS=$(awk -F'|' '$1 == "STATUS" { print $2 }' "$TMP/root")
+if [ "$ROOT_STATUS" = completed ]; then
+	awk -F'|' '$4 != "done" && $4 != "canceled" { exit 1 }' "$TMP/prs" || err "initiative: completed status has unfinished PRs"
+fi
+
 if [ "$ERR" -gt 0 ]; then
 	echo "status: error"
 	exit 1
@@ -292,7 +308,10 @@ fi
 
 echo "status: ok"
 echo "active-pr: ${ACTIVE:-none}"
-if [ "$ACTIVE" != "none" ] && [ -n "$ACTIVE" ]; then
+if [ -n "$INIT_NEXT" ]; then
+	echo "next: ${INIT_NEXT%%|*}"
+	echo "next-phase: ${INIT_NEXT#*|}"
+elif [ "$ACTIVE" != "none" ] && [ -n "$ACTIVE" ]; then
 	NEXT=$(next_from_rows "$TMP/pr-$ACTIVE" "$ROWS_SINGLE")
 	if [ -n "$NEXT" ]; then
 		echo "next: ${NEXT%%|*}"

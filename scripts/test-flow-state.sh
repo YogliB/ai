@@ -166,4 +166,31 @@ CODE=0
 sh "$FS" no-such-dir >/dev/null 2>&1 || CODE=$?
 [ "$CODE" -eq 1 ] || fail "a missing directory does not exit 1"
 
+runbook sk-order "0:pending 1:in-progress 1r:pending 2:pending 2r:pending 3:pending 4:pending 5:pending 6:pending"
+if sh "$FS" sk-order 2>"$TMP/err"; then fail "an in-progress phase after a pending phase passes"; fi
+
+runbook sk-completed "$ROWS_ALL" completed
+if sh "$FS" sk-completed 2>"$TMP/err"; then fail "a completed flow with pending phases passes"; fi
+
+sed -i 's/| 2r | PLANNING | done/| 2r | PLANNING | pending/' sk-multi/RUNBOOK.md
+OUT=$(sh "$FS" sk-multi) || fail "an initiative awaiting plan review is invalid"
+echo "$OUT" | grep -q '^next: 2r$' || fail "PR work starts before initiative plan review"
+sed -i 's/| 2r | PLANNING | pending/| 2r | PLANNING | done/' sk-multi/RUNBOOK.md
+sed -i 's/^Status: in-progress$/Status: completed/' sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a completed initiative with pending PRs passes"; fi
+sed -i 's/^Status: completed$/Status: in-progress/' sk-multi/RUNBOOK.md
+
+sed -i 's#\[pr-second/\](pr-second/)#[pr-wrong/](pr-wrong/)#' sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a mismatched Directory passes"; fi
+sed -i 's#\[pr-wrong/\](pr-wrong/)#[pr-second/](pr-second/)#' sk-multi/RUNBOOK.md
+sed -i 's/| 1 | first | YogliB\/ai | none | done/| 1 | first | YogliB\/ai | none | pending/; s/| 2 | second | YogliB\/ai | first | pending/| 2 | second | YogliB\/ai | first | in-progress/; s/^Active PR: none$/Active PR: second/' sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "an active PR with an unfinished dependency passes"; fi
+grep -q 'dependency first is pending' "$TMP/err" || fail "the unfinished dependency is not named"
+sed -i 's/| 1 | first | YogliB\/ai | none | pending/| 1 | first | YogliB\/ai | none | done/; s/| 2 | second | YogliB\/ai | first | in-progress/| 2 | second | YogliB\/ai | first | done/; s/^Active PR: second$/Active PR: none/' sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a done PR with unfinished row 6 passes"; fi
+grep -q 'PR second is done but its runbook row 6 is pending' "$TMP/err" || fail "the unfinished PR runbook is not named"
+sed -i 's/| 2 | second | YogliB\/ai | first | done/| 2 | second | YogliB\/ai | first | pending/' sk-multi/RUNBOOK.md
+pr_row 3 second first pending >> sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a duplicate PR slug passes"; fi
+
 echo "test-flow-state: all tests passed"
