@@ -25,7 +25,7 @@ unset CLAUDE_CONFIG_DIR
 "$CLAUDE" plugin install slash-kit@ai >/dev/null || fail "plugin install failed"
 
 DETAILS=$("$CLAUDE" plugin details slash-kit@ai) || fail "plugin details failed"
-echo "$DETAILS" | grep -q 'Skills (13)' || fail "expected 13 skills:
+echo "$DETAILS" | grep -q 'Skills (12)' || fail "expected 12 skills:
 $DETAILS"
 echo "$DETAILS" | grep -q 'Hooks (2)' || fail "expected 2 hooks:
 $DETAILS"

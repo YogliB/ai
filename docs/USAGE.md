@@ -93,7 +93,7 @@ Use the sk-alternatives skill for caching API responses.
 Use the sk-planning skill to write a plan for pagination.
 Use the sk-review-plan skill to review the plan.
 Use the sk-implement skill to implement the plan.
-Use the sk-review-and-fix skill on the current diff.
+Use the sk-review skill on the current diff (say "fix" for fix mode).
 Use the sk-pr skill to open a pull request.
 ```
 
@@ -105,8 +105,7 @@ Use the sk-pr skill to open a pull request.
 | [sk-planning](../skills/sk-planning/SKILL.md)                       | You want an executable plan.                              |
 | [sk-review-plan](../skills/sk-review-plan/SKILL.md)                 | You want a second opinion on a plan.                      |
 | [sk-implement](../skills/sk-implement/SKILL.md)                     | You have an approved plan to execute.                     |
-| [sk-review-and-fix](../skills/sk-review-and-fix/SKILL.md)           | You want a diff reviewed and fixed.                       |
-| [sk-review](../skills/sk-review/SKILL.md)                           | You want a read-only review, posted inline on the PR.     |
+| [sk-review](../skills/sk-review/SKILL.md)                           | You want a diff reviewed; say "fix" to also fix it.       |
 | [sk-pr](../skills/sk-pr/SKILL.md)                                   | You want a PR.                                            |
 | [sk-verify](../skills/sk-verify/SKILL.md)                           | You want to verify changes.                               |
 | [sk-project-docs](../skills/sk-project-docs/SKILL.md)               | You want to scaffold a project's docs structure.          |
@@ -121,21 +120,21 @@ Plugin skills are namespaced:
 /slash-kit:sk-explore add-user-auth
 /slash-kit:sk-alternatives for caching API responses
 /slash-kit:sk-planning add-user-auth
-/slash-kit:sk-review-and-fix my branch
+/slash-kit:sk-review fix my branch
 /slash-kit:sk-pr
 /slash-kit:sk-flow
 ```
 
 Installed a skill individually with `npx skills add`? Drop the `/slash-kit:` prefix (`/sk-planning`).
 
-| Slash command                   | What happens                                                                              |
-| ------------------------------- | ----------------------------------------------------------------------------------------- |
-| `/slash-kit:/sk-explore`        | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/slash-kit:/sk-alternatives`   | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
-| `/slash-kit:/sk-planning`       | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
-| `/slash-kit:/sk-review-and-fix` | Invoke `sk-review-and-fix` on the current diff.                                           |
-| `/slash-kit:/sk-pr`             | Invoke `sk-pr` to create or update a PR.                                                  |
-| `/slash-kit:/sk-flow [mode]`    | Run the full workflow. `auto` runs without confirmation; `manual` asks before each phase. |
+| Slash command                 | What happens                                                                              |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `/slash-kit:/sk-explore`      | Invoke `sk-explore` and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/slash-kit:/sk-alternatives` | Invoke `sk-alternatives` and write `1 - ALTERNATIVES.md`.                                 |
+| `/slash-kit:/sk-planning`     | Invoke `sk-planning` and write `2 - PLANNING.md`.                                         |
+| `/slash-kit:/sk-review`       | Invoke `sk-review` on the current diff.                                                   |
+| `/slash-kit:/sk-pr`           | Invoke `sk-pr` to create or update a PR.                                                  |
+| `/slash-kit:/sk-flow [mode]`  | Run the full workflow. `auto` runs without confirmation; `manual` asks before each phase. |
 
 ### In Devin
 
@@ -145,7 +144,7 @@ With the plugin installed, prefix the skill name with `/slash-kit:`:
 /slash-kit:sk-explore add-user-auth
 /slash-kit:sk-planning add-user-auth
 /slash-kit:sk-implement
-/slash-kit:sk-review-and-fix
+/slash-kit:sk-review fix
 /slash-kit:sk-pr
 /slash-kit:sk-flow
 ```
@@ -153,7 +152,7 @@ With the plugin installed, prefix the skill name with `/slash-kit:`:
 ## Run the workflow
 
 ```text
-sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review-and-fix → sk-verify → sk-pr
+sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review (fix mode) → sk-verify → sk-pr
 ```
 
 Each step runs in its own subagent; the prompt names the skill to invoke rather than paraphrasing it. The [runbook](../RUNBOOK.md) has the full procedure.
@@ -174,7 +173,7 @@ Each step runs in its own subagent; the prompt names the skill to invoke rather 
 # Claude writes .agents/flows/sk-add-auth-token/2 - PLANNING.md
 
 # Implement the plan, then:
-/sk-review-and-fix
+/sk-review fix
 # Claude reviews and fixes issues.
 
 /sk-pr

@@ -1,6 +1,6 @@
 # AI Workflow Runbook
 
-End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review-and-fix (or sk-review) → sk-verify → sk-pr**.
+End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review (fix mode) → sk-verify → sk-pr**.
 
 Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
@@ -97,7 +97,7 @@ Every flow lives in its own folder:
 
 **When:** code is implemented and tests pass.
 
-**Skills:** `sk-review-and-fix` (loop until clean) or `sk-review` (read-only report).
+**Skills:** `sk-review` in fix mode (loop until clean, only on explicit request) or read-only mode (report, default).
 
 **Output:** `4 - REVIEW.md` in `.agents/flows/sk-<slug>/`.
 
@@ -140,7 +140,7 @@ You do not have to run the full flow. Each skill is self-contained:
 - `/sk-planning <slug>` or "use the sk-planning skill" — write `2 - PLANNING.md`
 - "use the sk-review-plan skill" — review an existing plan
 - `/sk-implement` or "use the sk-implement skill" — execute an approved plan, writes `3 - IMPLEMENTATION.md`
-- `/sk-review-and-fix` or "use the sk-review-and-fix skill" — review the current diff, writes `4 - REVIEW.md`
+- `/sk-review` or "use the sk-review skill" (add "fix" for fix mode) — review the current diff, writes `4 - REVIEW.md`
 - `/sk-pr` or "use the sk-pr skill" — create or update a PR, writes `6 - PR.md`
 - `/sk-flow [auto|manual]` or "use the sk-flow skill" — run the full workflow
 
