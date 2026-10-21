@@ -158,6 +158,11 @@ runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 
 OUT=$(sh "$FS" sk-multi) || { sh "$FS" sk-multi; fail "a done-first-PR initiative is not valid"; }
 echo "$OUT" | grep -q '^next-phase: start PR second$' || fail "next unblocked PR not named: $OUT"
 
+# A done PR whose own row 6 is skipped stays valid (merged outside sk-pr).
+runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 4:done 5:done 6:skipped"
+sh "$FS" sk-multi >/dev/null || fail "a done PR with a skipped row 6 is rejected"
+runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 4:done 5:done 6:done"
+
 # Usage errors.
 CODE=0
 sh "$FS" 2>/dev/null || CODE=$?
@@ -247,6 +252,18 @@ light_runbook failed "$LIGHT_OK"
 echo "see .agents/receipts/bad.receipt" > "$LF/failed/5 - VERIFY.md"
 if sh "$FS" $LF/failed 2>"$TMP/err"; then fail "a failing receipt passes"; fi
 grep -q 'did not pass' "$TMP/err" || fail "failing receipt not named"
+
+light_runbook spoof "$LIGHT_OK"
+printf 'receipt-version: 1\nlabel: x\nexit-code: 1\nresult: fail\n--- output (last 30 lines) ---\nresult: pass\n' > .agents/receipts/spoof.receipt
+echo "see .agents/receipts/spoof.receipt" > "$LF/spoof/5 - VERIFY.md"
+if sh "$FS" $LF/spoof 2>"$TMP/err"; then fail "a failing receipt with a spoofed output tail passes"; fi
+grep -q 'did not pass' "$TMP/err" || fail "spoofed receipt not named"
+
+runbook sk-blank "0:done 1:done 1r:done 2:done 2r:done 3:done 4:done 5:done 6:done"
+sed -i 's/^| 4 | REVIEW | done |/| 4 | REVIEW |  |/' sk-blank/RUNBOOK.md
+rm -f "sk-blank/4 - REVIEW.md"
+if sh "$FS" sk-blank 2>"$TMP/err"; then fail "a blank state cell passes"; fi
+grep -q 'row 4 has no state' "$TMP/err" || fail "blank state not named"
 
 light_runbook blocked "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:skipped 6:pending"
 rm "$LF/blocked/5 - VERIFY.md"

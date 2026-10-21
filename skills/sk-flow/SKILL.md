@@ -91,7 +91,7 @@ Planning owns the transition from a single-PR flow to a multi-PR initiative:
 └── pr-<stable-slug>/...
 ```
 
-- Use `templates/MULTI-PR-RUNBOOK.md` for the root and the normal `templates/RUNBOOK.md` inside every PR directory. Mark rows `0` and `1` in a PR runbook `skipped` because those artifacts remain at the initiative root.
+- Use `templates/MULTI-PR-RUNBOOK.md` for the root and the normal `templates/RUNBOOK.md` inside every PR directory. Mark rows `0` and `1` in a PR runbook `skipped` because those artifacts remain at the initiative root. PR runbooks record `Size: full`; the light path is single-PR only.
 - Derive each stable slug from the PR's purpose, not its ordinal number. Once recorded, never rename or reuse it even if PR order changes.
 - Keep `Active PR` equal to exactly one PR slug, or `none` when the initiative is complete or blocked. Downstream phases use this field and the matching `Directory`; they never choose a plan from a glob or modification time.
 - The root PR table is the source of truth for order, repository, dependencies, state, directory, link, branch, base SHA, and HEAD. Dependencies contain PR slugs or `none`.

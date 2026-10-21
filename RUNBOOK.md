@@ -14,7 +14,7 @@ Use the full flow when you are starting a non-trivial piece of work and want to:
 - Review the implementation against the plan.
 - Open a PR with the plan and review evidence in the body.
 
-`sk-flow` triages size first: a small change (at most 3 files, ~50 lines, obvious approach) takes the light path with `Size: light` in the runbook. Rows `0`, `1`, `1r`, `2r`, `4` are skipped, a short plan, receipts and a PR remain. Skip the runbook entirely only for hotfixes or when you are not using `sk-flow`.
+`sk-flow` triages size first: a small change (at most 3 files, ~50 lines, no new dependency, interface, schema or security-sensitive code, obvious approach) takes the light path with `Size: light` in the runbook. Rows `0`, `1`, `1r`, `2r`, `4` are skipped, a short plan, implementation and verify with receipts, and a PR remain. Skip the runbook entirely only for hotfixes or when you are not using `sk-flow`.
 
 ## Prerequisites
 

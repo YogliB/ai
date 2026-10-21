@@ -118,7 +118,9 @@ validate_rows() {
 	case $size in
 		"" | full)
 			# Without Size: light, the light route is closed.
-			for row in 2 3 4 6; do
+			guarded="2 3 4"
+			[ "$LABEL" = runbook ] && guarded="2 3 4 6"
+			for row in $guarded; do
 				[ "$(row_state "$FACTS" "$row")" = skipped ] && err "$LABEL: row $row cannot be skipped without Size: light"
 			done
 			;;
@@ -138,7 +140,7 @@ validate_rows() {
 						for r in $receipts; do
 							case $r in /*) p=$r ;; *) p=$RDIR/../../../$r ;; esac
 							[ -f "$p" ] || { err "$LABEL: Size light row $row cites a missing receipt: $r"; continue; }
-							grep -q '^result: pass$' "$p" || err "$LABEL: Size light row $row cites a receipt that did not pass: $r"
+							awk '/^---/ { exit } /^result: pass$/ { ok = 1 } END { exit !ok }' "$p" || err "$LABEL: Size light row $row cites a receipt that did not pass: $r"
 						done
 						;;
 				esac
@@ -160,7 +162,10 @@ validate_rows() {
 		[ "$n" -eq 0 ] && err "$LABEL: runbook row $row missing"
 		[ "$n" -gt 1 ] && err "$LABEL: runbook row $row appears $n times"
 		state=$(row_state "$FACTS" "$row")
-		[ -n "$state" ] || continue
+		if [ -z "$state" ]; then
+			[ "$n" -gt 0 ] && err "$LABEL: row $row has no state"
+			continue
+		fi
 		ok=0
 		for s in $STATES; do [ "$state" = "$s" ] && ok=1; done
 		[ "$ok" = 1 ] || err "$LABEL: row $row has invalid state '$state'"
