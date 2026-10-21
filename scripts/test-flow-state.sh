@@ -199,70 +199,76 @@ if sh "$FS" sk-bad4 2>"$TMP/err"; then fail "an unexpected row ID is not reporte
 grep -q 'unexpected row' "$TMP/err" || fail "the unexpected row ID is not named"
 
 
-# Size: light.
-light_runbook() { # dir rows
-	runbook "$1" "$2"
-	sed -i 's/^Goal: test$/Size: light\n\nGoal: test/' "$1/RUNBOOK.md"
+# Size: light. Light flows live at .agents/flows/<slug>, receipts under .agents/receipts.
+mkdir -p .agents/receipts .agents/flows
+printf 'result: pass\nexit-code: 0\n' > .agents/receipts/run.receipt
+printf 'result: fail\nexit-code: 1\n' > .agents/receipts/bad.receipt
+LF=.agents/flows
+RCPT=".agents/receipts/run.receipt"
+light_runbook() { # name rows
+	runbook "$LF/$1" "$2"
+	sed -i 's/^Goal: test$/Goal: test/; s/^Status: \(.*\)$/Status: \1\n\nSize: light/' "$LF/$1/RUNBOOK.md"
+	echo "see $RCPT" > "$LF/$1/3 - IMPLEMENTATION.md"
+	echo "see $RCPT" > "$LF/$1/5 - VERIFY.md"
 }
 LIGHT_OK="0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:done 6:pending"
-light_runbook sk-light "$LIGHT_OK"
-mkdir -p .agents/receipts sk-light/../.agents/flows
-echo x > .agents/receipts/run.receipt
-echo "see .agents/receipts/run.receipt" > "sk-light/3 - IMPLEMENTATION.md"
-echo "see .agents/receipts/run.receipt" > "sk-light/5 - VERIFY.md"
-OUT=$(sh "$FS" sk-light) || { sh "$FS" sk-light; fail "a valid light flow is not valid"; }
+
+light_runbook ok "$LIGHT_OK"
+OUT=$(sh "$FS" $LF/ok) || { sh "$FS" $LF/ok; fail "a valid light flow is not valid"; }
 echo "$OUT" | grep -q '^size: light$' || fail "light size not reported"
 echo "$OUT" | grep -q '^next: 6$' || fail "light flow next phase is not 6"
-echo "$(sh "$FS" sk-fresh)" | grep -q '^size: full$' || fail "a runbook without Size is not full"
+(cd / && sh "$FS" "$TMP/$LF/ok" >/dev/null) || fail "receipts do not resolve from another working directory"
+sh "$FS" sk-fresh | grep -q '^size: full$' || fail "a runbook without Size is not full"
 
-light_runbook sk-light-skip "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:skipped 4:skipped 5:pending 6:pending"
-if sh "$FS" sk-light-skip 2>"$TMP/err"; then fail "a light flow skipping implementation passes"; fi
+light_runbook skip "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:skipped 4:skipped 5:pending 6:pending"
+if sh "$FS" $LF/skip 2>"$TMP/err"; then fail "a light flow skipping implementation passes"; fi
 grep -q 'cannot skip row 3' "$TMP/err" || fail "skipped implementation not named"
 
-light_runbook sk-light-rev "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:in-progress 4:pending 5:pending 6:pending"
-if sh "$FS" sk-light-rev 2>"$TMP/err"; then fail "a light flow with review pending passes"; fi
+light_runbook rev "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:in-progress 4:pending 5:pending 6:pending"
+if sh "$FS" $LF/rev 2>"$TMP/err"; then fail "a light flow with review pending passes"; fi
 grep -q 'requires row 4 skipped' "$TMP/err" || fail "unskipped review not named"
 
-light_runbook sk-light-norec "$LIGHT_OK"
-echo "no proof" > "sk-light-norec/5 - VERIFY.md"
-echo "see .agents/receipts/run.receipt" > "sk-light-norec/3 - IMPLEMENTATION.md"
-if sh "$FS" sk-light-norec 2>"$TMP/err"; then fail "a light verify report without a receipt passes"; fi
+light_runbook norec5 "$LIGHT_OK"
+echo "no proof" > "$LF/norec5/5 - VERIFY.md"
+if sh "$FS" $LF/norec5 2>"$TMP/err"; then fail "a light verify report without a receipt passes"; fi
 grep -q 'row 5 artifact cites no receipt' "$TMP/err" || fail "missing receipt not named"
 
-light_runbook sk-light-bad "$ROWS_ALL"
-sed -i 's/^Size: light$/Size: huge/' sk-light-bad/RUNBOOK.md
-if sh "$FS" sk-light-bad 2>"$TMP/err"; then fail "an invalid Size passes"; fi
-
-# A cited receipt must exist (the light flow dirs sit three levels below the repo root).
-mkdir -p .agents/flows
-light_runbook .agents/flows/sk-light-ghost "$LIGHT_OK"
-echo "see .agents/receipts/run.receipt" > ".agents/flows/sk-light-ghost/3 - IMPLEMENTATION.md"
-echo "see .agents/receipts/ghost.receipt" > ".agents/flows/sk-light-ghost/5 - VERIFY.md"
-if sh "$FS" .agents/flows/sk-light-ghost 2>"$TMP/err"; then fail "a missing cited receipt passes"; fi
-grep -q 'missing receipt' "$TMP/err" || fail "missing cited receipt not named"
-echo "see .agents/receipts/run.receipt" > ".agents/flows/sk-light-ghost/5 - VERIFY.md"
-sh "$FS" .agents/flows/sk-light-ghost >/dev/null || fail "a relative receipt path does not resolve from the repo root"
-
-# A missing row 3 receipt is an error too.
-light_runbook sk-light-norec3 "$LIGHT_OK"
-echo "no proof" > "sk-light-norec3/3 - IMPLEMENTATION.md"
-echo "see .agents/receipts/run.receipt" > "sk-light-norec3/5 - VERIFY.md"
-if sh "$FS" sk-light-norec3 2>"$TMP/err"; then fail "a light implementation report without a receipt passes"; fi
+light_runbook norec3 "$LIGHT_OK"
+echo "no proof" > "$LF/norec3/3 - IMPLEMENTATION.md"
+if sh "$FS" $LF/norec3 2>"$TMP/err"; then fail "a light implementation report without a receipt passes"; fi
 grep -q 'row 3 artifact cites no receipt' "$TMP/err" || fail "missing row 3 receipt not named"
 
-# A blocked light verify is representable.
-light_runbook sk-light-blocked "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:skipped 6:pending"
-echo "see .agents/receipts/run.receipt" > "sk-light-blocked/3 - IMPLEMENTATION.md"
-sh "$FS" sk-light-blocked >/dev/null || fail "a light flow with blocked verify is not valid"
+light_runbook ghost "$LIGHT_OK"
+echo "see .agents/receipts/ghost.receipt" > "$LF/ghost/5 - VERIFY.md"
+if sh "$FS" $LF/ghost 2>"$TMP/err"; then fail "a missing cited receipt passes"; fi
+grep -q 'missing receipt' "$TMP/err" || fail "missing cited receipt not named"
 
-# The light route is closed without Size: light (the bypass).
+light_runbook failed "$LIGHT_OK"
+echo "see .agents/receipts/bad.receipt" > "$LF/failed/5 - VERIFY.md"
+if sh "$FS" $LF/failed 2>"$TMP/err"; then fail "a failing receipt passes"; fi
+grep -q 'did not pass' "$TMP/err" || fail "failing receipt not named"
+
+light_runbook blocked "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:skipped 6:pending"
+rm "$LF/blocked/5 - VERIFY.md"
+sh "$FS" $LF/blocked >/dev/null || fail "a light flow with blocked verify is not valid"
+
+# The light route is closed without Size: light (the bypass), in root and PR runbooks.
 runbook sk-bypass "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:pending 6:pending"
 if sh "$FS" sk-bypass 2>"$TMP/err"; then fail "light-shaped skips without Size: light pass"; fi
 grep -q 'without Size: light' "$TMP/err" || fail "the bypass is not named"
 
-# Size lines outside the header are ignored; the first header Size wins.
+# Only a Size line in the header counts.
 runbook sk-sizeblock "$ROWS_ALL"
 printf '\n```\nSize: light\n```\n' >> sk-sizeblock/RUNBOOK.md
 sh "$FS" sk-sizeblock | grep -q '^size: full$' || fail "a Size line in a code block changes the size"
+runbook sk-sizefirst "$ROWS_ALL"
+sed -i 's/^Goal: test$/Size: full\n\nGoal: test\n\nSize: light/' sk-sizefirst/RUNBOOK.md
+sh "$FS" sk-sizefirst | grep -q '^size: full$' || fail "a Size line after the header changes the size"
+
+# Size: light is single-PR only.
+sed -i 's/^Goal: test$/Size: light\n\nGoal: test/' sk-multi/pr-first/RUNBOOK.md
+sed -i 's/^Status: completed$/Status: in-progress/' sk-multi/RUNBOOK.md
+if sh "$FS" sk-multi 2>"$TMP/err"; then fail "Size: light in a PR runbook passes"; fi
+grep -q 'single-PR runbooks only' "$TMP/err" || fail "light in a PR runbook not named"
 
 echo "test-flow-state: all tests passed"

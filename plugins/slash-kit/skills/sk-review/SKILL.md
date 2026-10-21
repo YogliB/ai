@@ -112,7 +112,7 @@ If the diff is empty, reply with `AI review. harness: <harness>, model: <model>`
 2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
 3. **Triage** — label every finding `valid`, `false_positive`, or `unvalidated` with a one-line reason. Count `valid` only; record `unvalidated` items as validation gaps.
 4. **Display** — the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
-5. **Deliver** — PR mode: post the findings (see below); otherwise display the block locally. Either way write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`diverged` if you departed from read-only review; PR mode: add the posted review URL). Do not fix.
+5. **Deliver** — PR mode: post the findings (see below); otherwise display the block locally. Either way write `4 - REVIEW.md` and update (on a `Size: light` runbook row `4` stays `skipped`: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `Size: full`) `RUNBOOK.md` row `4` to `done` (`diverged` if you departed from read-only review; PR mode: add the posted review URL). Do not fix.
 
 ## Posting the review to a PR
 
