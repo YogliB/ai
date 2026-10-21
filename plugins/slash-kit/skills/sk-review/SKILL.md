@@ -15,7 +15,7 @@ Never infer fix mode. When unsure, stay read-only. A PR link or an outside contr
 ## When to use
 
 - User asks for `sk-review`, a review, or review without fixing: read-only mode.
-- User explicitly asks for fixes, or `sk-flow` step 9 runs: fix mode.
+- User explicitly asks for fixes, or `sk-flow` step 9 calls it in fix mode (unless the user asked for read-only): fix mode.
 - Before `sk-pr` when only a report is needed: read-only mode.
 
 ## Active PR handoff
@@ -25,7 +25,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` there, and a missing `4 - REVIEW.md` (fix mode may find one from an earlier run, see step 4).
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` there, and a missing `4 - REVIEW.md` (an existing one is fine for fix-mode re-runs and explicitly requested re-reviews, see step 4).
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 4. Fix mode only: if `4 - REVIEW.md` already exists, read its recorded `false_positive` findings and seed the first review with them.
 
@@ -143,7 +143,7 @@ If the diff is empty, stop in one sentence. The disclosure header goes on the fi
 
 **Fix rules:** minimal diff; match conventions; no scope creep; no drive-by refactors; do not treat 🔵 as auto-`false_positive`. Do not silence linters, fix the root cause. Run relevant tests after non-trivial fixes; record failures as blockers. Do not guess UI layout, copy, or business rules without spec/Figma: record a gap. Do not auto-fix gap-dependent ❓ by guessing intent.
 
-**Output:** when the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`blocked` when the stuck guard fired; `diverged` if you departed from this skill) (on a `Size: light` runbook row `4` stays `skipped`: write nothing and tell the user a review needs `Size: full`) with:
+**Output:** when the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`blocked` when the stuck guard fired or tests still fail; `diverged` if you departed from this skill) (on a `Size: light` runbook row `4` stays `skipped`: write nothing and tell the user a review needs `Size: full`) with:
 
 - Review rounds completed
 - `valid` findings fixed (count and one-line summary)
