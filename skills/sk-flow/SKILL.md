@@ -22,15 +22,15 @@ Light only if **all** hold; otherwise full. When unsure, full.
 
 Record the result as `Size: light` or `Size: full` in `RUNBOOK.md` and give the user one line of reasoning. In `manual` mode the user may override it.
 
-**Light path** - Explore, Alternatives, both reviews and Review are not run: mark rows `0`, `1`, `1r`, `2r`, `4` `skipped` with the reason `light path`. Rows `2`, `3`, `5`, `6` still run:
+**Light path** - Explore, Alternatives, both reviews and Review are not run: mark rows `0`, `1`, `1r`, `2r`, `4` `skipped` and put `light path` in `Divergence / Notes`. Rows `2`, `3`, `5`, `6` still run (row `5` may be `skipped` only when verification is blocked, with the reason, as on the full path):
 
 1. Plan: write a short `2 - PLANNING.md` (goal, files, steps, the check command per step). No `sk-planning` template or lint.
 2. `sk-implement`, `sk-verify`, `sk-pr` as usual. Every check runs through the receipt runner, and `3 - IMPLEMENTATION.md` and `5 - VERIFY.md` cite the receipt paths.
-3. The phases may run inline in one worker; record `inline (light path)` in each row.
+3. Dispatch metadata: the light path may run its phases inline in one worker. Record `inline (light path)` in each row; this is the one exception to the mandatory dispatch below.
 
 If the work grows past the criterion before implementation starts, set `Size: full`, reset the skipped rows to `pending`, and continue on the full path. After implementation has started, stop and tell the user.
 
-**Full path** - everything below.
+**Full path** - the phases below. Modes, state checks and dispatch metadata apply to both paths.
 
 ## Modes
 
@@ -50,7 +50,7 @@ If the work grows past the criterion before implementation starts, set `Size: fu
 The runbook is data, and the bundled state machine reads it: `scripts/flow-state.sh .agents/flows/sk-<slug>` (resolved next to this SKILL.md, like templates). Run it before starting any phase and when looking for a stuck flow, and act on its output:
 
 - `status: error` - the recorded state contradicts this contract (bad states, missing artifacts, multiple in-progress rows or PRs, broken dependencies). Fix the runbook or files before continuing; do not continue on guessed state.
-- `size` - `light` or `full` (`full` when the runbook has no `Size` line). `Size: light` fixes which rows are skipped and requires receipts in the implementation and verify reports.
+- `size` (single-PR runbooks) - `light` or `full` (`full` when there is no `Size` line). `Size: light` fixes which rows are skipped and requires cited, existing receipts in the implementation and verify reports. A full runbook cannot skip rows `2`, `3`, `4` or `6`, so the light route cannot be taken without `Size: light`.
 - `next` / `next-phase` - the phase to run. Never pick a phase by globbing artifacts or modification time.
 
 ## Single-PR contract

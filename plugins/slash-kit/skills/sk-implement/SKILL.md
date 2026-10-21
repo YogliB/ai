@@ -52,7 +52,7 @@ The plan will sometimes be wrong or incomplete: a file that does not exist where
 - **Deviations**: every departure from the plan text, with reasons. `None` if none.
 - **Plan Gaps**: unresolved gaps flagged to the user, if any.
 - **Final verification**: the full check suite the plan names (build, tests, lint, typecheck, format), run through the receipt runner, with receipt paths and results.
-- **Next Step Recommendation**: `sk-review` (or `sk-review-and-fix`) with a one-line reason.
+- **Next Step Recommendation**: `sk-review` (or `sk-review-and-fix`) with a one-line reason; `sk-verify` when the runbook says `Size: light`.
 
 ## Exit rule
 

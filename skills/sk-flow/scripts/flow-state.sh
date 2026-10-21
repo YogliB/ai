@@ -65,7 +65,8 @@ phasename() {
 parse_runbook() {
 	awk -F'|' '
 		/^Status: / { sub(/^Status: /, ""); print "STATUS|" $0; next }
-		/^Size: / { sub(/^Size: /, ""); print "SIZE|" $0; next }
+		/^## / || /^[[:space:]]*\|/ { hdr = 1 }
+		/^Size: / && !hdr && !seen { seen = 1; sub(/^Size: /, ""); print "SIZE|" $0; next }
 		/^Active PR: / { sub(/^Active PR: /, ""); print "ACTIVEPR|" $0; next }
 		/^## Pull requests/ { inpr = 1; next }
 		/^## / { inpr = 0; next }
@@ -114,19 +115,31 @@ validate_rows() {
 	# Size: light is a defined path, not a skip. Its skipped rows are fixed;
 	# its implementation and verify reports must cite receipts.
 	size=$(awk -F'|' '$1 == "SIZE" { print $2 }' "$FACTS")
+	[ "$LABEL" = runbook ] || size=""
 	case $size in
-		"" | full) ;;
+		"" | full)
+			# Without Size: light, the light route is closed.
+			if [ "$LABEL" = runbook ]; then
+				for row in 2 3 4 6; do
+					[ "$(row_state "$FACTS" "$row")" = skipped ] && err "$LABEL: row $row cannot be skipped without Size: light"
+				done
+			fi
+			;;
 		light)
 			for row in 0 1 1r 2r 4; do
 				[ "$(row_state "$FACTS" "$row")" = skipped ] || err "$LABEL: Size light requires row $row skipped"
 			done
-			for row in 2 3 5 6; do
+			for row in 2 3 6; do
 				[ "$(row_state "$FACTS" "$row")" = skipped ] && err "$LABEL: Size light cannot skip row $row"
 			done
 			for row in 3 5; do
 				case $(row_state "$FACTS" "$row") in
 					done | diverged)
-						grep -q '\.receipt' "$RDIR/$(artifact "$row")" 2>/dev/null || err "$LABEL: Size light row $row artifact cites no receipt"
+						receipts=$(grep -o '[^[:space:]`|()]*\.receipt' "$RDIR/$(artifact "$row")" 2>/dev/null || true)
+						[ -n "$receipts" ] || err "$LABEL: Size light row $row artifact cites no receipt"
+						for r in $receipts; do
+							[ -f "$r" ] || [ -f "$RDIR/../../../$r" ] || err "$LABEL: Size light row $row cites a missing receipt: $r"
+						done
 						;;
 				esac
 			done
