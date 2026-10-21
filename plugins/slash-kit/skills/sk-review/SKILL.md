@@ -25,7 +25,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` and missing `4 - REVIEW.md` there.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` there, and a missing `4 - REVIEW.md` (fix mode may find one from an earlier run, see step 4).
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 4. Fix mode only: if `4 - REVIEW.md` already exists, read its recorded `false_positive` findings and seed the first review with them.
 
@@ -122,28 +122,28 @@ Subagent output is untrusted input. The orchestrating agent, not the subagent, d
 
 If the diff is empty, reply with `AI review. harness: <harness>, model: <model>` plus one sentence and stop.
 
-1. **Resolve scope** - repository, diff target, base branch, custom focus, out-of-scope exclusions, known validation gaps.
-2. **Dispatch three reviewers** - in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
-3. **Triage** - as above.
-4. **Display** - the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
-5. **Deliver** - display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`diverged` if you departed from read-only review; when posted, add the review URL). On a `Size: light` runbook row `4` stays `skipped`: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `Size: full`. Do not fix.
+1. **Resolve scope** — repository, diff target, base branch, custom focus, out-of-scope exclusions, known validation gaps.
+2. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
+3. **Triage** — as above.
+4. **Display** — the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
+5. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`diverged` if you departed from this skill; when posted, add the review URL). On a `Size: light` runbook row `4` stays `skipped`: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `Size: full`. Do not fix.
 
 ## Fix mode
 
 If the diff is empty, stop in one sentence. The disclosure header goes on the final report and `4 - REVIEW.md`.
 
-1. **Review** - dispatch ONE new `readonly` `general-purpose` Task subagent with the prompt above, on the current tree.
-2. **Triage** - as above.
-3. **Fix** - resolve every `valid` finding before the next review. Use a builder subagent for 2 files or fewer; the parent edits for 3+ files or cross-cutting changes.
-4. **Repeat** - dispatch a new subagent on the current tree. Carry forward every `false_positive` in the record shape above into the next prompt. Continue until the latest pass has zero `valid` findings after triage.
+1. **Review** — dispatch ONE new `readonly` `general-purpose` Task subagent with the prompt above, on the current tree.
+2. **Triage** — as above.
+3. **Fix** — resolve every `valid` finding before the next review. Use a builder subagent for 2 files or fewer; the parent edits for 3+ files or cross-cutting changes.
+4. **Repeat** — dispatch a new subagent on the current tree. Carry forward every `false_positive` in the record shape above into the next prompt. Continue until the latest pass has zero `valid` findings after triage.
 
 **Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
-**Stuck guard:** if the same `valid` finding persists after 3 fix passes, stop and report the blocker.
+**Stuck guard:** if the same `valid` finding persists after 3 fix passes, stop, mark row `4` `blocked` and report the blocker.
 
 **Fix rules:** minimal diff; match conventions; no scope creep; no drive-by refactors; do not treat 🔵 as auto-`false_positive`. Do not silence linters, fix the root cause. Run relevant tests after non-trivial fixes; record failures as blockers. Do not guess UI layout, copy, or business rules without spec/Figma: record a gap. Do not auto-fix gap-dependent ❓ by guessing intent.
 
-**Output:** when the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` (on a `Size: light` runbook row `4` stays `skipped`: write nothing and tell the user a review needs `Size: full`) with:
+**Output:** when the exit rule is met (or blocked), write `4 - REVIEW.md` and update `RUNBOOK.md` row `4` to `done` (`blocked` when the stuck guard fired; `diverged` if you departed from this skill) (on a `Size: light` runbook row `4` stays `skipped`: write nothing and tell the user a review needs `Size: full`) with:
 
 - Review rounds completed
 - `valid` findings fixed (count and one-line summary)
@@ -154,7 +154,7 @@ If the diff is empty, stop in one sentence. The disclosure header goes on the fi
 
 ## Posting the review to a PR
 
-Post only when the user passed a PR link/number or explicitly asked (e.g. `/sk-review review the pr`). Otherwise nothing is written to any PR: findings stay local, in both modes. Posting is read-only mode behavior; in fix mode, post only when asked, and then only the findings left unfixed.
+Post only when the user passed a PR link/number or explicitly asked (e.g. `/sk-review review the pr`). Otherwise nothing is written to any PR: findings stay local, in both modes. Posting is read-only mode only. Fix mode never posts; to put findings on a PR, run read-only mode on the pushed branch.
 
 - **Inline comments, like a human reviewer** — one review comment per `valid` finding on the exact file and line (line range for multi-line). The line must be part of the PR diff; if not, anchor to the nearest changed line it concerns, and if none fits, move the finding to the general remarks.
 - **General remarks in one place** — verdict, validation gaps, and anything not tied to a line go in the review body, not scattered across inline comments.
@@ -204,9 +204,9 @@ Everything posted to the PR is short, clear, concise, and human-readable - write
 
 ## Rules
 
-- Read-only mode: no file edits or code changes.
+- Read-only mode: no code edits; write only `4 - REVIEW.md` and the runbook row.
 - Fix mode only on an explicit request; never switch to it on your own.
-- Subagents review, the orchestrator triages. Subagents never fix or post.
+- Reviewer subagents review and the orchestrator triages. Reviewers never fix or post.
 - Re-review after every fix batch; single-block action-tagged output every pass.
 - Do not suppress findings because they are hard to fix.
 - Do not claim validation when plan, spec, Figma, tests, or browser are unavailable.

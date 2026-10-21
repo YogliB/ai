@@ -97,12 +97,12 @@ Every flow lives in its own folder:
 
 **When:** code is implemented and tests pass.
 
-**Skills:** `sk-review` in fix mode (loop until clean, only on explicit request) or read-only mode (report, default).
+**Skills:** `sk-review`. `sk-flow` runs it in fix mode (loop until clean); read-only mode (report only) when the user asks for it.
 
 **Output:** `4 - REVIEW.md` in `.agents/flows/sk-<slug>/`.
 
 - Review subagents use the plan to verify scope and acceptance.
-- Fix every valid finding before moving on.
+- Fix mode: fix every valid finding before moving on.
 - Update `RUNBOOK.md` row `4` to `done`.
 
 ### 5. Verify
