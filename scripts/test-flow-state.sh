@@ -194,3 +194,8 @@ pr_row 3 second first pending >> sk-multi/RUNBOOK.md
 if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a duplicate PR slug passes"; fi
 
 echo "test-flow-state: all tests passed"
+
+# F: a row whose ID is outside the expected set is an error.
+runbook sk-bad4 "$ROWS_ALL 7:pending"
+if sh "$FS" sk-bad4 2>"$TMP/err"; then fail "an unexpected row ID is not reported"; fi
+grep -q 'unexpected row' "$TMP/err" || fail "the unexpected row ID is not named"

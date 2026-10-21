@@ -109,6 +109,14 @@ validate_rows() {
 		*) err "$LABEL: missing or invalid Status line" ;;
 	esac
 
+	# Rows outside the expected set are rejected, not ignored.
+	for id in $(awk -F'|' '$1 == "ROW" { print $2 }' "$FACTS" | sort -u); do
+		case " $EXPECTED " in
+			*" $id "*) ;;
+			*) err "$LABEL: unexpected row $id" ;;
+		esac
+	done
+
 	for row in $EXPECTED; do
 		n=$(awk -F'|' -v id="$row" '$1 == "ROW" && $2 == id { n++ } END { print n+0 }' "$FACTS")
 		[ "$n" -eq 0 ] && err "$LABEL: runbook row $row missing"
