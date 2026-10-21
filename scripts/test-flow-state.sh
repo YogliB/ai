@@ -160,7 +160,8 @@ echo "$OUT" | grep -q '^next-phase: start PR second$' || fail "next unblocked PR
 
 # A done PR whose own row 6 is skipped stays valid (merged outside sk-pr).
 runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 4:done 5:done 6:skipped"
-sh "$FS" sk-multi >/dev/null || fail "a done PR with a skipped row 6 is rejected"
+rm -f "sk-multi/pr-first/6 - PR.md"
+sh "$FS" sk-multi >/dev/null || { sh "$FS" sk-multi 2>&1 | tail -3; fail "a done PR with a skipped row 6 is rejected"; }
 runbook sk-multi/pr-first "0:skipped 1:skipped 1r:skipped 2:done 2r:done 3:done 4:done 5:done 6:done"
 
 # Usage errors.
