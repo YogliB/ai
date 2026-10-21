@@ -22,7 +22,7 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Then require exact `2 - PLANNING.md` and missing `3 - IMPLEMENTATION.md`. Never select from `2 - PLANNING*.md` or modification time.
-3. Read the plan in full before touching any file. Read `0 - EXPLORE.md` and `1 - ALTERNATIVES.md` only for context; the plan overrules them on any conflict.
+3. Read the plan in full before touching any file. Read `0 - EXPLORE.md` and `1 - ALTERNATIVES.md` if present, only for context; the plan overrules them on any conflict.
 4. Set `RUNBOOK.md` row `3` to `in-progress`. Write `3 - IMPLEMENTATION.md` and set row `3` to `done` when finished.
 
 ## Execution rules

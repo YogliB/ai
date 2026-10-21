@@ -198,4 +198,36 @@ runbook sk-bad4 "$ROWS_ALL 7:pending"
 if sh "$FS" sk-bad4 2>"$TMP/err"; then fail "an unexpected row ID is not reported"; fi
 grep -q 'unexpected row' "$TMP/err" || fail "the unexpected row ID is not named"
 
+
+# Size: light.
+light_runbook() { # dir rows
+	runbook "$1" "$2"
+	sed -i 's/^Goal: test$/Size: light\n\nGoal: test/' "$1/RUNBOOK.md"
+}
+LIGHT_OK="0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:done 4:skipped 5:done 6:pending"
+light_runbook sk-light "$LIGHT_OK"
+echo "see run.receipt" > "sk-light/3 - IMPLEMENTATION.md"
+echo "see run.receipt" > "sk-light/5 - VERIFY.md"
+OUT=$(sh "$FS" sk-light) || { sh "$FS" sk-light; fail "a valid light flow is not valid"; }
+echo "$OUT" | grep -q '^size: light$' || fail "light size not reported"
+echo "$OUT" | grep -q '^next: 6$' || fail "light flow next phase is not 6"
+echo "$(sh "$FS" sk-fresh)" | grep -q '^size: full$' || fail "a runbook without Size is not full"
+
+light_runbook sk-light-skip "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:skipped 4:skipped 5:pending 6:pending"
+if sh "$FS" sk-light-skip 2>"$TMP/err"; then fail "a light flow skipping implementation passes"; fi
+grep -q 'cannot skip row 3' "$TMP/err" || fail "skipped implementation not named"
+
+light_runbook sk-light-rev "0:skipped 1:skipped 1r:skipped 2:done 2r:skipped 3:in-progress 4:pending 5:pending 6:pending"
+if sh "$FS" sk-light-rev 2>"$TMP/err"; then fail "a light flow with review pending passes"; fi
+grep -q 'requires row 4 skipped' "$TMP/err" || fail "unskipped review not named"
+
+light_runbook sk-light-norec "$LIGHT_OK"
+echo "no proof" > "sk-light-norec/5 - VERIFY.md"
+echo "see run.receipt" > "sk-light-norec/3 - IMPLEMENTATION.md"
+if sh "$FS" sk-light-norec 2>"$TMP/err"; then fail "a light verify report without a receipt passes"; fi
+grep -q 'row 5 artifact cites no receipt' "$TMP/err" || fail "missing receipt not named"
+
+light_runbook sk-light-bad "$ROWS_ALL"
+sed -i 's/^Size: light$/Size: huge/' sk-light-bad/RUNBOOK.md
+if sh "$FS" sk-light-bad 2>"$TMP/err"; then fail "an invalid Size passes"; fi
 echo "test-flow-state: all tests passed"

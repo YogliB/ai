@@ -2,6 +2,8 @@
 
 Status: {{in-progress|completed|blocked|diverged}}
 
+Size: {{light|full}}
+
 Goal: {{one-line user goal}}
 
 | #   | Phase               | State   | Agent / Session | Parent Dispatch / Input | Resulting HEAD | Artifact                                           | Summary | Divergence / Notes |

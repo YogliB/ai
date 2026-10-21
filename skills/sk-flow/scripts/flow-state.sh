@@ -58,12 +58,14 @@ phasename() {
 
 # Emits normalized facts from a runbook:
 #   STATUS|<status>
+#   SIZE|<light|full>          optional; absent means full
 #   ACTIVEPR|<slug|none>
 #   ROW|<id>|<state>           phase rows (both table shapes)
 #   PR|<order>|<slug>|<deps>|<state>|<dir>
 parse_runbook() {
 	awk -F'|' '
 		/^Status: / { sub(/^Status: /, ""); print "STATUS|" $0; next }
+		/^Size: / { sub(/^Size: /, ""); print "SIZE|" $0; next }
 		/^Active PR: / { sub(/^Active PR: /, ""); print "ACTIVEPR|" $0; next }
 		/^## Pull requests/ { inpr = 1; next }
 		/^## / { inpr = 0; next }
@@ -107,6 +109,29 @@ validate_rows() {
 	case $status in
 		in-progress | completed | blocked | diverged) ;;
 		*) err "$LABEL: missing or invalid Status line" ;;
+	esac
+
+	# Size: light is a defined path, not a skip. Its skipped rows are fixed;
+	# its implementation and verify reports must cite receipts.
+	size=$(awk -F'|' '$1 == "SIZE" { print $2 }' "$FACTS")
+	case $size in
+		"" | full) ;;
+		light)
+			for row in 0 1 1r 2r 4; do
+				[ "$(row_state "$FACTS" "$row")" = skipped ] || err "$LABEL: Size light requires row $row skipped"
+			done
+			for row in 2 3 5 6; do
+				[ "$(row_state "$FACTS" "$row")" = skipped ] && err "$LABEL: Size light cannot skip row $row"
+			done
+			for row in 3 5; do
+				case $(row_state "$FACTS" "$row") in
+					done | diverged)
+						grep -q '\.receipt' "$RDIR/$(artifact "$row")" 2>/dev/null || err "$LABEL: Size light row $row artifact cites no receipt"
+						;;
+				esac
+			done
+			;;
+		*) err "$LABEL: invalid Size '$size' (light or full)" ;;
 	esac
 
 	# Rows outside the expected set are rejected, not ignored.
@@ -213,6 +238,7 @@ if [ "$MODE" = single ]; then
 	check_files "$DIR" "runbook"
 	if [ "$ERR" = 0 ]; then
 		echo "status: ok"
+		echo "size: $(awk -F'|' '$1 == "SIZE" { print $2 }' "$TMP/root" | grep . || echo full)"
 		NEXT=$(next_from_rows "$TMP/root" "$ROWS_SINGLE")
 		if [ -n "$NEXT" ]; then
 			echo "next: ${NEXT%%|*}"

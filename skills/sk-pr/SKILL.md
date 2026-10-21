@@ -10,7 +10,7 @@ Create or update a GitHub PR for the current branch.
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `4 - REVIEW.md` and missing `6 - PR.md` there.
+2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `4 - REVIEW.md` (unless row `4` is `skipped` in a `Size: light` runbook) and missing `6 - PR.md` there.
 3. Read the exact active plan (`2 - PLANNING.md`) and other phase docs in the selected flow or PR directory.
 4. After creating/updating the PR, write `6 - PR.md` and set `RUNBOOK.md` row `6` to `done`.
 
