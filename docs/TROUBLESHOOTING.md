@@ -22,7 +22,7 @@
 ## Review or PR skills miss context
 
 - Make sure a flow folder exists under `.agents/flows/sk-<slug>/` with a `RUNBOOK.md`.
-- The `sk-review-and-fix`, `sk-review`, and `sk-pr` skills look for the latest `2 - PLANNING*.md` as context.
+- The `sk-review-and-fix`, `sk-review`, and `sk-pr` skills use the exact `2 - PLANNING.md` in the active flow or PR directory as context.
 - If the plan or runbook is missing, the skills note it under `Known validation gaps`.
 
 ## Flow runbook is missing or out of date
