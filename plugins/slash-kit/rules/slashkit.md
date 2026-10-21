@@ -22,9 +22,8 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 - `sk-pr` — Create or update a GitHub pull request via gh CLI
 - `sk-project-docs` — Scaffold, audit, or nudge a project's documentation structure
 - `sk-review-alternatives` — Independent review of proposed alternatives before they are presented to the user
-- `sk-review-and-fix` — Closed-loop code review through review, triage, fix, and re-review until the latest pass is clean
 - `sk-review-plan` — Read-only review of a technical plan
-- `sk-review` — One-shot, read-only code review, posted as inline comments on the PR lines like a human reviewer
+- `sk-review` — Code review of a diff, read-only by default or fix mode on explicit request
 - `sk-verify` — Verify that changes do what they aim to do and introduce no regressions
 
 <!-- skills:end -->

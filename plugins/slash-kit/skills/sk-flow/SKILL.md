@@ -1,7 +1,7 @@
 ---
 name: sk-flow
 argument-hint: '[auto|manual]'
-description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review-and-fix (or sk-review), sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
+description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review in fix mode, sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
 ---
 
 # Flow
@@ -124,7 +124,7 @@ Never reduce a phase to "write `<N> - <NAME>.md`" or a checklist of artifacts. A
 6. (manual) Ask to continue.
 7. **Implement** — `sk-implement`. Writes `3 - IMPLEMENTATION.md` in the active flow or PR directory; updates row `3` there.
 8. (manual) Ask to continue.
-9. **Review** — `sk-review-and-fix` by default, or `sk-review` if read-only. Writes `4 - REVIEW.md` beside the active plan; updates row `4` there.
+9. **Review** — `sk-review` in **fix mode**, called explicitly ("run sk-review in fix mode"); `sk-review` read-only only if the user asked for it. Writes `4 - REVIEW.md` beside the active plan; updates row `4` there.
 10. (manual) Ask to continue.
 11. **Verify** — `sk-verify` is required unless the agent is blocked (e.g. verification needs credentials, services, or an environment it cannot reach). Writes `5 - VERIFY.md` beside the active plan and updates row `5`; when blocked, mark row `5` `skipped` with the blocking reason and continue.
 12. (manual) Ask to continue.

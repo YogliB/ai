@@ -30,4 +30,4 @@
 
 ## Next Step Recommendation
 
-`sk-review` (or `sk-review-and-fix`) — {{one-line reason}}
+`sk-review` (fix mode inside `sk-flow`) — {{one-line reason}}

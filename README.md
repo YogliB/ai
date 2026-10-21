@@ -4,8 +4,8 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 
 ## What you get
 
-- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-implement`, `sk-review-plan`, `sk-review-and-fix`, and `sk-pr`.
-- **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-implement`, `/sk-review-and-fix`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
+- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-implement`, `sk-review-plan`, `sk-review`, and `sk-pr`.
+- **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-implement`, `/sk-review`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
 - **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude and Cursor.
 
@@ -52,7 +52,7 @@ Plugin skills are namespaced. Type the command at the start of a prompt:
 /slash-kit:sk-explore add-auth-token
 /slash-kit:sk-alternatives for caching API responses
 /slash-kit:sk-planning add-auth-token
-/slash-kit:sk-review-and-fix
+/slash-kit:sk-review
 /slash-kit:sk-pr
 /slash-kit:sk-flow auto
 ```
@@ -65,7 +65,7 @@ Installed a skill individually with `npx skills add`? Drop the `/slash-kit:` pre
 | `/slash-kit:/sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
 | `/slash-kit:/sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
 | `/slash-kit:/sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
-| `/slash-kit:/sk-review-and-fix`  | Review and fix the current diff.                                                     |
+| `/slash-kit:/sk-review`          | Review the current diff (add "fix" to fix).                                          |
 | `/slash-kit:/sk-pr`              | Create or update a GitHub PR.                                                        |
 | `/slash-kit:/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
@@ -91,14 +91,14 @@ Name the skill directly:
 Use the sk-planning skill to write a plan for pagination.
 Use the sk-review-plan skill to review the plan.
 Use the sk-implement skill to implement the plan.
-Use the sk-review-and-fix skill on the current diff.
+Use the sk-review skill on the current diff (say "fix" for fix mode).
 Use the sk-pr skill to open a pull request.
 ```
 
 ## The flow
 
 ```text
-sk-explore → sk-alternatives → sk-planning → sk-implement → sk-review-and-fix → sk-verify → sk-pr
+sk-explore → sk-alternatives → sk-planning → sk-implement → sk-review (fix mode) → sk-verify → sk-pr
 ```
 
 Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.

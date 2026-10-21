@@ -82,7 +82,7 @@ The `Complexity Check` fields `Cross-deps` and total counts inform `Proceed` or 
 
 After the plan matches the template and the pre-finalization pass is done, review every emitted document until the latest pass has zero `valid` findings.
 
-1. **Review** — dispatch a new `readonly` `generalPurpose` Task subagent and run the `sk-review-plan` skill on the full plan text (paste the plan; do not point at files).
+1. **Review** — dispatch a new `readonly` `general-purpose` Task subagent and run the `sk-review-plan` skill on the full plan text (paste the plan; do not point at files).
 2. **Triage** — label each finding `valid`, `false_positive`, or `unvalidated` with a one-line reason.
 3. **Fix** — resolve every `valid` finding before the next review. Prefer minimal edits.
 4. **Repeat** — dispatch a new subagent on the updated plan. Continue until the latest pass is clean.
