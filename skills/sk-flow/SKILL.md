@@ -23,6 +23,13 @@ Only run this skill when the user explicitly asks for the workflow.
 4. Start as a single-PR flow. Create or update `RUNBOOK.md` from `templates/RUNBOOK.md` and pass the slug to each phase.
 5. If planning decides that the work needs multiple PRs, convert the root runbook to `templates/MULTI-PR-RUNBOOK.md` and follow the multi-PR contract below.
 
+## State checks
+
+The runbook is data, and the bundled state machine reads it: `scripts/flow-state.sh .agents/flows/sk-<slug>` (resolved next to this SKILL.md, like templates). Run it before starting any phase and when looking for a stuck flow, and act on its output:
+
+- `status: error` - the recorded state contradicts this contract (bad states, missing artifacts, multiple in-progress rows or PRs, broken dependencies). Fix the runbook or files before continuing; do not continue on guessed state.
+- `next` / `next-phase` - the phase to run. Never pick a phase by globbing artifacts or modification time.
+
 ## Single-PR contract
 
 Keep the current flat flow unchanged:

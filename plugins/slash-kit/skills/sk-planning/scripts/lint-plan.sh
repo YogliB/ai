@@ -70,6 +70,13 @@ awk '
 				next
 			}
 		}
+		if (lead < 4 && s ~ /^##[[:space:]]/) {
+			sub(/^##[[:space:]]+/, "", s)
+			sub(/[[:space:]]+#+[[:space:]]*$/, "", s)
+			sub(/[[:space:]]+$/, "", s)
+			print "## " s
+			next
+		}
 		print
 	}
 ' "$PLAN" > "$TMP/stripped"
