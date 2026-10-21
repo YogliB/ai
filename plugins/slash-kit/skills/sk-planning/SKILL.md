@@ -59,7 +59,7 @@ Use a masterplan + sub-plans (one per PR) if any of these hold:
 
 - More than one repo or more than one PR.
 - Implementation TODO count > 30 (count only checkboxes under `Implementation Plan (TODOs)`).
-- Depth > 3 (nested levels under that same section).
+- Depth > 2 (nested levels under that same section).
 - High-risk items > 5 (distinct risk lines/bullets).
 
 The `Complexity Check` fields `Cross-deps` and total counts inform `Proceed` or `Split`; they do not force a split by themselves (multi-repo / multi-PR always does).
@@ -91,7 +91,7 @@ After the plan matches the template and the pre-finalization pass is done, revie
 
 ## Delivery notes
 
-- Omit `Branch setup` and `Delivery` for draft-only or design-only plans.
+- Omit `Branch setup`, `Delivery`, and `Complexity Check` for draft-only or design-only plans (lint with `--allow-draft`).
 - Defer commit/push to operator/repo policy.
 - If the repo uses an interactive workflow, present the plan in small chunks first; the final artifact can still match the full template once agreed.
 - Size each implementation TODO for one focused agent dispatch; split or run multiple cycles if larger.

@@ -51,6 +51,8 @@ nub run format
 | `./scripts/gen-skills-index.sh`      | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |
 | `nub run format`                     | Format with `oxfmt`                                                    |
 | `nub run lint`                       | Run the pre-commit lint step                                           |
+| `sh scripts/test-lint-plan.sh`       | Test the plan-structure linter                                         |
+| `sh scripts/test-receipts.sh`        | Test the check-receipt scripts                                         |
 
 ### Project layout
 

@@ -9,15 +9,11 @@ permissions:
     contents: read
 
 jobs:
-    receipts:
+    gates:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - name: Test receipt scripts
               run: sh scripts/test-receipts.sh
-    plan-lint:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
             - name: Test plan lint
               run: sh scripts/test-lint-plan.sh

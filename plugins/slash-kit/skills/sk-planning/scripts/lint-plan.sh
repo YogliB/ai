@@ -44,9 +44,37 @@ DRAFT_OK='Branch setup|Delivery|Complexity Check'
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
-# Heading lines: "## Name" -> "linenum:Name", one per line.
-sed -n 's/^## \([^#].*\)$/\1/p' "$PLAN" | sed 's/[[:space:]]*$//' > "$TMP/sections"
-grep -n '^## ' "$PLAN" | sed 's/^\([0-9]*\):## \([^#].*\)$/\1:\2/' | sed 's/[[:space:]]*$//' > "$TMP/headed"
+# Fenced code blocks are stripped first so '##' and checkbox examples in
+# snippets do not count. Heading lines: "## Name" -> "linenum:Name".
+awk '
+	{
+		t = $0
+		gsub(/\t/, "    ", t)
+		lead = match(t, /[^[:space:]]/) ? RSTART - 1 : 999
+		s = $0
+		sub(/^[[:space:]]+/, "", s)
+		if (fence) {
+			if (lead < 4 && substr(s, 1, 1) == fencec) {
+				n = 0
+				while (substr(s, n + 1, 1) == fencec) n++
+				if (n >= fence && substr(s, n + 1) ~ /^[[:space:]]*$/) fence = 0
+			}
+			next
+		}
+		if (lead < 4 && (s ~ /^```/ || s ~ /^~~~/)) {
+			fencec = substr(s, 1, 1)
+			n = 0
+			while (substr(s, n + 1, 1) == fencec) n++
+			if (fencec != "`" || substr(s, n + 1) !~ /`/) {
+				fence = n
+				next
+			}
+		}
+		print
+	}
+' "$PLAN" > "$TMP/stripped"
+grep -nE '^ {0,3}##[[:space:]]' "$TMP/stripped" | sed 's/^\([0-9]*\): *##[[:space:]]*\([^#].*\)$/\1:\2/' | sed 's/[[:space:]#]*$//' > "$TMP/headed"
+cut -d: -f2- "$TMP/headed" > "$TMP/sections"
 
 [ -s "$TMP/headed" ] || {
 	echo "lint-plan: $PLAN: no '##' sections found" >&2
@@ -57,76 +85,74 @@ is_draft_ok() {
 	case "|$DRAFT_OK|" in *"|$1|"*) return 0 ;; *) return 1 ;; esac
 }
 
-# Pass 1: required sections exist.
+# Required sections must exist and, when present, appear in template order.
+PREV=0
+PREVNAME=
 OLDIFS=$IFS
 IFS='|'
 for s in $SECTIONS; do
-	IFS=$OLDIFS
-	[ "$ALLOW_DRAFT" = 1 ] && is_draft_ok "$s" && continue
-	if ! grep -qxF "$s" "$TMP/sections"; then
+	pair=$(awk -v s="$s" '{ n = substr($0, index($0, ":") + 1); l = substr($0, 1, index($0, ":") - 1); if (n == s) { c++; if (!first) first = l } } END { print (c + 0) "|" first }' "$TMP/headed")
+	count=${pair%%|*}
+	line=${pair##*|}
+	[ "$count" -gt 1 ] && err "duplicate section: ## $s"
+	if [ -z "$line" ]; then
+		[ "$ALLOW_DRAFT" = 1 ] && is_draft_ok "$s" && continue
 		err "missing required section: ## $s"
+		continue
 	fi
-	IFS='|'
-done
-IFS=$OLDIFS
-
-# Pass 2: present required sections appear in template order.
-PREV=0
-PREVNAME=
-IFS='|'
-for s in $SECTIONS; do
-	IFS=$OLDIFS
-	line=$(awk -F: -v s="$s" '$2 == s { print $1; exit }' "$TMP/headed")
-	if [ -n "$line" ]; then
-		if [ "$line" -le "$PREV" ]; then
-			err "section out of order: ## $s must come after ## $PREVNAME"
-		fi
-		PREV=$line
-		PREVNAME=$s
-	fi
-	IFS='|'
+	[ "$line" -le "$PREV" ] && err "section out of order: ## $s must come after ## $PREVNAME"
+	PREV=$line
+	PREVNAME=$s
 done
 IFS=$OLDIFS
 
 if [ "$MODE" = plan ]; then
 	# Files must be the section right after Goal.
-	AFTER_GOAL=$(awk -F: '$2 == "Goal" { print $1; exit }' "$TMP/headed")
+	AFTER_GOAL=$(awk '{ n = substr($0, index($0, ":") + 1); if (n == "Goal") { print substr($0, 1, index($0, ":") - 1); exit } }' "$TMP/headed")
 	if [ -n "$AFTER_GOAL" ]; then
-		NEXT=$(awk -F: -v g="$AFTER_GOAL" '$1 > g { print $2; exit }' "$TMP/headed")
+		NEXT=$(awk -v g="$AFTER_GOAL" '{ l = substr($0, 1, index($0, ":") - 1); if (l > g) { print substr($0, index($0, ":") + 1); exit } }' "$TMP/headed")
+		[ -z "$NEXT" ] && NEXT="(none)"
 		[ "$NEXT" = "Files" ] || err "## Files must come right after ## Goal, found ## $NEXT"
 	fi
-fi
 
-# TODO depth inside Implementation Plan (TODOs): count distinct checkbox
-# indentation levels; more than 2 means nesting beyond the limit.
-if [ "$MODE" = plan ]; then
+	# TODO depth inside Implementation Plan (TODOs): track nesting with an
+	# indent stack; more than 2 nested checkbox levels fails the plan.
 	awk '
-		/^## / { insec = ($0 == "## Implementation Plan (TODOs)") }
-		insec && /^[[:space:]]*- \[[ xX]\]/ {
+		match($0, /^ *##[[:space:]]/) && RLENGTH <= 6 { insec = ($0 ~ /^ *##[[:space:]]*Implementation Plan \(TODOs\)[[:space:]]*$/) }
+		insec && /^[[:space:]]*[-*+][[:space:]]+\[[ xX]\]/ {
 			line = $0
 			gsub(/\t/, "    ", line)
 			match(line, /^ */)
-			print RLENGTH
+			indent = RLENGTH
+			while (depth > 0 && indents[depth] > indent) depth--
+			if (depth == 0 || indents[depth] < indent) { depth++; indents[depth] = indent }
+			print depth
 		}
-	' "$PLAN" > "$TMP/indents"
+	' "$TMP/stripped" > "$TMP/indents"
 	if [ -s "$TMP/indents" ]; then
 		LEVELS=$(sort -n "$TMP/indents" | uniq | wc -l)
 		[ "$LEVELS" -gt 2 ] && err "Implementation Plan (TODOs) nests checkboxes deeper than 2 levels"
-		TOP=$(sort -n "$TMP/indents" | head -1)
-		TODOS=$(awk -v top="$TOP" '$1 == top' "$TMP/indents" | wc -l | tr -d ' ')
+		TODOS=$(awk '$1 == 1' "$TMP/indents" | wc -l | tr -d ' ')
+		ALL=$(wc -l < "$TMP/indents" | tr -d ' ')
 		echo "lint-plan: $PLAN: $TODOS top-level TODOs"
-		[ "$TODOS" -gt 30 ] && echo "lint-plan: $PLAN: info: more than 30 TODOs, sk-planning's split threshold"
+		[ "$ALL" -gt 30 ] && echo "lint-plan: $PLAN: info: more than 30 TODOs, sk-planning's split threshold"
 	fi
 
 	# Complexity Check must name an explicit Proceed or Split decision.
 	if grep -qxF 'Complexity Check' "$TMP/sections"; then
-		DECISION=$(awk '/^## Complexity Check/ { insec = 1; next } /^## / { insec = 0 } insec && /Decision:/' "$PLAN")
-		case $DECISION in
-			*Proceed*|*Split*) ;;
-			*) err "Complexity Check has no explicit Proceed or Split decision" ;;
-		esac
-		case $DECISION in
-			*'[Proceed / Split]'*) err "Complexity Check decision is still the template placeholder" ;;
+		DECISION=$(awk 'match($0, /^ *##[[:space:]]/) && RLENGTH <= 6 { insec = ($0 ~ /##[[:space:]]*Complexity Check[[:space:]]*$/) } insec && /Decision:/ { print; exit }' "$TMP/stripped")
+		VAL=$(printf '%s' "$DECISION" | sed 's/^.*Decision:[*_[:space:]]*//' | tr -d '*')
+		FIRST=${VAL%%[!A-Za-z]*}
+		case $FIRST in
+			Proceed|Split)
+				case $VAL in
+					*Proceed*Split*|*Split*Proceed*) err "Complexity Check decision must pick one of Proceed or Split" ;;
+				esac ;;
+			*)
+				case $VAL in
+					'[Proceed / Split]'*) err "Complexity Check decision is still the template placeholder" ;;
+					*) err "Complexity Check has no explicit Proceed or Split decision" ;;
+				esac ;;
 		esac
 	fi
 fi
