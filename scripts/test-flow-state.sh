@@ -141,7 +141,7 @@ sed -i 's/^Active PR: first$/Active PR: second/' sk-multi/RUNBOOK.md
 if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a wrong Active PR is not reported"; fi
 sed -i 's/^Active PR: second$/Active PR: first/' sk-multi/RUNBOOK.md
 
-# M3: an in-progress PR whose dependency is not done is an error.
+# M3: two in-progress PRs are an error.
 sed -i 's/| 2 | second | YogliB\/ai | first | pending/| 2 | second | YogliB\/ai | first | in-progress/' sk-multi/RUNBOOK.md
 if sh "$FS" sk-multi 2>"$TMP/err"; then fail "two in-progress PRs are not reported"; fi
 
@@ -193,9 +193,9 @@ sed -i 's/| 2 | second | YogliB\/ai | first | done/| 2 | second | YogliB\/ai | f
 pr_row 3 second first pending >> sk-multi/RUNBOOK.md
 if sh "$FS" sk-multi 2>"$TMP/err"; then fail "a duplicate PR slug passes"; fi
 
-echo "test-flow-state: all tests passed"
-
-# F: a row whose ID is outside the expected set is an error.
+# I: a row whose ID is outside the expected set is an error.
 runbook sk-bad4 "$ROWS_ALL 7:pending"
 if sh "$FS" sk-bad4 2>"$TMP/err"; then fail "an unexpected row ID is not reported"; fi
 grep -q 'unexpected row' "$TMP/err" || fail "the unexpected row ID is not named"
+
+echo "test-flow-state: all tests passed"

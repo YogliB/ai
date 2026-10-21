@@ -22,6 +22,7 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 - skills/sk-project-docs/SKILL.md
 - skills/sk-review-alternatives/SKILL.md
 - skills/sk-review-and-fix/SKILL.md
+- skills/sk-review-plan/SKILL.md
 - skills/sk-review/SKILL.md
 - skills/sk-verify/SKILL.md
 

@@ -43,7 +43,6 @@ fi
 grep -q 'out of order' "$TMP/err" || fail "the order problem is not named"
 
 # Files not right after Goal is reported.
-sed 's/^## Files$/## Goal\n\nx\n\n## Files/; 1,/^## Goal$/{ /^## Goal$/d }' "$TMP/good.md" > "$TMP/tmp.md"
 awk '
 	/^## Files$/ && !done { print "## Context"; print ""; done = 1; next }
 	/^## Context$/ && !swapped { print "## Files"; print ""; swapped = 1; next }

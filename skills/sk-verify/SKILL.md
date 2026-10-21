@@ -9,7 +9,7 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 - After implementation and before creating a PR.
 - When the user asks "did this work?", "verify the changes", or similar.
-- This skill exercises the feature end-to-end. Lint, tests, and security checks are covered by `before-pr` — they are prerequisites here, not the verification.
+- This skill exercises the feature end-to-end. Lint, tests, and security checks are prerequisites here, not the verification.
 
 ## Active PR handoff
 
