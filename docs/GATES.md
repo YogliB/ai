@@ -12,3 +12,4 @@ How slash-kit keeps agent runs honest: a script decides and records facts, the m
 ## The gates
 
 - **Check receipts** (`skills/sk-implement/scripts/run-with-receipt.sh` and `check-receipt.sh`): run a check, record a receipt. A check without a valid passing receipt did not happen. Used by `sk-implement` and `sk-verify`.
+- **Plan lint** (`skills/sk-planning/scripts/lint-plan.sh`): a plan's structure matches the template - required sections in order, `Files` right after `Goal`, TODO depth at most 2, an explicit Proceed/Split decision. Used by `sk-planning`.

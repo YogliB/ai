@@ -89,7 +89,7 @@ Keep this section at depth 2 or less. Flatten nested bullets that are details, n
 
 ## References
 
-Optional source attribution only — every fact needed for execution must already appear under **Context**, **Scope**, **Implementation Plan (TODOs)**, or **Acceptance**. Omit section when nothing to attribute.
+Optional source attribution only — every fact needed for execution must already appear under **Context**, **Scope**, **Implementation Plan (TODOs)**, or **Acceptance**. Write "None" when nothing to attribute.
 
 ## Complexity Check
 

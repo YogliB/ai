@@ -26,7 +26,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── .cursor-plugin/          # Cursor plugin manifest (repo root is the plugin)
 ├── .claude-plugin/          # Claude Code plugin manifest
 ├── plugins/slash-kit/       # Devin plugin (manifest, skills/rules/hook scripts synced from root by scripts/sync-devin-plugin.sh)
-├── scripts/                 # install.sh, uninstall.sh, sync-devin-plugin.sh
+├── scripts/                 # install.sh, uninstall.sh, sync-devin-plugin.sh, gen-skills-index.sh, test-*.sh
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
 ├── README.md                # Human-facing overview

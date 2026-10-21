@@ -104,7 +104,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 awaiting review · ⏸️ not‑
 
 ## References
 
-Optional source attribution only — required content must be inlined under **Context** or the relevant **PR[N]** block. Omit when nothing to attribute.
+Optional source attribution only — required content must be inlined under **Context** or the relevant **PR[N]** block. Write "None" when nothing to attribute.
 
 ## Notes & Assumptions
 
