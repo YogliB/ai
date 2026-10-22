@@ -3,7 +3,7 @@
 #
 # Usage:
 #   ./scripts/install.sh                  # install the Cursor plugin for this user
-#   ./scripts/install.sh /path/to/repo    # also seed RUNBOOK.md and .agents/flows into the project
+#   ./scripts/install.sh /path/to/repo    # also seed RUNBOOK.md into the project
 #
 # Other agents have their own install paths:
 #   Claude Code:    claude plugin marketplace add YogliB/ai && claude plugin install slash-kit@ai
@@ -33,8 +33,6 @@ if [ $# -gt 0 ]; then
 		echo "Error: $TARGET is not a directory" >&2
 		exit 1
 	fi
-	mkdir -p "$TARGET/.agents/flows"
 	cp "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
-	cp "$REPO_ROOT/.agents/flows/README.md" "$TARGET/.agents/flows/README.md"
-	echo "Seeded RUNBOOK.md and .agents/flows/README.md in $TARGET."
+	echo "Seeded RUNBOOK.md in $TARGET."
 fi
