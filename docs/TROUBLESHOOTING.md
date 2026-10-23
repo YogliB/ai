@@ -17,7 +17,7 @@
 
 - The `sk-planning` skill writes the plan to `.agents/flows/sk-<slug>/2 - PLANNING.md`. If the directory does not exist, the agent should create it.
 - If the agent has its own plan location, it should also copy or symlink to `.agents/flows/sk-<slug>/2 - PLANNING.md`.
-- Review `.agents/flows/README.md` for the naming convention.
+- Review `skills/sk-flow/SKILL.md` for the naming convention.
 
 ## Review or PR skills miss context
 

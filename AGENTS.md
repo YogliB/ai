@@ -45,7 +45,7 @@ nub run format
 | Command                              | Purpose                                                                |
 | ------------------------------------ | ---------------------------------------------------------------------- |
 | `./scripts/install.sh`               | Install the Cursor plugin into `~/.cursor/plugins/local/`              |
-| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` and `.agents/flows/` into a project             |
+| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` into a project                                  |
 | `./scripts/uninstall.sh`             | Remove the Cursor plugin                                               |
 | `./scripts/sync-devin-plugin.sh`     | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/`       |
 | `./scripts/gen-skills-index.sh`      | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |

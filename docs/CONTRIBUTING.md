@@ -43,7 +43,6 @@ Keep these files aligned:
 - `CLAUDE.md` — Claude rule `@` includes
 - `rules/` — cross-agent rules
 - `RUNBOOK.md` — full workflow
-- `.agents/flows/README.md` — flow runbook conventions
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
 
 ## Skill style

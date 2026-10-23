@@ -30,7 +30,7 @@ npx skills add YogliB/ai -g
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 ```
 
-`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it. Pass a repo path to also seed `RUNBOOK.md` and `.agents/flows/` into a project.
+`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it. Pass a repo path to also seed `RUNBOOK.md` into a project.
 
 Want just one skill?
 
