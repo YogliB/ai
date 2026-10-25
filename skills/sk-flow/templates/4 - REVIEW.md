@@ -1,3 +1,7 @@
+<!--
+{"schema":"review","slug":"{{slug}}","result":"{{clean|findings-fixed|blocked}}","passes":1,"valid":0,"false-positive":0,"unvalidated":0}
+-->
+
 # 4 — Review: {{slug}}
 
 ## Scope

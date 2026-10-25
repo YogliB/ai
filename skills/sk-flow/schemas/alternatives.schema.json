@@ -1,0 +1,31 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "1 - ALTERNATIVES.md frontmatter",
+	"type": "object",
+	"required": ["schema", "slug", "options", "chosen", "review"],
+	"additionalProperties": false,
+	"properties": {
+		"schema": { "enum": ["alternatives"] },
+		"slug": { "type": "string", "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$" },
+		"options": {
+			"type": "integer",
+			"minimum": 1,
+			"description": "Number of options presented."
+		},
+		"chosen": {
+			"type": "string",
+			"description": "The option the user picked; empty until chosen."
+		},
+		"review": {
+			"type": "object",
+			"required": ["valid", "false-positive", "unvalidated"],
+			"additionalProperties": false,
+			"properties": {
+				"valid": { "type": "integer", "minimum": 0 },
+				"false-positive": { "type": "integer", "minimum": 0 },
+				"unvalidated": { "type": "integer", "minimum": 0 }
+			},
+			"description": "sk-review-alternatives triage counts from the final pass; valid must be 0 to proceed."
+		}
+	}
+}

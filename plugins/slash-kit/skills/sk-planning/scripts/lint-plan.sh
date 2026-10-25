@@ -117,7 +117,7 @@ if [ "$MODE" = plan ]; then
 	# Files must be the section right after Goal.
 	AFTER_GOAL=$(awk '{ n = substr($0, index($0, ":") + 1); if (n == "Goal") { print substr($0, 1, index($0, ":") - 1); exit } }' "$TMP/headed")
 	if [ -n "$AFTER_GOAL" ]; then
-		NEXT=$(awk -v g="$AFTER_GOAL" '{ l = substr($0, 1, index($0, ":") - 1); if (l > g) { print substr($0, index($0, ":") + 1); exit } }' "$TMP/headed")
+		NEXT=$(awk -v g="$AFTER_GOAL" '{ l = substr($0, 1, index($0, ":") - 1) + 0; if (l > g + 0) { print substr($0, index($0, ":") + 1); exit } }' "$TMP/headed")
 		[ -z "$NEXT" ] && NEXT="(none)"
 		[ "$NEXT" = "Files" ] || err "## Files must come right after ## Goal, found ## $NEXT"
 	fi

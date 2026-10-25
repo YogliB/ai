@@ -16,14 +16,14 @@ Do not use this skill to fill in for a missing plan. If there is no approved pla
 
 ## Active PR handoff
 
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against `prs[active-pr]`. Use the harness-supported sync workflow and record the resulting HEAD via `pr <dir> <slug> --head=<sha>` in the active PR's root runbook. If the branch or HEAD cannot be reconciled safely, `pr <dir> <slug> --state=blocked --notes=<reason>` and stop instead of reviewing or changing the wrong diff.
 
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Then require exact `2 - PLANNING.md` and missing `3 - IMPLEMENTATION.md`. Never select from `2 - PLANNING*.md` or modification time.
+2. Else inspect root runbooks (`runbook.json`; `node ../sk-flow/scripts/flow-state.mjs check <dir>` prints the resolved state when the script exists — a standalone install reads `runbook.json` directly and skips every `set`/`pr`/`check` call). For a multi-PR runbook, use its exact `active-pr` and matching `pr-<slug>/` directory; for a single-PR runbook, use the root. Then require exact `2 - PLANNING.md` and missing `3 - IMPLEMENTATION.md`. Never select from `2 - PLANNING*.md` or modification time.
 3. Read the plan in full before touching any file. Read `0 - EXPLORE.md` and `1 - ALTERNATIVES.md` if present, only for context; the plan overrules them on any conflict.
-4. Set `RUNBOOK.md` row `3` to `in-progress`. Write `3 - IMPLEMENTATION.md` and set row `3` to `done` when finished.
+4. `set <dir> 3 in-progress`. Write `3 - IMPLEMENTATION.md` from `../sk-flow/templates/3 - IMPLEMENTATION.md` (frontmatter `schema: implementation`; `receipts` lists every receipt path cited in the body), then `set <dir> 3 done` when finished.
 
 ## Execution rules
 
@@ -52,7 +52,7 @@ The plan will sometimes be wrong or incomplete: a file that does not exist where
 - **Deviations**: every departure from the plan text, with reasons. `None` if none.
 - **Plan Gaps**: unresolved gaps flagged to the user, if any.
 - **Final verification**: the full check suite the plan names (build, tests, lint, typecheck, format), run through the receipt runner, with receipt paths and results.
-- **Next Step Recommendation**: `sk-review` (fix mode inside `sk-flow`) with a one-line reason; `sk-verify` when the runbook says `Size: light`.
+- **Next Step Recommendation**: `sk-review` (fix mode inside `sk-flow`) with a one-line reason; `sk-verify` when the runbook says `size:"light"`.
 
 ## Exit rule
 

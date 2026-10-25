@@ -74,7 +74,7 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 [sk-pr] → 6 - PR.md
 ```
 
-`sk-flow` first assesses size. A small change takes the light path: short plan, `sk-implement`, `sk-verify`, `sk-pr`, with explore, alternatives, both plan reviews and the code review skipped and the work allowed to run inline. Everything above is the full path. Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (e.g. `sk-planning`) instead of paraphrasing it, so mandatory steps inside the skill — reviews, sub-dispatch — cannot be dropped. The parent triages the output and dispatches the next phase.
+`sk-flow` first assesses size. A small change takes the light path: short plan, `sk-implement`, `sk-verify`, `sk-pr`, with explore, alternatives, and all three reviews skipped and the work allowed to run inline. Everything above is the full path. Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (e.g. `sk-planning`) instead of paraphrasing it, so mandatory steps inside the skill — reviews, sub-dispatch — cannot be dropped. The parent triages the output and dispatches the next phase.
 
 ## Key Decisions
 
@@ -82,9 +82,9 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 
 Each skill in `skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin loads the same skill files through the slash-kit plugin; Cursor uses them through the skill tool or rules.
 
-### Flow runbooks are durable artifacts
+### Flow runbooks are durable, validated state
 
-Every flow lives in `.agents/flows/sk-<slug>/` with a mandatory `RUNBOOK.md` checklist and numbered phase docs. The plan, implementation, review, and PR phases read these docs without depending on chat context, so the workflow works across agents and sessions.
+Every flow lives in `.agents/flows/sk-<slug>/` with a mandatory `runbook.json` state file and numbered phase docs. The runbook is created and mutated only through `skills/sk-flow/scripts/flow-state.mjs` (`init`, `set`, `pr`), which validates every mutation against `skills/sk-flow/schemas/` before writing; `check` re-validates the whole flow and names the next phase. Each numbered doc carries a JSON frontmatter block (`<!-- -->`-wrapped) validated against its schema. The plan, implementation, review, and PR phases read these files without depending on chat context, so the workflow works across agents and sessions.
 
 ### Alternatives are reviewed before presentation
 
@@ -102,7 +102,7 @@ Nothing forces the full flow. Each skill is self-contained and can be used alone
 
 - `claude` — Claude Code CLI.
 - `cursor` — Cursor CLI or IDE.
-- `Node.js` — For `npx skills`.
+- `Node.js` — For `npx skills` and `skills/sk-flow/scripts/flow-state.mjs` (≥18).
 - `gh` — Used by the `sk-pr` skill.
 
 ## Security Notes

@@ -1,0 +1,31 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "2 - PLANNING.md frontmatter (single-PR plan)",
+	"type": "object",
+	"required": ["schema", "slug", "decision", "todos", "review"],
+	"additionalProperties": false,
+	"properties": {
+		"schema": { "enum": ["plan"] },
+		"slug": { "type": "string", "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$" },
+		"decision": {
+			"enum": ["proceed", "split"],
+			"description": "Complexity Check decision; split requires masterplan instead."
+		},
+		"todos": {
+			"type": "integer",
+			"minimum": 1,
+			"description": "Checkbox count under Implementation Plan (TODOs)."
+		},
+		"review": {
+			"type": "object",
+			"required": ["valid", "false-positive", "unvalidated"],
+			"additionalProperties": false,
+			"properties": {
+				"valid": { "type": "integer", "minimum": 0 },
+				"false-positive": { "type": "integer", "minimum": 0 },
+				"unvalidated": { "type": "integer", "minimum": 0 }
+			},
+			"description": "sk-review-plan triage counts from the final pass; valid must be 0 to proceed."
+		}
+	}
+}

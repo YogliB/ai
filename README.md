@@ -9,7 +9,7 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 - **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude and Cursor.
 
-Everything lives in plain Markdown. No magic binaries, no cloud services, no tracking.
+Flow state and receipts live in JSON; everything else is plain Markdown. No magic binaries, no cloud services, no tracking. The flow-state gate needs `node` ≥18 on `PATH`.
 
 ## Quick start
 

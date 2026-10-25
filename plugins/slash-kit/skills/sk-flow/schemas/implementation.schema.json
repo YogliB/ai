@@ -1,0 +1,27 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "3 - IMPLEMENTATION.md frontmatter",
+	"type": "object",
+	"required": ["schema", "slug", "branch", "receipts", "deviations", "plan-gaps"],
+	"additionalProperties": false,
+	"properties": {
+		"schema": { "enum": ["implementation"] },
+		"slug": { "type": "string", "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$" },
+		"branch": { "type": "string", "description": "Branch the work landed on." },
+		"receipts": {
+			"type": "array",
+			"items": { "type": "string" },
+			"description": "Paths to receipt files proving checks ran (from run-with-receipt.sh)."
+		},
+		"deviations": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Count of departures from the plan text."
+		},
+		"plan-gaps": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Count of unresolved gaps flagged to the user."
+		}
+	}
+}

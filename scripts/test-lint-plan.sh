@@ -166,4 +166,8 @@ grep -q 'deeper than 2 levels' "$TMP/err" || fail "closing-hash TODO depth probl
 sed 's/^## Complexity Check$/## Complexity Check ##/' "$TMP/good.md" > "$TMP/decision-closing.md"
 sh "$LINT" "$TMP/decision-closing.md" >/dev/null || fail "closing hashes break decision parsing"
 
+# An HTML-comment frontmatter block does not disturb section checks.
+{ printf '<!--\n{"schema":"plan","slug":"x","decision":"proceed","todos":0,"review":{"valid":0,"false-positive":0,"unvalidated":0}}\n-->\n\n'; cat "$TMP/good.md"; } > "$TMP/fm.md"
+sh "$LINT" "$TMP/fm.md" >/dev/null || fail "frontmatter breaks the section lint"
+
 echo "test-lint-plan: all tests passed"
