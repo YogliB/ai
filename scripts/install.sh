@@ -2,8 +2,7 @@
 # Install slash-kit as a local Cursor plugin (repo root is the plugin).
 #
 # Usage:
-#   ./scripts/install.sh                  # install the Cursor plugin for this user
-#   ./scripts/install.sh /path/to/repo    # also seed RUNBOOK.md into the project
+#   ./scripts/install.sh    # install the Cursor plugin for this user
 #
 # Other agents have their own install paths:
 #   Claude Code:    claude plugin marketplace add YogliB/ai && claude plugin install slash-kit@ai
@@ -26,13 +25,3 @@ for part in .cursor-plugin skills rules hooks; do
 done
 
 echo "Done. Restart Cursor or run 'Developer: Reload Window' to load the plugin."
-
-if [ $# -gt 0 ]; then
-	TARGET="$1"
-	if [ ! -d "$TARGET" ]; then
-		echo "Error: $TARGET is not a directory" >&2
-		exit 1
-	fi
-	cp "$REPO_ROOT/RUNBOOK.md" "$TARGET/RUNBOOK.md"
-	echo "Seeded RUNBOOK.md in $TARGET."
-fi

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Validates a plan's structure against the sk-planning templates: required
 # sections present and in order, Files right after Goal, TODO depth at
-# most 2, Complexity Check filled. See docs/GATES.md.
+# most 2, Complexity Check filled. See docs/ARCHITECTURE.md#gates.
 set -eu
 
 usage() {
