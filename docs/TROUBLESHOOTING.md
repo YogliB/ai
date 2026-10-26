@@ -21,14 +21,17 @@
 
 ## Review or PR skills miss context
 
-- Make sure a flow folder exists under `.agents/flows/sk-<slug>/` with a `RUNBOOK.md`.
+- Make sure a flow folder exists under `.agents/flows/sk-<slug>/` with a `runbook.json`.
 - The `sk-review` and `sk-pr` skills use the exact `2 - PLANNING.md` in the active flow or PR directory as context.
 - If the plan or runbook is missing, the skills note it under `Known validation gaps`.
 
-## Flow runbook is missing or out of date
+## Flow runbook is missing, out of date, or legacy
 
-- Every phase must create or update `.agents/flows/sk-<slug>/RUNBOOK.md`.
-- If the runbook does not exist, the phase skill should create it from the template in `skills/sk-flow/templates/RUNBOOK.md`.
+- Every phase must create or update `.agents/flows/sk-<slug>/runbook.json` via `skills/sk-flow/scripts/flow-state.mjs` (`init`, `set`, `pr`). Node ≥18 must be on `PATH`.
+- If the runbook does not exist, create it with `node skills/sk-flow/scripts/flow-state.mjs init .agents/flows/sk-<slug> --slug=<slug> --goal=<goal>`, then `check` the directory.
+- `legacy runbook format` means the directory has a Markdown `RUNBOOK.md` from an older plugin version: finish that flow on the old plugin or remove `RUNBOOK.md` and start fresh.
+- `refusing to write invalid state` means a `set`/`pr` mutation would introduce a new invariant error; fix the named problem first (e.g. write the artifact before marking its row `done`).
+- `masterplan prs order ... does not match runbook order` means a reorder was interrupted: the masterplan `prs` array and the runbook `order` fields must agree. Finish the reorder by setting the remaining `pr <dir> <slug> --order=<n>` values, or revert the masterplan `prs` array to match the runbook.
 
 ## Install script fails
 

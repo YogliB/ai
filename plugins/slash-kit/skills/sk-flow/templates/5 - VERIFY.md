@@ -1,3 +1,7 @@
+<!--
+{"schema":"verify","slug":"{{slug}}","result":"{{pass|fail|blocked}}","receipts":[]}
+-->
+
 # 5 — Verify: {{slug}}
 
 ## Plan reference

@@ -13,13 +13,13 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 ## Active PR handoff
 
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against the active PR row. Use the harness-supported sync workflow and record the resulting HEAD in the active PR runbook. If the branch or HEAD cannot be reconciled safely, mark the PR blocked and stop instead of reviewing or changing the wrong diff.
+When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against `prs[active-pr]`. Use the harness-supported sync workflow and record the resulting HEAD via `pr <dir> <slug> --head=<sha>` in the active PR's root runbook. If the branch or HEAD cannot be reconciled safely, `pr <dir> <slug> --state=blocked --notes=<reason>` and stop instead of reviewing or changing the wrong diff.
 
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks. For a multi-PR runbook, use its exact `Active PR` and matching `Directory`; for a single-PR runbook, use the root. Require `4 - REVIEW.md` (unless row `4` is `skipped` in a `Size: light` runbook) and missing `5 - VERIFY.md` there. If no runbook identifies the work, ask for a slug.
-3. Write the verification report to `5 - VERIFY.md` and update `RUNBOOK.md` row `5`.
+2. Else inspect root runbooks (`runbook.json`; `node ../sk-flow/scripts/flow-state.mjs check <dir>` prints the resolved state when the script exists — a standalone install reads `runbook.json` directly and skips every `set`/`pr`/`check` call). For a multi-PR runbook, use its exact `active-pr` and matching `pr-<slug>/` directory; for a single-PR runbook, use the root. Require `4 - REVIEW.md` (unless row `4` is `skipped` in a `size:"light"` runbook) and missing `5 - VERIFY.md` there. If no runbook identifies the work, ask for a slug.
+3. Write the verification report to `5 - VERIFY.md` from `../sk-flow/templates/5 - VERIFY.md` (frontmatter `schema: verify`; `receipts` lists every receipt path), then `set <dir> 5 <done|diverged|blocked>` (`diverged`/`blocked` need `--note=<reason>`; `skipped` is only valid when no report is written — `set <dir> 5 skipped --note=<reason>` when verification cannot run at all).
 
 ## Steps
 
@@ -48,6 +48,6 @@ When the root runbook is multi-PR, fetch refs before this phase and verify the c
 5. **Report**
     - Print the result of each step and an overall `PASS` or `FAIL`.
     - If a feature path cannot be exercised in this environment (missing auth, external service, hardware), record the gap in the report instead of passing silently.
-    - Write `5 - VERIFY.md` and update `RUNBOOK.md` row `5` to `done` (or `diverged` if departed).
+    - Write `5 - VERIFY.md` and `set <dir> 5 done` only when every command passed (`result: "pass"`); on failure `set <dir> 5 blocked --note=<reason>` (`diverged --note=<reason>` if you departed from this skill). The state gate refuses `done` on a non-pass report.
 
-Run this skill in a subagent when the harness supports it (a `Size: light` flow may run it inline).
+Run this skill in a subagent when the harness supports it (a `size:"light"` flow may run it inline).

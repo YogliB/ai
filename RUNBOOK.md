@@ -2,7 +2,7 @@
 
 End-to-end flow: **sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review (fix mode) → sk-verify → sk-pr**.
 
-Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates the `RUNBOOK.md` checklist. The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
+Each step is a reusable skill. Use the whole flow or pick just the step you need. Every step writes a numbered doc into `.agents/flows/sk-<slug>/` and updates `runbook.json` via `skills/sk-flow/scripts/flow-state.mjs` (`init`/`set`/`pr`; agents never hand-edit it). The runbook is mandatory: it records what ran, what was skipped, and any divergence from the skill.
 
 ## When to use this runbook
 
@@ -14,7 +14,7 @@ Use the full flow when you are starting a non-trivial piece of work and want to:
 - Review the implementation against the plan.
 - Open a PR with the plan and review evidence in the body.
 
-`sk-flow` triages size first: a small change (at most 3 files, ~50 lines, no new dependency, interface, schema or security-sensitive code, obvious approach) takes the light path with `Size: light` in the runbook. Rows `0`, `1`, `1r`, `2r`, `4` are skipped, a short plan, implementation and verify with receipts, and a PR remain. Skip the runbook entirely only for hotfixes or when you are not using `sk-flow`.
+`sk-flow` triages size first: a small change (at most 3 files, ~50 lines, no new dependency, interface, schema or security-sensitive code, obvious approach) takes the light path with `size: "light"` in the runbook. Rows `0`, `1`, `1r`, `2r`, `4` are skipped, a short plan, implementation and verify with receipts, and a PR remain. Skip the runbook entirely only for hotfixes or when you are not using `sk-flow`.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ Every flow lives in its own folder:
 
 ```text
 .agents/flows/sk-<slug>/
-├── RUNBOOK.md
+├── runbook.json
 ├── 0 - EXPLORE.md
 ├── 1 - ALTERNATIVES.md
 ├── 2 - PLANNING.md
@@ -39,7 +39,7 @@ Every flow lives in its own folder:
 └── 6 - PR.md
 ```
 
-`RUNBOOK.md` is a mandatory checklist. Each phase updates its row. If the agent diverges from the skill, the reason is recorded in the `Divergence / Notes` column and the `Divergence log` section.
+`runbook.json` is the mandatory state file. Each phase updates its row via `flow-state.mjs set`. If the agent diverges from the skill, the reason is recorded in the row's `note` and the `divergences` array. Each numbered doc starts with a `<!-- -->`-wrapped JSON frontmatter block that `flow-state.mjs check` validates against `skills/sk-flow/schemas/`.
 
 ## Step-by-step procedure
 
@@ -53,7 +53,7 @@ Every flow lives in its own folder:
 
 - Gather available context from the repo and user prompt.
 - Recommend the next step: `sk-alternatives` (if the approach is unclear) or `sk-planning` (if the approach is clear).
-- Update `RUNBOOK.md` row `0` to `done`.
+- `flow-state.mjs set` row `0` to `done`.
 
 ### 1. Alternatives
 
@@ -66,7 +66,7 @@ Every flow lives in its own folder:
 - Generate up to 3 reviewed options. In the full flow, this phase is mandatory; if there is only one viable approach, produce a `1 - ALTERNATIVES.md` that documents why.
 - Run `sk-review-alternatives` on the options and resolve every `valid` finding before finalizing. This review is mandatory; do not skip it. Record it in runbook row `1r`.
 - The user picks one.
-- Update `RUNBOOK.md` row `1` to `done` or `skipped` with reason.
+- `flow-state.mjs set` row `1` to `done` (`diverged`/`blocked` need `--note`; `skipped` is only valid before `1 - ALTERNATIVES.md` exists).
 
 ### 2. Planning
 
@@ -78,7 +78,7 @@ Every flow lives in its own folder:
 
 - The plan must be fully executable from the file alone.
 - Run `sk-review-plan` in a review loop and resolve every `valid` finding before finalizing `2 - PLANNING.md`. This review is mandatory; do not skip it. Record it in runbook row `2r`.
-- Update `RUNBOOK.md` row `2` to `done`.
+- `flow-state.mjs set` row `2` to `done`.
 
 ### 3. Implementation
 
@@ -90,8 +90,8 @@ Every flow lives in its own folder:
 
 - Executes the plan one atomic TODO at a time, with checks after each step and atomic commits.
 - Plan gaps stop the work and are flagged, not improvised around.
-- Deviations and gaps are documented in `3 - IMPLEMENTATION.md`; divergence also goes in `RUNBOOK.md`.
-- Update `RUNBOOK.md` row `3` to `done`.
+- Deviations and gaps are documented in `3 - IMPLEMENTATION.md`; divergence also goes in `runbook.json`.
+- `flow-state.mjs set` row `3` to `done`.
 
 ### 4. Review
 
@@ -103,7 +103,7 @@ Every flow lives in its own folder:
 
 - Review subagents use the plan to verify scope and acceptance.
 - Fix mode: fix every valid finding before moving on.
-- Update `RUNBOOK.md` row `4` to `done`.
+- `flow-state.mjs set` row `4` to `done`.
 
 ### 5. Verify
 
@@ -114,7 +114,7 @@ Every flow lives in its own folder:
 **Output:** `5 - VERIFY.md` in `.agents/flows/sk-<slug>/`.
 
 - Run the verification steps from the plan.
-- If blocked, mark `RUNBOOK.md` row `5` `skipped` with the blocking reason and continue.
+- If blocked, `flow-state.mjs set` row `5` `skipped` with the blocking `--note` and continue.
 
 ### 6. PR
 
@@ -125,7 +125,7 @@ Every flow lives in its own folder:
 **Output:** `6 - PR.md` in `.agents/flows/sk-<slug>/`.
 
 - Create or update a GitHub pull request with the plan and review evidence reflected in the body.
-- Update `RUNBOOK.md` row `6` to `done` and set the top status to `completed`.
+- `flow-state.mjs set <dir> 6 done`, then `set <dir> --status=completed` (row and field updates are separate calls).
 
 ## Delegating to subagents
 
@@ -144,7 +144,7 @@ You do not have to run the full flow. Each skill is self-contained:
 - `/sk-pr` or "use the sk-pr skill" — create or update a PR, writes `6 - PR.md`
 - `/sk-flow [auto|manual]` or "use the sk-flow skill" — run the full workflow
 
-Even when using just one skill, a flow folder and runbook are created so the state is documented.
+Standalone-capable skills (`sk-explore`, `sk-alternatives`, `sk-planning`) create the flow folder and runbook when missing via `flow-state.mjs init <dir> --slug=<slug> --goal=<goal> --at=<row>`; `--at` skips earlier rows and records a standalone-entry divergence. Downstream skills (`sk-implement`, `sk-verify`, `sk-pr`) require the prior phase's artifact, so they run inside an existing flow; `sk-review` can also run flow-less.
 
 ## Rollback
 

@@ -1,0 +1,27 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "4 - REVIEW.md frontmatter",
+	"type": "object",
+	"required": ["schema", "slug", "result", "passes", "valid", "false-positive", "unvalidated"],
+	"additionalProperties": false,
+	"properties": {
+		"schema": { "enum": ["review"] },
+		"slug": { "type": "string", "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$" },
+		"result": {
+			"enum": ["clean", "findings-fixed", "blocked"],
+			"description": "clean = zero findings on last pass; findings-fixed = valid findings were fixed and re-reviewed clean; blocked = stuck guard or failing tests."
+		},
+		"passes": {
+			"type": "integer",
+			"minimum": 1,
+			"description": "Number of review passes run."
+		},
+		"valid": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Findings still valid after the final pass."
+		},
+		"false-positive": { "type": "integer", "minimum": 0 },
+		"unvalidated": { "type": "integer", "minimum": 0 }
+	}
+}

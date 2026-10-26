@@ -9,10 +9,10 @@ description: Suggest up to 3 viable alternatives for a code or design decision. 
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. If the user gave no clear context, look for a stuck flow: one where `0 - EXPLORE.md` exists and `1 - ALTERNATIVES.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, derive a slug from the decision and confirm.
-3. Create the folder if needed. Initialize or update `RUNBOOK.md` with all phases `pending` and row `1` as `in-progress`.
-4. Write the final doc to `1 - ALTERNATIVES.md` and set row `1` to `done`, `skipped`, or `diverged` with a reason.
+3. Create the folder if needed. Create `runbook.json` if missing (`node ../sk-flow/scripts/flow-state.mjs init .agents/flows/sk-<slug> --slug=<slug> --goal=<one-line goal> --at=1`; `--at` skips earlier rows and records a standalone-entry divergence), then `set <dir> 1 in-progress`.
+4. Write the final doc to `1 - ALTERNATIVES.md` (frontmatter `schema: alternatives`) and `set <dir> 1 <done|diverged|blocked>` (`diverged`/`blocked`/`skipped` need `--note=<reason>`; `skipped` is only valid before the doc exists).
 
-This skill can run on its own; it still maintains the flow folder and runbook.
+This skill can run on its own; it still maintains the flow folder and runbook when `../sk-flow/scripts/flow-state.mjs` exists — a standalone install skips every `flow-state.mjs` call.
 
 ## Steps
 
@@ -23,7 +23,7 @@ This skill can run on its own; it still maintains the flow folder and runbook.
     **Exit rule:** stop when the latest `sk-review-alternatives` pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
 4. **Recommend** — one clear choice based on clarity and maintainability.
-5. **Write** — save options, review findings, recommendation, and decision to `1 - ALTERNATIVES.md`. Update `RUNBOOK.md` rows `1` and `1r`.
+5. **Write** — save options, review findings, recommendation, and decision to `1 - ALTERNATIVES.md` from `../sk-flow/templates/1 - ALTERNATIVES.md`. Record triage counts in the frontmatter `review` object, then `set <dir> 1 done` and `set <dir> 1r done` (each `--summary=<one-line>`).
 6. **Wait** — stop for the user's choice. Do not edit code files.
 
 ## Output

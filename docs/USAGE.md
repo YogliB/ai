@@ -1,5 +1,11 @@
 # Usage
 
+## Requirements
+
+- `node` ≥18 on `PATH` (the flow-state gate, `skills/sk-flow/scripts/flow-state.mjs`, is Node stdlib only).
+- `sh` for the receipt and plan-lint scripts.
+- `gh` for `sk-pr` only.
+
 ## Install
 
 ### Claude Code plugin
@@ -164,7 +170,7 @@ Each step runs in its own subagent; the prompt names the skill to invoke rather 
 - The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/`, `rules/`, and `hooks/*.py` into it.
 - The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/`, `rules/`, and `hooks/`.
 - `hooks/inject-rules.py` injects the no-comments and terse-output rules where plugin rules can't reach: `sessionStart` adds them to session context (this is how Claude Code sessions get the rules — Claude plugins have no rules channel), and `preToolUse` prepends them to subagent prompts (Claude `Task`, Cursor `Task`, Devin `run_subagent`). The canonical script lives at the repo root; the Devin plugin carries a synced copy.
-- The runbook is in [RUNBOOK.md](../RUNBOOK.md).
+- The workflow doc is in [RUNBOOK.md](../RUNBOOK.md); per-flow state lives in `.agents/flows/sk-<slug>/runbook.json`, created and mutated only via `node skills/sk-flow/scripts/flow-state.mjs`.
 
 ## Example session
 

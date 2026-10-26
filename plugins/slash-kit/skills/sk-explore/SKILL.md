@@ -19,9 +19,11 @@ Produce a self-contained `0 - EXPLORE.md` so the next phase can proceed without 
 
 1. Derive a short kebab-case slug from the goal (confirm with the user if not provided).
 2. Create `.agents/flows/sk-<slug>/` if needed.
-3. Create or update `RUNBOOK.md` with all phases `pending`; mark `0` as `in-progress`.
-4. Write `0 - EXPLORE.md` and set row `0` to `done` with a one-line summary.
+3. Create `runbook.json` if missing: `node ../sk-flow/scripts/flow-state.mjs init .agents/flows/sk-<slug> --slug=<slug> --goal=<one-line goal>`. Then `... set <dir> 0 in-progress`.
+4. Write `0 - EXPLORE.md` from `../sk-flow/templates/0 - EXPLORE.md`, filling its frontmatter (`schema: explore`; `flow-state.mjs check` validates it), then `set <dir> 0 done --summary=<one-line>`.
 5. Add `.agents/flows/sk-*/` to `.gitignore` if this is the first flow in the repo.
+
+A standalone install has no `../sk-flow/scripts/flow-state.mjs` or templates — skip every `init`/`set`/`check` call above and work flow-less.
 
 ## Output
 
@@ -41,6 +43,6 @@ Produce a self-contained `0 - EXPLORE.md` so the next phase can proceed without 
 3. **Read** — inline the relevant snippets or facts.
 4. **Synthesize** — summarize current state, constraints, and gaps.
 5. **Recommend** — `sk-alternatives` if the approach is unclear, `sk-planning` if it is clear.
-6. **Write** — save the report and update `RUNBOOK.md`.
+6. **Write** — save the report and update `runbook.json` via `set`.
 
 Do not edit non-report files.

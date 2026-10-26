@@ -15,6 +15,7 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 | `nub run format`                          | Format Markdown and JSON with `oxfmt`.            |
 | `nub run lint`                            | Run the pre-commit lint step.                     |
 | `sh scripts/sync-devin-plugin.sh --check` | Fail if the Devin plugin copies differ from root. |
+| `sh scripts/test-flow-state.sh`           | Test the runbook state machine and validator.     |
 | `sh scripts/test-lint-plan.sh`            | Test the plan-structure linter.                   |
 | `sh scripts/test-receipts.sh`             | Test the check-receipt scripts.                   |
 

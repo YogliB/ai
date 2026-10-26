@@ -1,3 +1,7 @@
+<!--
+{"schema":"masterplan","slug":"{{slug}}","decision":"split","prs":[],"review":{"valid":0,"false-positive":0,"unvalidated":0}}
+-->
+
 **Shape:** Root initiative plan for multi-PR and/or multi-repo work. Save this as root `2 - PLANNING.md`; each PR has a self-contained `pr-<stable-slug>/2 - PLANNING.md` from [plan.md](plan.md).
 
 **Overview:** [2–3 short sentences]
@@ -18,18 +22,16 @@ Cross-cutting inlined facts for the whole initiative (shared schemas, rollout fl
 
 ## Implementation Status
 
-> PRs: whole numbers, start at 1, sequential by dependencies.
+> PRs: whole numbers, start at 1, sequential by dependencies. The frontmatter `prs` array is the execution order; live PR state (status, link, branch, SHAs, `order`) lives in the initiative `runbook.json` `prs` table.
 
-| Order | PR Slug   | Repo   | Dependencies | Status | Directory       | Link | Branch | Base SHA | HEAD | Notes |
-| ----- | --------- | ------ | ------------ | ------ | --------------- | ---- | ------ | -------- | ---- | ----- |
-| 1     | shared    | repo-a | none         | 🟡     | `pr-shared/`    | -    | -      | -        | -    | ...   |
-| 2     | workloads | repo-b | shared       | ⏸️     | `pr-workloads/` | -    | -      | -        | -    | ...   |
+| PR Slug   | Repo   | Dependencies |
+| --------- | ------ | ------------ |
+| shared    | repo-a | none         |
+| workloads | repo-b | shared       |
 
-Status: 🟢 done · 🟡 in‑progress · 🟠 awaiting review · ⏸️ not‑started · 🔴 blocked · ⚫ canceled
+## PR[N]: [Stable Slug] — [Title]
 
-## PR[N]: [Stable Slug] — [Title] — [Status Icon]
-
-**Repo:** [name] · **Link:** [-/URL] · **ETA:** [X–Yh]
+**Repo:** [name] · **ETA:** [X–Yh]
 **Files:** `path/one`, `path/two`
 
 **Changes:**
