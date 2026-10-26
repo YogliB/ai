@@ -28,11 +28,10 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `plugins/slash-kit/` — Devin plugin (manifest, `skills/`, `rules/`, `hooks/*.py` synced from root, plus `hooks.json`).
-- `scripts/install.sh` — Install the Cursor plugin, optionally seed a project.
+- `scripts/install.sh` — Install the Cursor plugin.
 - `scripts/uninstall.sh` — Remove the Cursor plugin.
 - `README.md` — Human-facing overview.
 - `AGENTS.md` — Agent-facing index.
-- `RUNBOOK.md` — End-to-end workflow.
 - `docs/` — Contributor and user documentation.
 
 ## Documentation Sync
@@ -43,7 +42,6 @@ Keep these files aligned:
 - `AGENTS.md` — rules index, docs index, and condensed docs
 - `CLAUDE.md` — Claude rule `@` includes
 - `rules/` — cross-agent rules
-- `RUNBOOK.md` — full workflow
 - `docs/USAGE.md`, `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, and `docs/TROUBLESHOOTING.md`
 
 ## Skill style

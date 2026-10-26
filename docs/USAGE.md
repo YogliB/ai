@@ -39,7 +39,7 @@ Installs the skills globally for every agent the skills CLI supports. Requires `
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 ```
 
-Copies the repo's Cursor plugin (`.cursor-plugin/` manifest, `skills/`, `rules/`, `hooks/`) into `~/.cursor/plugins/local/slash-kit`. Restart Cursor or run **Developer: Reload Window** to load it. Pass a repo path (`scripts/install.sh /path/to/repo`) to also seed `RUNBOOK.md` into that project.
+Copies the repo's Cursor plugin (`.cursor-plugin/` manifest, `skills/`, `rules/`, `hooks/`) into `~/.cursor/plugins/local/slash-kit`. Restart Cursor or run **Developer: Reload Window** to load it.
 
 ### Specific skills
 
@@ -161,7 +161,60 @@ With the plugin installed, prefix the skill name with `/slash-kit:`:
 sk-explore → sk-alternatives → sk-review-alternatives → sk-planning → sk-review-plan → sk-implement → sk-review (fix mode) → sk-verify → sk-pr
 ```
 
-Each step runs in its own subagent; the prompt names the skill to invoke rather than paraphrasing it. The [runbook](../RUNBOOK.md) has the full procedure.
+Each phase is a self-contained skill: run the whole flow via `sk-flow`, or pick just the step you need. In the full flow each phase runs in its own subagent, and the worker prompt names the skill to invoke plus its inputs (goal, slug, mode) — never paraphrase a phase into an artifact checklist, since that drops the mandatory steps inside the skill.
+
+### When to use the full flow
+
+Use it for non-trivial work when you want to explore options before committing, write a durable reviewable plan, implement in focused testable steps, review the implementation against the plan, and open a PR with the evidence in the body.
+
+`sk-flow` triages size first: a small change (at most 3 files, ~50 lines, no new dependency, interface, schema or security-sensitive code, obvious approach) takes the light path with `size: "light"` in the runbook — explore, alternatives, and the reviews are skipped; a short plan, implementation, verify with receipts, and a PR remain. Skip the flow entirely only for hotfixes.
+
+Prerequisites: a clean git tree or feature branch, write access to `.agents/flows/`, and an authenticated `gh` for the PR step.
+
+### Flow folder
+
+Every flow lives in its own folder:
+
+```text
+.agents/flows/sk-<slug>/
+├── runbook.json
+├── 0 - EXPLORE.md
+├── 1 - ALTERNATIVES.md
+├── 2 - PLANNING.md
+├── 3 - IMPLEMENTATION.md
+├── 4 - REVIEW.md
+├── 5 - VERIFY.md
+└── 6 - PR.md
+```
+
+`runbook.json` is the mandatory state file: it records what ran, what was skipped, and any divergence from the skill. Agents mutate it only via `skills/sk-flow/scripts/flow-state.mjs` (`init`/`set`/`pr`); see [ARCHITECTURE.md](ARCHITECTURE.md) for the validation contract.
+
+### Phases
+
+| #   | Skill             | Output                  | Required before the row is `done`                                      |
+| --- | ----------------- | ----------------------- | ---------------------------------------------------------------------- |
+| 0   | `sk-explore`      | `0 - EXPLORE.md`        | Recommends `sk-alternatives` (approach unclear) or `sk-planning`.      |
+| 1   | `sk-alternatives` | `1 - ALTERNATIVES.md`   | `sk-review-alternatives` runs (row `1r`); the user picks an option.    |
+| 2   | `sk-planning`     | `2 - PLANNING.md`       | `sk-review-plan` loop until no `valid` findings (row `2r`).            |
+| 3   | `sk-implement`    | `3 - IMPLEMENTATION.md` | Atomic TODOs with checks and commits; plan gaps stop work, not improv. |
+| 4   | `sk-review`       | `4 - REVIEW.md`         | Fix mode in `sk-flow`: fix every valid finding before moving on.       |
+| 5   | `sk-verify`       | `5 - VERIFY.md`         | Always; if blocked, mark row `skipped` with a `--note`.                |
+| 6   | `sk-pr`           | `6 - PR.md`             | `set` row `6` `done`, then `set --status=completed` (separate calls).  |
+
+### Single skills and standalone entry
+
+Every skill is self-contained and usable alone. Standalone-capable skills (`sk-explore`, `sk-alternatives`, `sk-planning`) create the flow folder and runbook when missing via `flow-state.mjs init <dir> --slug=<slug> --goal=<goal> --at=<row>`; `--at` skips earlier rows and records a standalone-entry divergence. Downstream skills (`sk-implement`, `sk-verify`, `sk-pr`) require the prior phase's artifact, so they run inside an existing flow; `sk-review` can also run flow-less.
+
+### Rollback
+
+- **Before implementation:** edit `2 - PLANNING.md` and re-run the plan review.
+- **During implementation:** split a too-big TODO into smaller TODOs in the plan and continue.
+- **After review:** if a valid finding means the plan itself is wrong, revise the plan and re-implement.
+- **After PR:** close or update the PR; do not force-merge.
+
+### Agents without skills
+
+If your agent cannot load skills, read the phase list above and open the relevant `skills/sk-*/SKILL.md` manually before each step.
 
 ## Configuration
 
@@ -170,7 +223,7 @@ Each step runs in its own subagent; the prompt names the skill to invoke rather 
 - The Devin plugin lives in `plugins/slash-kit/` (see the install section above); `scripts/sync-devin-plugin.sh` syncs `skills/`, `rules/`, and `hooks/*.py` into it.
 - The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/`, `rules/`, and `hooks/`.
 - `hooks/inject-rules.py` injects the no-comments and terse-output rules where plugin rules can't reach: `sessionStart` adds them to session context (this is how Claude Code sessions get the rules — Claude plugins have no rules channel), and `preToolUse` prepends them to subagent prompts (Claude `Task`, Cursor `Task`, Devin `run_subagent`). The canonical script lives at the repo root; the Devin plugin carries a synced copy.
-- The workflow doc is in [RUNBOOK.md](../RUNBOOK.md); per-flow state lives in `.agents/flows/sk-<slug>/runbook.json`, created and mutated only via `node skills/sk-flow/scripts/flow-state.mjs`.
+- Per-flow state lives in `.agents/flows/sk-<slug>/runbook.json`, created and mutated only via `node skills/sk-flow/scripts/flow-state.mjs`.
 
 ## Example session
 
@@ -189,6 +242,5 @@ Each step runs in its own subagent; the prompt names the skill to invoke rather 
 ## More docs
 
 - [README.md](../README.md) — high-level overview.
-- [RUNBOOK.md](../RUNBOOK.md) — end-to-end workflow.
 - [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md) — common problems.
 - [docs/CONTRIBUTING.md](CONTRIBUTING.md) — setup and PR flow.

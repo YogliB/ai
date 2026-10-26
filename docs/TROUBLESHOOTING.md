@@ -33,6 +33,22 @@
 - `refusing to write invalid state` means a `set`/`pr` mutation would introduce a new invariant error; fix the named problem first (e.g. write the artifact before marking its row `done`).
 - `masterplan prs order ... does not match runbook order` means a reorder was interrupted: the masterplan `prs` array and the runbook `order` fields must agree. Finish the reorder by setting the remaining `pr <dir> <slug> --order=<n>` values, or revert the masterplan `prs` array to match the runbook.
 
+## A skill's output is wrong
+
+- Edit the skill's `skills/sk-*/SKILL.md` directly and re-test; the skills are the source of truth.
+
+## Plan review never converges
+
+- Reduce the plan's scope, or split it into a masterplan and sub-plans.
+
+## Review finds the plan itself is wrong
+
+- Go back to planning: revise `2 - PLANNING.md`, re-run `sk-review-plan`, then re-implement. Do not patch code against a wrong plan.
+
+## The agent diverged from a skill
+
+- Record the reason in the runbook row's `note` and the `divergences` array via `flow-state.mjs set`, then return to the phase that diverged.
+
 ## Install script fails
 
 - Requires `sh`, `cp`, and a writable target project directory.

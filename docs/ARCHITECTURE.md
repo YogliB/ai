@@ -29,7 +29,6 @@ A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
 ├── AGENTS.md                # Agent-facing index
 ├── CLAUDE.md                # Claude Code entry point
 ├── README.md                # Human-facing overview
-├── RUNBOOK.md               # Optional end-to-end workflow
 └── docs/                    # Contributor and user documentation
 ```
 
@@ -96,7 +95,22 @@ Shared rules live in `rules/` and ship inside the Cursor and Devin plugins. Clau
 
 ### Workflow is opt-in
 
-Nothing forces the full flow. Each skill is self-contained and can be used alone. The runbook exists for agents that do not support skills.
+Nothing forces the full flow. Each skill is self-contained and can be used alone. Agents without skill support can follow the workflow doc in [USAGE.md](USAGE.md#run-the-workflow) manually.
+
+## Gates
+
+Gates keep agent runs honest: a script decides and records facts, the model keeps judgment.
+
+1. **Scripts decide facts, the model decides meaning.** Which phase a flow is in, whether a plan's structure is complete, whether a check really ran: a script answers these deterministically and records the answer. The model writes, judges, and chooses.
+2. **The base layer is a script the skill runs.** Each gate is a small script (shell or Node) the skill invokes, checking its exit code and the receipt file it writes. This works in every harness, with or without hook support.
+3. **Hooks and CI are optional layers on top.** Where the harness supports hooks (Claude Code, Cursor, Devin), a hook can enforce a gate by blocking. In this repo, CI runs the same checks. Neither is required for a gate to work.
+4. **No one is forced to change their setup.** Installing the plugin never requires editing CI or settings; enforcement layers are opt-in.
+
+The gates:
+
+- **Check receipts** (`skills/sk-implement/scripts/run-with-receipt.sh` and `check-receipt.sh`): run a check, record a receipt. A check without a valid passing receipt did not happen. Used by `sk-implement` and `sk-verify`. Receipt files stay key:value because the raw output tail cannot embed in JSON without escaping.
+- **Plan lint** (`skills/sk-planning/scripts/lint-plan.sh`): a plan's structure matches the template — required sections in order, `Files` right after `Goal`, TODO depth at most 2, an explicit Proceed/Split decision. Used by `sk-planning`.
+- **Flow state** (`skills/sk-flow/scripts/flow-state.mjs`): the runbook gate described under Key Decisions. With `size: "light"` it also fixes the skipped rows and requires receipts listed in the implementation and verify frontmatter. Used by `sk-flow`.
 
 ## External Dependencies
 

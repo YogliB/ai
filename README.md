@@ -6,7 +6,7 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 
 - **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-implement`, `sk-review-plan`, `sk-review`, and `sk-pr`.
 - **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-implement`, `/sk-review`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
-- **A runbook** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
+- **A workflow** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude and Cursor.
 
 Flow state and receipts live in JSON; everything else is plain Markdown. No magic binaries, no cloud services, no tracking. The flow-state gate needs `node` ≥18 on `PATH`.
@@ -30,7 +30,7 @@ npx skills add YogliB/ai -g
 npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 ```
 
-`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it. Pass a repo path to also seed `RUNBOOK.md` into a project.
+`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it.
 
 Want just one skill?
 
@@ -105,7 +105,7 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 
 ## Caveats
 
-- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/slash-kit:sk-*`). Cursor can use the skill names or the [runbook](RUNBOOK.md).
+- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/slash-kit:sk-*`). Cursor can use the skill names.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
 - **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel.
@@ -113,8 +113,7 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 
 ## More
 
-- [RUNBOOK.md](RUNBOOK.md) — the full workflow.
-- [docs/USAGE.md](docs/USAGE.md) — install options, advanced usage, and troubleshooting.
+- [docs/USAGE.md](docs/USAGE.md) — install options, the full workflow, and advanced usage.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the pieces fit together.
 - [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) — if you want to hack on this.
 

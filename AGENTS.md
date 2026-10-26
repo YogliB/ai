@@ -16,18 +16,16 @@ These rules are always-on. Read them before every task:
 
 ## Docs index
 
-| Doc                                                | Purpose                                  |
-| -------------------------------------------------- | ---------------------------------------- |
-| [README.md](README.md)                             | User-facing overview, install, and usage |
-| [RUNBOOK.md](RUNBOOK.md)                           | End-to-end workflow                      |
-| [docs/USAGE.md](docs/USAGE.md)                     | Install options and advanced usage       |
-| [docs/GATES.md](docs/GATES.md)                     | Check receipts and gate design           |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | Structure and data flow                  |
-| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup, conventions, and PRs              |
-| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems                          |
-| [docs/SECURITY.md](docs/SECURITY.md)               | Security policy                          |
-| [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Code of conduct                          |
-| [LICENSE.md](LICENSE.md)                           | License                                  |
+| Doc                                                | Purpose                                   |
+| -------------------------------------------------- | ----------------------------------------- |
+| [README.md](README.md)                             | User-facing overview, install, and usage  |
+| [docs/USAGE.md](docs/USAGE.md)                     | Install options, workflow, advanced usage |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)       | Structure, data flow, and gates           |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)       | Setup, conventions, and PRs               |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Common problems                           |
+| [docs/SECURITY.md](docs/SECURITY.md)               | Security policy                           |
+| [docs/CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md) | Code of conduct                           |
+| [LICENSE.md](LICENSE.md)                           | License                                   |
 
 ## Condensed docs
 
@@ -42,18 +40,17 @@ nub run format
 
 ### Common commands
 
-| Command                              | Purpose                                                                |
-| ------------------------------------ | ---------------------------------------------------------------------- |
-| `./scripts/install.sh`               | Install the Cursor plugin into `~/.cursor/plugins/local/`              |
-| `./scripts/install.sh /path/to/repo` | Also seed `RUNBOOK.md` into a project                                  |
-| `./scripts/uninstall.sh`             | Remove the Cursor plugin                                               |
-| `./scripts/sync-devin-plugin.sh`     | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/`       |
-| `./scripts/gen-skills-index.sh`      | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |
-| `nub run format`                     | Format with `oxfmt`                                                    |
-| `nub run lint`                       | Run the pre-commit lint step                                           |
-| `sh scripts/test-flow-state.sh`      | Test the runbook state machine and validator                           |
-| `sh scripts/test-lint-plan.sh`       | Test the plan-structure linter                                         |
-| `sh scripts/test-receipts.sh`        | Test the check-receipt scripts                                         |
+| Command                          | Purpose                                                                |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| `./scripts/install.sh`           | Install the Cursor plugin into `~/.cursor/plugins/local/`              |
+| `./scripts/uninstall.sh`         | Remove the Cursor plugin                                               |
+| `./scripts/sync-devin-plugin.sh` | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/`       |
+| `./scripts/gen-skills-index.sh`  | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |
+| `nub run format`                 | Format with `oxfmt`                                                    |
+| `nub run lint`                   | Run the pre-commit lint step                                           |
+| `sh scripts/test-flow-state.sh`  | Test the runbook state machine and validator                           |
+| `sh scripts/test-lint-plan.sh`   | Test the plan-structure linter                                         |
+| `sh scripts/test-receipts.sh`    | Test the check-receipt scripts                                         |
 
 ### Project layout
 
@@ -64,11 +61,10 @@ nub run format
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests; injects rules into session context and subagent prompts.
 - `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` and `hooks/*.py` synced from root, plus `hooks.json`).
-- `scripts/install.sh` — install the Cursor plugin, optionally seed a project.
+- `scripts/install.sh` — install the Cursor plugin.
 - `scripts/uninstall.sh` — remove the Cursor plugin.
-- `RUNBOOK.md` — optional end-to-end workflow.
 - `docs/` — contributor and user documentation.
 
 ## Documentation sync
 
-Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, `RUNBOOK.md`, and `docs/` aligned when changing workflows or conventions.
+Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/` aligned when changing workflows or conventions.

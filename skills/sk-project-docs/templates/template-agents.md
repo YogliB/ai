@@ -40,4 +40,4 @@ These rules are always-on. Read them before every task:
 
 ## Documentation sync
 
-Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, `RUNBOOK.md`, and `docs/` aligned when changing workflows or conventions.
+Keep `README.md`, `AGENTS.md`, `CLAUDE.md`, and `docs/` aligned when changing workflows or conventions.
