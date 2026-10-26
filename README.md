@@ -9,7 +9,7 @@ Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, an
 - **A workflow** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude and Cursor.
 
-Flow state and receipts live in JSON; everything else is plain Markdown. No magic binaries, no cloud services, no tracking. The flow-state gate needs `node` ≥18 on `PATH`.
+Flow state and receipts are flat `key: value` files; everything else is plain Markdown. No magic binaries, no cloud services, no tracking. Every gate script needs only `sh` and core utilities (git optional).
 
 ## Quick start
 
@@ -19,6 +19,7 @@ Pick your agent:
 # Claude Code - plugin with /sk-* slash commands
 claude plugin marketplace add YogliB/ai
 claude plugin install slash-kit@ai
+# + rules into ~/.claude (one-time): sh scripts/install-claude-rules.sh
 
 # Devin - plugin with /slash-kit:* commands
 devin plugins install YogliB/ai#plugins/slash-kit
@@ -59,15 +60,15 @@ Plugin skills are namespaced. Type the command at the start of a prompt:
 
 Installed a skill individually with `npx skills add`? Drop the `/slash-kit:` prefix (`/sk-planning`).
 
-| Slash command                    | What it does                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------ |
-| `/slash-kit:/sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/slash-kit:/sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
-| `/slash-kit:/sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
-| `/slash-kit:/sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
-| `/slash-kit:/sk-review`          | Review the current diff (add "fix" to fix).                                          |
-| `/slash-kit:/sk-pr`              | Create or update a GitHub PR.                                                        |
-| `/slash-kit:/sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
+| Slash command                   | What it does                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| `/slash-kit:sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/slash-kit:sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
+| `/slash-kit:sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
+| `/slash-kit:sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
+| `/slash-kit:sk-review`          | Review the current diff (add "fix" to fix).                                          |
+| `/slash-kit:sk-pr`              | Create or update a GitHub PR.                                                        |
+| `/slash-kit:sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
 ### In Devin
 
@@ -108,8 +109,7 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 - **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/slash-kit:sk-*`). Cursor can use the skill names.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
-- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel.
-- **Hooks inject the rules where plugin rules can't reach** (`hooks/inject-rules.py`): `sessionStart` adds them to session context (covers Claude Code, which has no plugin rules channel), and `preToolUse` prepends them to subagent prompts. Manifests: `hooks/hooks.json` (Claude), `hooks/cursor/hooks.json` (Cursor), `plugins/slash-kit/hooks.json` (Devin). Plugin hooks are best-effort and fail open.
+- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel — `scripts/install-claude-rules.sh` copies the rules into `~/.claude/slashkit/` and `@`-imports them from `~/.claude/CLAUDE.md`, which also reaches subagent context.
 
 ## More
 

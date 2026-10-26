@@ -14,11 +14,10 @@ fail() {
 git init -q .
 git config user.email test@example.com
 git config user.name Test
-mkdir -p scripts skills/sk-demo rules hooks
+mkdir -p scripts skills/sk-demo rules
 cp "$REPO_ROOT/scripts/sync-devin-plugin.sh" scripts/
 echo "# demo skill" > skills/sk-demo/SKILL.md
 echo "demo rule" > rules/demo.md
-echo "# demo hook" > hooks/demo.py
 
 sh scripts/sync-devin-plugin.sh >/dev/null
 sh scripts/sync-devin-plugin.sh --check >/dev/null || fail "--check fails on freshly synced copies"
@@ -26,7 +25,7 @@ sh scripts/sync-devin-plugin.sh --check >/dev/null || fail "--check fails on fre
 git add -A
 git commit -qm init
 
-for path in skills/sk-demo/SKILL.md rules/demo.md hooks/demo.py; do
+for path in skills/sk-demo/SKILL.md rules/demo.md; do
 	git checkout -q -- .
 	echo "edited" > "$path"
 	if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
@@ -46,7 +45,6 @@ if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
 	fail "--check misses stray file plugins/slash-kit/rules/stray.md"
 fi
 echo "edited rule" > rules/demo.md
-echo "edited hook" > hooks/demo.py
 mkdir -p skills/sk-new
 echo "# new skill" > skills/sk-new/SKILL.md
 sh scripts/sync-devin-plugin.sh >/dev/null

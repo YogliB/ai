@@ -1,7 +1,3 @@
-<!--
-{"schema":"explore","slug":"{{slug}}","next-step":"{{sk-alternatives|sk-planning}}","reason":"{{one-line reason}}"}
--->
-
 # 0 — Explore: {{slug}}
 
 ## Goal

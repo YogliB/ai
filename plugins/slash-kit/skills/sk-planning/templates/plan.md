@@ -1,7 +1,3 @@
-<!--
-{"schema":"plan","slug":"{{slug}}","decision":"{{proceed|split}}","todos":0,"review":{"valid":0,"false-positive":0,"unvalidated":0}}
--->
-
 **Shape:** One repo, one PR. Multi-repo or multi-PR work → [masterplan.md](masterplan.md) plus one plan per PR.
 
 ## Goal

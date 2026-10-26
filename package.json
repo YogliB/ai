@@ -6,7 +6,7 @@
 	"author": "Yogev Boaron Ben-Har",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/yboaron/ai"
+		"url": "https://github.com/YogliB/ai"
 	},
 	"scripts": {
 		"prepare": "husky",

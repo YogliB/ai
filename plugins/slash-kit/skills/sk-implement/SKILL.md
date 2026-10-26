@@ -14,21 +14,17 @@ Execute the plan. This skill encodes execution discipline, not coding ability: t
 
 Do not use this skill to fill in for a missing plan. If there is no approved plan, stop and point the user to `sk-planning`.
 
-## Active PR handoff
-
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against `prs[active-pr]`. Use the harness-supported sync workflow and record the resulting HEAD via `pr <dir> <slug> --head=<sha>` in the active PR's root runbook. If the branch or HEAD cannot be reconciled safely, `pr <dir> <slug> --state=blocked --notes=<reason>` and stop instead of reviewing or changing the wrong diff.
-
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks (`runbook.json`; `node ../sk-flow/scripts/flow-state.mjs check <dir>` prints the resolved state when the script exists — a standalone install reads `runbook.json` directly and skips every `set`/`pr`/`check` call). For a multi-PR runbook, use its exact `active-pr` and matching `pr-<slug>/` directory; for a single-PR runbook, use the root. Then require exact `2 - PLANNING.md` and missing `3 - IMPLEMENTATION.md`. Never select from `2 - PLANNING*.md` or modification time.
+2. Else run `sh ../sk-flow/scripts/flow-state.sh check <dir>` on each `.agents/flows/sk-*/` and pick the flow whose `next` is `3` (a standalone install skips every `flow-state.sh` call and works flow-less). Require exact `2 - PLANNING.md` and missing `3 - IMPLEMENTATION.md`. Never select from `2 - PLANNING*.md` or modification time.
 3. Read the plan in full before touching any file. Read `0 - EXPLORE.md` and `1 - ALTERNATIVES.md` if present, only for context; the plan overrules them on any conflict.
-4. `set <dir> 3 in-progress`. Write `3 - IMPLEMENTATION.md` from `../sk-flow/templates/3 - IMPLEMENTATION.md` (frontmatter `schema: implementation`; `receipts` lists every receipt path cited in the body), then `set <dir> 3 done` when finished.
+4. Write `3 - IMPLEMENTATION.md` from `../sk-flow/templates/3 - IMPLEMENTATION.md`, listing every receipt path cited in the body, then `sh ../sk-flow/scripts/flow-state.sh advance <dir> --receipts=<a,b>` when finished.
 
 ## Execution rules
 
 1. **Execute the plan as written** - in the plan's order, step by step. Do not reorder, merge, or skip TODOs.
-2. **Check after every change** - after each TODO, run the checks the plan names for that step (build, targeted test, typecheck, lint) through the bundled receipt runner: `scripts/run-with-receipt.sh <label> -- <command>` (resolved next to this SKILL.md, like templates). Do not defer checks to the end. A step is done only when its checks pass and the receipt path is recorded in its row; a check without a valid passing receipt did not happen.
+2. **Check after every change** - after each TODO, run the checks the plan names for that step (build, targeted test, typecheck, lint) through the bundled receipt runner: `scripts/run-with-receipt.sh <dir>/receipts <label> -- <command>` (script resolved next to this SKILL.md; inside a flow, `<dir>` is the flow dir so receipts land in `<dir>/receipts/`). Do not defer checks to the end. A step is done only when its checks pass and the receipt path is recorded in the report; a check without a valid passing receipt did not happen.
 3. **Stay inside the plan's scope** - touch only the files and behavior the plan names. No drive-by refactors, no cleanup of adjacent code, no extra features, no dependency changes the plan does not call for. If the plan's `Files` section exists, treat it as the allowed file set.
 4. **Atomic commits per step** - one commit per TODO (or per plan-named commit unit), using the repo's commit convention. Each commit must leave the tree in a working state: checks that passed before the step still pass after it.
 5. **Keep existing behavior green** - never weaken, skip, or delete an existing test to make a step pass. If an existing check fails on the untouched baseline, stop and flag it (see below) instead of working around it.
@@ -52,7 +48,7 @@ The plan will sometimes be wrong or incomplete: a file that does not exist where
 - **Deviations**: every departure from the plan text, with reasons. `None` if none.
 - **Plan Gaps**: unresolved gaps flagged to the user, if any.
 - **Final verification**: the full check suite the plan names (build, tests, lint, typecheck, format), run through the receipt runner, with receipt paths and results.
-- **Next Step Recommendation**: `sk-review` (fix mode inside `sk-flow`) with a one-line reason; `sk-verify` when the runbook says `size:"light"`.
+- **Next Step Recommendation**: `sk-review` (fix mode inside `sk-flow`) with a one-line reason; `sk-verify` when the runbook says `size: light`.
 
 ## Exit rule
 

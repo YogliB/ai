@@ -24,10 +24,9 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 - `skills/` — Skills (source of truth for all agents).
 - `.agents/flows/` — Flow output directory (actual flow dirs are `sk-*`).
 - `rules/` — Shared rules shipped inside the Cursor and Devin plugins.
-- `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, `skills/`, `rules/`, `hooks/*.py` synced from root, plus `hooks.json`).
+- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
 - `scripts/install.sh` — Install the Cursor plugin.
 - `scripts/uninstall.sh` — Remove the Cursor plugin.
 - `README.md` — Human-facing overview.

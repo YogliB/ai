@@ -1,8 +1,4 @@
-<!--
-{"schema":"masterplan","slug":"{{slug}}","decision":"split","prs":[],"review":{"valid":0,"false-positive":0,"unvalidated":0}}
--->
-
-**Shape:** Root initiative plan for multi-PR and/or multi-repo work. Save this as root `2 - PLANNING.md`; each PR has a self-contained `pr-<stable-slug>/2 - PLANNING.md` from [plan.md](plan.md).
+**Shape:** Decision record for multi-PR and/or multi-repo work. Save this as the planning flow's `2 - PLANNING.md`; each PR then runs as its own `sk-<stable-slug>` flow with a self-contained `2 - PLANNING.md` from [plan.md](plan.md).
 
 **Overview:** [2–3 short sentences]
 **Approach:** [brief]
@@ -22,7 +18,7 @@ Cross-cutting inlined facts for the whole initiative (shared schemas, rollout fl
 
 ## Implementation Status
 
-> PRs: whole numbers, start at 1, sequential by dependencies. The frontmatter `prs` array is the execution order; live PR state (status, link, branch, SHAs, `order`) lives in the initiative `runbook.json` `prs` table.
+> PRs: whole numbers, start at 1, sequential by dependencies. The table below is the execution order; each PR's live state lives in its own `sk-<slug>` flow's `runbook`.
 
 | PR Slug   | Repo   | Dependencies |
 | --------- | ------ | ------------ |

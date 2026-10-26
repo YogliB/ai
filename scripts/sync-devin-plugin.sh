@@ -7,9 +7,7 @@ set -eu
 ROOT=$(git rev-parse --show-toplevel)
 SRC="$ROOT/skills"
 SRC_RULES="$ROOT/rules"
-SRC_HOOKS="$ROOT/hooks"
-
-SUBDIRS="skills rules hooks"
+SUBDIRS="skills rules"
 
 sync_all() {
 	DST="$1"
@@ -32,13 +30,6 @@ sync_all() {
 		cp "$f" "$DST/rules/"
 		rcount=$((rcount + 1))
 	done
-
-	hcount=0
-	for f in "$SRC_HOOKS"/*.py; do
-		[ -f "$f" ] || continue
-		cp "$f" "$DST/hooks/"
-		hcount=$((hcount + 1))
-	done
 }
 
 if [ "${1:-}" = "--check" ]; then
@@ -60,4 +51,4 @@ if [ "${1:-}" = "--check" ]; then
 fi
 
 sync_all "$ROOT/plugins/slash-kit"
-echo "sync-devin-plugin: synced $count skills, $rcount rules, $hcount hook scripts to plugins/slash-kit/"
+echo "sync-devin-plugin: synced $count skills, $rcount rules to plugins/slash-kit/"

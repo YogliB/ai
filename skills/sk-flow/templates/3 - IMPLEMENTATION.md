@@ -1,7 +1,3 @@
-<!--
-{"schema":"implementation","slug":"{{slug}}","branch":"{{branch}}","receipts":[],"deviations":0,"plan-gaps":0}
--->
-
 # 3 — Implementation: {{slug}}
 
 ## Plan reference

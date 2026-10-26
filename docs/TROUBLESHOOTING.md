@@ -21,17 +21,17 @@
 
 ## Review or PR skills miss context
 
-- Make sure a flow folder exists under `.agents/flows/sk-<slug>/` with a `runbook.json`.
-- The `sk-review` and `sk-pr` skills use the exact `2 - PLANNING.md` in the active flow or PR directory as context.
+- Make sure a flow folder exists under `.agents/flows/sk-<slug>/` with a `runbook` file.
+- The `sk-review` and `sk-pr` skills use the exact `2 - PLANNING.md` in the active flow as context.
 - If the plan or runbook is missing, the skills note it under `Known validation gaps`.
 
 ## Flow runbook is missing, out of date, or legacy
 
-- Every phase must create or update `.agents/flows/sk-<slug>/runbook.json` via `skills/sk-flow/scripts/flow-state.mjs` (`init`, `set`, `pr`). Node ≥18 must be on `PATH`.
-- If the runbook does not exist, create it with `node skills/sk-flow/scripts/flow-state.mjs init .agents/flows/sk-<slug> --slug=<slug> --goal=<goal>`, then `check` the directory.
-- `legacy runbook format` means the directory has a Markdown `RUNBOOK.md` from an older plugin version: finish that flow on the old plugin or remove `RUNBOOK.md` and start fresh.
-- `refusing to write invalid state` means a `set`/`pr` mutation would introduce a new invariant error; fix the named problem first (e.g. write the artifact before marking its row `done`).
-- `masterplan prs order ... does not match runbook order` means a reorder was interrupted: the masterplan `prs` array and the runbook `order` fields must agree. Finish the reorder by setting the remaining `pr <dir> <slug> --order=<n>` values, or revert the masterplan `prs` array to match the runbook.
+- Every phase must create or update `.agents/flows/sk-<slug>/runbook` via `skills/sk-flow/scripts/flow-state.sh` (`init`, `advance`, `note`, `set`). Only `sh` and core utilities are needed.
+- If the runbook does not exist, create it with `sh skills/sk-flow/scripts/flow-state.sh init .agents/flows/sk-<slug> --slug=<slug> --goal=<goal>`, then `check` the directory.
+- `runbook missing ... (legacy runbook.json/RUNBOOK.md is not supported)` means the directory predates the current format: finish that flow on the old plugin or remove the legacy file and start fresh.
+- `advance: <file> is missing` means the artifact must exist before its row advances; `advance: row <r> requires --<flag>` means the phase's required flags were not supplied.
+- `status: error` on `check` means the recorded state contradicts the contract (missing artifacts, unexpected files, bad flags). Repair via `set`/`note` or the files; `set <dir> at=<row>` reopens a row — delete stale later artifacts too.
 
 ## A skill's output is wrong
 
@@ -47,7 +47,7 @@
 
 ## The agent diverged from a skill
 
-- Record the reason in the runbook row's `note` and the `divergences` array via `flow-state.mjs set`, then return to the phase that diverged.
+- Record the reason via `sh skills/sk-flow/scripts/flow-state.sh note <dir> <reason>`, then return to the phase that diverged (`set <dir> at=<row>` if it already passed).
 
 ## Install script fails
 

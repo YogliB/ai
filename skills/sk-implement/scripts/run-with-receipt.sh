@@ -2,13 +2,17 @@
 set -eu
 
 usage() {
-	echo "usage: run-with-receipt.sh <label> -- <command...>" >&2
+	echo "usage: run-with-receipt.sh <receipts-dir> <label> -- <command...>" >&2
 	exit 2
 }
 
-[ $# -ge 3 ] || usage
-LABEL=$1
-shift
+[ $# -ge 4 ] || usage
+DIR=$1
+case $DIR in
+	-*) DIR=./$DIR ;;
+esac
+LABEL=$2
+shift 2
 [ "${1:-}" = "--" ] || usage
 shift
 [ $# -ge 1 ] || usage
@@ -22,8 +26,6 @@ case $LABEL in
 		;;
 esac
 
-ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
-DIR="$ROOT/.agents/receipts"
 mkdir -p "$DIR"
 
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
@@ -41,8 +43,8 @@ END_S=$(date +%s)
 ENDED=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 if [ "$CODE" -eq 0 ]; then RESULT=pass; else RESULT=fail; fi
-HEAD=$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo none)
-BRANCH=$(git -C "$ROOT" rev-parse --abbrev-ref HEAD 2>/dev/null || echo none)
+HEAD=$(git rev-parse HEAD 2>/dev/null || echo none)
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo none)
 
 RECEIPT="$DIR/$STAMP-$LABEL-$$.receipt"
 {
@@ -61,7 +63,7 @@ RECEIPT="$DIR/$STAMP-$LABEL-$$.receipt"
 	echo
 	echo
 	echo "--- output (last 30 lines) ---"
-	tail -30 "$OUT"
+	tail -n 30 "$OUT"
 } >"$RECEIPT"
 
 echo "run-with-receipt: receipt written to $RECEIPT" >&2

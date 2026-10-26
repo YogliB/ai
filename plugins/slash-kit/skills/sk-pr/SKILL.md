@@ -10,13 +10,9 @@ Create or update a GitHub PR for the current branch.
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks (`runbook.json`; `node ../sk-flow/scripts/flow-state.mjs check <dir>` prints the resolved state when the script exists — a standalone install reads `runbook.json` directly and skips every `set`/`pr`/`check` call). For a multi-PR runbook, use its exact `active-pr` and matching `pr-<slug>/` directory; for a single-PR runbook, use the root. Require `4 - REVIEW.md` (unless row `4` is `skipped` in a `size:"light"` runbook) and missing `6 - PR.md` there.
-3. Read the exact active plan (`2 - PLANNING.md`) and other phase docs in the selected flow or PR directory.
-4. After creating/updating the PR, write `6 - PR.md` from `../sk-flow/templates/6 - PR.md` (frontmatter `schema: pr` with the real `url`, `status`, `number`) and `set <dir> 6 done`.
-
-## Active PR handoff
-
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against `prs[active-pr]`. Use the harness-supported sync workflow and record the resulting HEAD via `pr <dir> <slug> --head=<sha>` in the active PR's root runbook. If the branch or HEAD cannot be reconciled safely, `pr <dir> <slug> --state=blocked --notes=<reason>` and stop instead of reviewing or changing the wrong diff.
+2. Else run `sh ../sk-flow/scripts/flow-state.sh check <dir>` on each `.agents/flows/sk-*/` and pick the flow whose `next` is `6` (a standalone install skips every `flow-state.sh` call and works flow-less). Require missing `6 - PR.md` there.
+3. Read the exact plan (`2 - PLANNING.md`) and other phase docs in the selected flow.
+4. After creating/updating the PR, write `6 - PR.md` from `../sk-flow/templates/6 - PR.md` (with the real url, status, number) and `sh ../sk-flow/scripts/flow-state.sh advance <dir>`.
 
 ## Route: update or new
 
@@ -63,7 +59,7 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 1. Compose the body and write it to `.pr-body-temp.md` in the repo root.
 2. **Create:** `gh pr create --title "<title>" --body-file .pr-body-temp.md` (append `--label "code-review:request"` in corporate mode).
 3. **Update:** `gh pr edit <n> --title "<title>" --body-file .pr-body-temp.md`.
-4. Write `6 - PR.md` and `set <dir> 6 done`.
+4. Write `6 - PR.md` and `advance <dir>`.
 5. **Always delete** `.pr-body-temp.md` last, even on failure.
 
 ## Troubleshooting
@@ -74,4 +70,4 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 
 ## Multi-PR completion
 
-After writing the active PR's `6 - PR.md`, update its root initiative row: `pr <dir> <slug> --state=done --branch=<b> --base-sha=<s> --head=<h> --notes=<pr-url>` (the URL also goes in `6 - PR.md`). Select the first `pending` PR in order whose dependencies are all `done`, and `pr <dir> <slug> --state=in-progress` (sets `active-pr`). If no pending PR remains, `set <dir> --status=completed`. If pending PRs remain but none is unblocked, `set <dir> --status=blocked` and record the unmet dependencies via `pr <dir> <slug> --notes=<reason>`.
+Each PR is its own flow. After writing `6 - PR.md` and advancing to `done`, start the next PR's flow at the row the masterplan names.
