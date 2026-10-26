@@ -33,15 +33,9 @@ npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
 
 `scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it.
 
-Want just one skill?
+Want just one skill? `npx skills add YogliB/ai --skill sk-planning` — it works standalone, no plugin needed.
 
-```bash
-npx skills add YogliB/ai --skill sk-planning
-```
-
-To remove one skill: `npx skills remove sk-planning` (add `-g` if you installed globally).
-To remove a plugin, use the agent's own remove command (`claude plugin uninstall slash-kit@ai`, `devin plugins remove slash-kit`).
-To remove the Cursor plugin: `sh /tmp/ai/scripts/uninstall.sh`.
+To remove: `npx skills remove sk-planning`, or each agent's own uninstall (`claude plugin uninstall slash-kit@ai`, `devin plugins remove slash-kit`, `sh /tmp/ai/scripts/uninstall.sh` for Cursor).
 
 ## Use it
 
