@@ -1,7 +1,5 @@
 ---
 description: slashkit AI conventions and skill pointers
-trigger: always_on
-globs: '**/*'
 alwaysApply: true
 ---
 
