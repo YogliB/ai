@@ -1,8 +1,4 @@
 #!/bin/sh
-# Install slashkit rules for Claude Code: copies rules/*.md (frontmatter
-# stripped) into ~/.claude/slashkit/ and links them from ~/.claude/CLAUDE.md
-# via @imports, which also reaches subagent context.
-# Undo: rm -rf ~/.claude/slashkit and remove the @slashkit/ lines from CLAUDE.md.
 set -eu
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
@@ -17,6 +13,9 @@ for f in "$REPO_ROOT"/rules/*.md; do
 done
 
 touch "$MEMORY"
+if [ -s "$MEMORY" ] && [ -n "$(tail -c 1 "$MEMORY")" ]; then
+	printf '\n' >> "$MEMORY"
+fi
 for f in "$DEST"/*.md; do
 	line="@slashkit/$(basename "$f")"
 	grep -qxF "$line" "$MEMORY" || echo "$line" >> "$MEMORY"

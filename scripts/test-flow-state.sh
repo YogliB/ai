@@ -127,10 +127,8 @@ ok "clean dir does not check" "$D3"
 if sh "$FS" init .agents/flows/sk-bad --slug=bad --goal=g --at=1r 2>/dev/null; then fail "init --at=1r accepted"; fi
 echo "# 1" > "$D3/1 - ALTERNATIVES.md"
 if sh "$FS" advance "$D3" --result=clean 2>/dev/null; then fail "row 1 accepted a flag it does not use"; fi
-sh "$FS" set "$D3" size=lihgt >/dev/null
-bad "typo'd size tolerated" "$D3"
-sh "$FS" set "$D3" size=full >/dev/null
-ok "size repaired" "$D3"
+if sh "$FS" set "$D3" size=lihgt 2>/dev/null; then fail "set accepted a typo'd size"; fi
+ok "typo'd size rejected by set" "$D3"
 
 DL=.agents/flows/sk-lite
 sh "$FS" init "$DL" --slug=lite --goal=g --size=light >/dev/null || fail "light init failed"
@@ -163,6 +161,18 @@ grep -q 'set status=in-progress to resume' "$TMP/err" || fail "blocked advance d
 sh "$FS" set "$D4" status=in-progress >/dev/null || fail "set status=in-progress failed"
 echo "# 0 - EXPLORE" > "$D4/0 - EXPLORE.md"
 sh "$FS" advance "$D4" >/dev/null || fail "advance after resume failed"
+
+D5=.agents/flows/sk-size
+sh "$FS" init "$D5" --slug=size --goal=x >/dev/null || fail "size init failed"
+sh "$FS" set "$D5" size=light >/dev/null || fail "set size=light failed"
+grep -q '^at: 2$' "$D5/runbook" || fail "size=light did not move cursor to row 2"
+ok "check after size=light" "$D5"
+sh "$FS" set "$D5" size=full >/dev/null || fail "set size=full failed"
+grep -q '^at: 0$' "$D5/runbook" || fail "size=full did not move cursor to row 0"
+ok "check after size=full" "$D5"
+echo "# 0 - EXPLORE" > "$D5/0 - EXPLORE.md"
+if sh "$FS" set "$D5" size=light 2>/dev/null; then fail "set size= ran with artifacts present"; fi
+rm "$D5/0 - EXPLORE.md"
 
 mkdir -p nested/.agents/flows
 printf 'dist' > nested/.agents/.gitignore

@@ -335,6 +335,9 @@ cmd_init() {
 			ensure_nl "$gi"
 			echo 'flows/' >> "$gi"
 		}
+		if git -C "$agentsdir" rev-parse --git-dir >/dev/null 2>&1 && [ -n "$(git -C "$agentsdir" ls-files flows | head -n 1)" ]; then
+			echo "init: warning: $flowsdir already has tracked files; gitignore will not hide them (git rm -r --cached .agents/flows to untrack)" >&2
+		fi
 	fi
 	mkdir -p "$DIR"
 	trap 'rm -f "$RB.tmp.$$"' EXIT
@@ -477,6 +480,25 @@ cmd_set() {
 	case $key in
 		"" | *[!a-zA-Z0-9._-]*) die "set: invalid key '$key'" 2 ;;
 	esac
+	if [ "$key" = size ]; then
+		case $val in
+			light | full) ;;
+			*) die "set: size must be light or full" 2 ;;
+		esac
+		for f in "$DIR"/[0-9]*.md "$DIR"/pr-*; do
+			[ -e "$f" ] && die "set: size= is only safe before artifacts exist"
+		done
+		load
+		case $val in
+			light) allowed=$ROWS_LIGHT ;;
+			*) allowed=$ROWS_FULL ;;
+		esac
+		set -- $allowed
+		set_kv at "$1"
+		set_kv size "$val"
+		echo "set size $val"
+		return
+	fi
 	set_kv "$key" "$val"
 	echo "set $key $val"
 }

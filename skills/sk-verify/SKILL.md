@@ -15,7 +15,7 @@ description: Verify that changes do what they aim to do and introduce no regress
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. Else run `sh ../sk-flow/scripts/flow-state.sh check <dir>` on each `.agents/flows/sk-*/` and pick the flow whose `next` is `5` (a standalone install skips every `flow-state.sh` call and works flow-less). Require missing `5 - VERIFY.md` there. If no flow identifies the work, ask for a slug.
-3. Write the verification report to `5 - VERIFY.md` from `../sk-flow/templates/5 - VERIFY.md` (list every receipt path), then `sh ../sk-flow/scripts/flow-state.sh advance <dir> --result=pass --receipts=<a,b>` only when every command passed. On failure `note <dir> <reason>` — or `advance <dir> --skip --note=<reason>` when verification cannot run at all.
+3. When verification cannot run at all (missing credentials, services, environment), do not write `5 - VERIFY.md`: `advance <dir> --skip --note=<reason>` records the reason in the runbook. Otherwise write the verification report to `5 - VERIFY.md` from `../sk-flow/templates/5 - VERIFY.md` (list every receipt path), then `sh ../sk-flow/scripts/flow-state.sh advance <dir> --result=pass --receipts=<a,b>` only when every command passed. On failure `note <dir> <reason>`.
 
 ## Steps
 

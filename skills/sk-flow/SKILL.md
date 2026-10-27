@@ -30,7 +30,7 @@ Light only if **all** hold; otherwise full. When unsure, full.
 - no new dependency, public interface, schema, migration, or security-sensitive code
 - the approach is obvious (no real alternatives to weigh)
 
-Pass the result to `init --size=<choice>` (or `set <dir> size=light|full` — only before any artifact exists; a full→light switch flags dropped rows' files as unexpected until they are removed) and give the user one line of reasoning. In `manual` mode the user may override it. A light flow's rows are `2`, `3`, `5`, `6` — Explore, Alternatives, both review rows and Review are simply not part of the runbook.
+Pass the result to `init --size=<choice>` — or `set <dir> size=light|full` before any artifact exists, which resets the cursor to the new table's first row. Give the user one line of reasoning. In `manual` mode the user may override it. A light flow's rows are `2`, `3`, `5`, `6` — Explore, Alternatives, both review rows and Review are simply not part of the runbook.
 
 ## Modes
 
@@ -94,7 +94,7 @@ Never reduce a phase to "write `<N> - <NAME>.md`" or a checklist of artifacts. A
 8. (manual) Ask to continue.
 9. **Review** — `sk-review` in **fix mode**, called explicitly ("run sk-review in fix mode"); `sk-review` read-only only if the user asked for it. Writes `4 - REVIEW.md`; advances row `4`.
 10. (manual) Ask to continue.
-11. **Verify** — `sk-verify` is required unless the agent is blocked (e.g. verification needs credentials, services, or an environment it cannot reach). Writes `5 - VERIFY.md` and advances row `5`; when blocked, `advance <dir> --skip --note=<reason>` and continue.
+11. **Verify** — `sk-verify` is required unless the agent is blocked (e.g. verification needs credentials, services, or an environment it cannot reach). Writes `5 - VERIFY.md` and advances row `5`; when blocked, write no report — `advance <dir> --skip --note=<reason>` (the reason lives in the runbook) and continue.
 12. (manual) Ask to continue.
 13. **PR** — `sk-pr`. Writes `6 - PR.md`; advances row `6`, completing the flow.
 
