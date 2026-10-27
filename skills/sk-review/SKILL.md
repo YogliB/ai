@@ -134,7 +134,7 @@ If the diff is empty, reply with `AI review. harness: <harness>, model: <model>`
 3. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
 4. **Triage** — as above.
 5. **Display** — the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
-6. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` from `../sk-flow/templates/4 - REVIEW.md` (including the intent sources block and triage counts) and, when a runbook exists, `sh ../sk-flow/scripts/flow-state.sh advance <dir> --result=clean --valid=0` (`--result=findings-fixed` if the pass fixed findings; add `--note=<reason>` when you departed from this skill or to record the review URL). On a `size: light` runbook row `4` does not exist: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `size: full`. Do not fix.
+6. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` from `../sk-flow/templates/4 - REVIEW.md` (including the intent sources block and triage counts). When a runbook exists: if zero `valid` findings remain after triage, `sh ../sk-flow/scripts/flow-state.sh advance <dir> --result=clean --valid=0` (`--note=<reason>` when you departed from this skill or to record the review URL); if `valid` findings remain, do not advance — `note <dir> <N valid findings unresolved>` and leave the cursor for the user to decide (re-run in fix mode or accept the findings). On a `size: light` runbook row `4` does not exist: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `size: full`. Do not fix.
 
 ## Fix mode
 
@@ -152,7 +152,7 @@ If the diff is empty, stop in one sentence. The disclosure header goes on the fi
 
 **Fix rules:** minimal diff; match conventions; no scope creep; no drive-by refactors; do not treat 🔵 as auto-`false_positive`. Do not silence linters, fix the root cause. Run relevant tests after non-trivial fixes; record failures as blockers. Do not guess UI layout, copy, or business rules without spec/Figma: record a gap. Do not auto-fix gap-dependent ❓ by guessing intent.
 
-**Output:** when the exit rule is met (or blocked), write `4 - REVIEW.md` and, when a runbook exists, `advance <dir> --result=clean|findings-fixed --valid=0` (`--note=<reason>` when the stuck guard fired, tests still fail, or you departed from this skill) (on a `size: light` runbook row `4` does not exist: write nothing and tell the user a review needs `size: full`) with:
+**Output:** when the exit rule is met, write `4 - REVIEW.md` and, when a runbook exists, `advance <dir> --result=clean|findings-fixed --valid=0` (`--note=<reason>` when you departed from this skill). When blocked (stuck guard fired or tests still fail), write `4 - REVIEW.md`, `note <dir> <reason>`, and `set <dir> status=blocked` — do not advance while `valid` findings remain. On a `size: light` runbook row `4` does not exist: write nothing and tell the user a review needs `size: full`. The doc carries:
 
 - Review rounds completed
 - The intent sources block (or `none resolved`)
