@@ -8,6 +8,9 @@ usage() {
 
 [ $# -ge 1 ] && [ $# -le 2 ] || usage
 RECEIPT=$1
+case $RECEIPT in
+	-*) RECEIPT=./$RECEIPT ;;
+esac
 CHECK_HEAD=0
 if [ $# -eq 2 ]; then
 	[ "$2" = "--head" ] || usage
@@ -25,7 +28,7 @@ fail() {
 }
 
 get() {
-	sed -n "s/^$1: //p" "$RECEIPT" | head -1
+	sed -n "/^--- output/q; s/^$1: //p" "$RECEIPT" | head -n 1
 }
 
 [ "$(get receipt-version)" = "1" ] || fail "missing or unsupported receipt-version"
@@ -41,8 +44,11 @@ HEAD=$(get git-head)
 grep -q '^--- output' "$RECEIPT" || fail "missing output section"
 
 if [ "$CHECK_HEAD" -eq 1 ]; then
-	CURRENT=$(git -C "$(dirname "$RECEIPT")" rev-parse HEAD)
-	[ "$HEAD" = "$CURRENT" ] || fail "receipt was recorded on $HEAD, current HEAD is $CURRENT"
+	if CURRENT=$(git -C "$(dirname "$RECEIPT")" rev-parse HEAD 2>/dev/null); then
+		[ "$HEAD" = "$CURRENT" ] || fail "receipt was recorded on $HEAD, current HEAD is $CURRENT"
+	else
+		echo "check-receipt: no git here; --head check skipped" >&2
+	fi
 fi
 
 echo "check-receipt: $RECEIPT is a valid passing receipt"

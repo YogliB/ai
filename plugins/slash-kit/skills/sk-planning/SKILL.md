@@ -16,10 +16,10 @@ description: Draft a self-contained executable technical plan with atomic testab
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
 2. If the user gave no clear context, look for a stuck flow: one where `1 - ALTERNATIVES.md` exists and `2 - PLANNING*.md` is missing. If one, suggest continuing it. If several, list them and ask. If none, derive a short kebab-case slug from the goal and confirm.
 3. Create `.agents/flows/sk-<slug>/` if needed.
-4. Create `runbook.json` if missing (`node ../sk-flow/scripts/flow-state.mjs init .agents/flows/sk-<slug> --slug=<slug> --goal=<goal> --at=2`), then `set <dir> 2 in-progress`.
-5. Write a single-PR plan to `2 - PLANNING.md`. For multi-PR work, write the masterplan to root `2 - PLANNING.md`, scaffold each PR's runbook first (`pr <dir> <stable-slug> --repo=<owner/repo> --init` per PR — below), then write each self-contained sub-plan to `pr-<stable-slug>/2 - PLANNING.md`.
+4. Create the runbook if missing: `sh ../sk-flow/scripts/flow-state.sh init .agents/flows/sk-<slug> --slug=<slug> --goal=<goal> --at=2`.
+5. Write a single-PR plan to `2 - PLANNING.md`, then `sh ../sk-flow/scripts/flow-state.sh advance <dir> --decision=proceed`, and `advance <dir> --valid=0` for row `2r` once the review loop's latest pass is clean.
 
-A standalone install has no `../sk-flow/scripts/flow-state.mjs` or templates — skip every `init`/`set`/`pr`/`check` call and work flow-less.
+A standalone install has no `../sk-flow/scripts/flow-state.sh` or templates — skip every `init`/`advance`/`check` call and work flow-less.
 
 ## Core requirements
 
@@ -43,7 +43,7 @@ Note meaningful chances for refactors, performance, or security — even if defe
 
 ## Self-audit before review
 
-- The structure lint passes on every emitted document: `scripts/lint-plan.sh <plan file>` (bundled next to this SKILL.md), with `--masterplan` for the masterplan and `--allow-draft` for draft-only plans that omit `Branch setup`, `Delivery`, and `Complexity Check`. The frontmatter passes too: `node ../sk-flow/scripts/flow-state.mjs check <plan file>` (a `proceed`/`split` decision and real `todos` count replace the `{{}}` placeholders). A plan that fails either is not ready for the review loop.
+- The structure lint passes on every emitted document: `scripts/lint-plan.sh <plan file>` (bundled next to this SKILL.md), with `--masterplan` for the masterplan and `--allow-draft` for draft-only plans that omit `Branch setup`, `Delivery`, and `Complexity Check`. A plan that fails the lint is not ready for the review loop.
 - `Context` snippets are current code, not desired state.
 - Every file path and line number was verified.
 - Test changes name the runner and expected call count.
@@ -53,7 +53,7 @@ Note meaningful chances for refactors, performance, or security — even if defe
 ## Plan shape
 
 - **one repo, one PR** → use `templates/plan.md`.
-- **multi-repo or multi-PR** → use `templates/masterplan.md` at the initiative root plus one `templates/plan.md` in each PR directory. Sub-plans repeat every fact they need from the masterplan.
+- **multi-repo or multi-PR** → write `templates/masterplan.md` as the decision record, then run each PR as its own normal flow (`sk-<slug>` per PR, one `templates/plan.md` each). Sub-plans repeat every fact they need from the masterplan.
 
 ## Complexity split
 
@@ -107,16 +107,13 @@ Planning covers what to build, how to sequence it, delivery shape, and plan revi
 ### Single PR
 
 - Plan: `.agents/flows/sk-<slug>/2 - PLANNING.md`
-- `set <dir> 2 done --summary=<one-line>` and `set <dir> 2r done --summary=<one-line>`.
+- `advance <dir> --decision=proceed` and `advance <dir> --valid=0` (row `2r`).
 
 ### Multiple PRs
 
-- Masterplan: `.agents/flows/sk-<slug>/2 - PLANNING.md` (frontmatter `schema: masterplan`, `prs` listing every slug)
-- Sub-plan: `.agents/flows/sk-<slug>/pr-<stable-slug>/2 - PLANNING.md`
-- Convert the root runbook to an initiative: `node ../sk-flow/scripts/flow-state.mjs pr <dir> <stable-slug> --repo=<owner/repo> [--deps=a,b] --init` per PR — the first call drops phases `3–6`, adds `prs`, and scaffolds `pr-<slug>/runbook.json` (rows `0`, `1`, `1r` `skipped` with `initiative root`). Scaffold **before** writing each sub-plan: `pr --init` while `pr-<slug>/2 - PLANNING.md` already exists is refused (pending row vs existing artifact). Finish the root rows first — `set <dir> 2 done --summary=<one-line>` and `set <dir> 2r done --summary=<one-line>` once the masterplan passes review — then `set <dir>/pr-<slug> 2 done` and `set <dir>/pr-<slug> 2r done` in each PR runbook once its plan is written.
-- Derive stable slugs from PR purpose. Never use only an ordinal and never rename a slug after it enters the root runbook.
-- `pr <dir> <first-unblocked-slug> --state=in-progress` (sets `active-pr`); leave other PRs `pending`. If none is unblocked, `set <dir> --status=blocked`.
-- Do not also emit suffixed `2 - PLANNING-*.md` files. The root and each PR directory have one unambiguous `2 - PLANNING.md`.
+- Masterplan: `.agents/flows/sk-<slug>/2 - PLANNING.md` naming every PR and its slug.
+- Each PR is its own flow: `sh ../sk-flow/scripts/flow-state.sh init .agents/flows/sk-<pr-slug> --slug=<pr-slug> --goal=<goal> --at=2`, then write that flow's `2 - PLANNING.md` from `templates/plan.md` and advance it normally. PRs run one at a time, in masterplan order.
+- Do not emit suffixed `2 - PLANNING-*.md` files. Each flow has one unambiguous `2 - PLANNING.md`.
 
 Do not commit or push unless requested.
 

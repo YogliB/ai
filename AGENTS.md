@@ -11,7 +11,7 @@ These rules are always-on. Read them before every task:
 | Skill format        | Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations. |
 | Skill usage         | Before using a slashkit skill, read `skills/<skill>/SKILL.md`.                                                                                                              |
 | Workflow invocation | Do not run `sk-flow` unless the user explicitly asks for it.                                                                                                                |
-| Workflow output     | Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `runbook.json` via `flow-state.mjs`.                                                         |
+| Workflow output     | Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `runbook` via `flow-state.sh`.                                                               |
 | Commits             | Run `nub run format` before committing. Squash to a single Conventional Commit.                                                                                             |
 
 ## Docs index
@@ -44,7 +44,7 @@ nub run format
 | -------------------------------- | ---------------------------------------------------------------------- |
 | `./scripts/install.sh`           | Install the Cursor plugin into `~/.cursor/plugins/local/`              |
 | `./scripts/uninstall.sh`         | Remove the Cursor plugin                                               |
-| `./scripts/sync-devin-plugin.sh` | Sync `skills/`, `rules/`, `hooks/*.py` into `plugins/slash-kit/`       |
+| `./scripts/sync-devin-plugin.sh` | Sync `skills/` and `rules/` into `plugins/slash-kit/`                  |
 | `./scripts/gen-skills-index.sh`  | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |
 | `nub run format`                 | Format with `oxfmt`                                                    |
 | `nub run lint`                   | Run the pre-commit lint step                                           |
@@ -59,8 +59,7 @@ nub run format
 - `.agents/flows/` — flow output directory (actual flow dirs are `sk-*`).
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `hooks/` — `inject-rules.py` plus the Claude (`hooks.json`) and Cursor (`cursor/hooks.json`) hook manifests; injects rules into session context and subagent prompts.
-- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` and `hooks/*.py` synced from root, plus `hooks.json`).
+- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
 - `scripts/install.sh` — install the Cursor plugin.
 - `scripts/uninstall.sh` — remove the Cursor plugin.
 - `docs/` — contributor and user documentation.

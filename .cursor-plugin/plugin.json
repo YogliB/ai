@@ -10,6 +10,5 @@
 	"homepage": "https://github.com/YogliB/ai",
 	"repository": "https://github.com/YogliB/ai",
 	"license": "MIT",
-	"keywords": ["skills", "workflow", "code-review", "planning"],
-	"hooks": "hooks/cursor/hooks.json"
+	"keywords": ["skills", "workflow", "code-review", "planning"]
 }

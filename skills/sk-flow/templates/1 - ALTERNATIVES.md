@@ -1,7 +1,3 @@
-<!--
-{"schema":"alternatives","slug":"{{slug}}","options":1,"chosen":"{{picked option or empty}}","review":{"valid":0,"false-positive":0,"unvalidated":0}}
--->
-
 # 1 — Alternatives: {{slug}}
 
 ## Goal

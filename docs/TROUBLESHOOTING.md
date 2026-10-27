@@ -2,59 +2,37 @@
 
 ## A slashkit skill does nothing in Claude Code
 
-- Make sure the skill is installed: `ls ~/.claude/skills/sk-<name>/SKILL.md`.
+- Check the install: `ls ~/.claude/skills/sk-<name>/SKILL.md` (single skill) or reinstall the plugin.
 - Restart Claude Code after installing.
-- Use the exact skill name as the slash command: `/sk-explore`, `/sk-alternatives`, `/sk-planning`, `/sk-implement`, `/sk-review`, `/sk-pr`, or `/sk-flow`.
-- Skills only respond to known names; arbitrary messages are not modified.
+- Use the exact name: `/slash-kit:sk-planning` from the plugin, `/sk-planning` for a single-skill install.
 
-## Cursor does not use the rules
+## Cursor ignores the rules
 
-- Check that `.cursor/rules/` was copied to the project. The install script does this.
-- Cursor rules only load when the directory is in the workspace root.
-- If you are in a subfolder, rules may not apply. Move the `.cursor/rules/` to the folder Cursor opened.
-
-## Plans are not written to a file
-
-- The `sk-planning` skill writes the plan to `.agents/flows/sk-<slug>/2 - PLANNING.md`. If the directory does not exist, the agent should create it.
-- If the agent has its own plan location, it should also copy or symlink to `.agents/flows/sk-<slug>/2 - PLANNING.md`.
-- Review `skills/sk-flow/SKILL.md` for the naming convention.
+- Rules ship inside the plugin — check `~/.cursor/plugins/local/slash-kit/rules/` exists, then reload the window.
+- Cursor only loads plugin rules for the workspace the plugin is enabled in.
 
 ## Review or PR skills miss context
 
-- Make sure a flow folder exists under `.agents/flows/sk-<slug>/` with a `runbook.json`.
-- The `sk-review` and `sk-pr` skills use the exact `2 - PLANNING.md` in the active flow or PR directory as context.
-- If the plan or runbook is missing, the skills note it under `Known validation gaps`.
+- They expect `.agents/flows/sk-<slug>/` with a `runbook` and a `2 - PLANNING.md`. Missing either? They note it under `Known validation gaps` and keep going.
 
-## Flow runbook is missing, out of date, or legacy
+## Runbook errors
 
-- Every phase must create or update `.agents/flows/sk-<slug>/runbook.json` via `skills/sk-flow/scripts/flow-state.mjs` (`init`, `set`, `pr`). Node ≥18 must be on `PATH`.
-- If the runbook does not exist, create it with `node skills/sk-flow/scripts/flow-state.mjs init .agents/flows/sk-<slug> --slug=<slug> --goal=<goal>`, then `check` the directory.
-- `legacy runbook format` means the directory has a Markdown `RUNBOOK.md` from an older plugin version: finish that flow on the old plugin or remove `RUNBOOK.md` and start fresh.
-- `refusing to write invalid state` means a `set`/`pr` mutation would introduce a new invariant error; fix the named problem first (e.g. write the artifact before marking its row `done`).
-- `masterplan prs order ... does not match runbook order` means a reorder was interrupted: the masterplan `prs` array and the runbook `order` fields must agree. Finish the reorder by setting the remaining `pr <dir> <slug> --order=<n>` values, or revert the masterplan `prs` array to match the runbook.
+Create state only via `sh skills/sk-flow/scripts/flow-state.sh`:
 
-## A skill's output is wrong
-
-- Edit the skill's `skills/sk-*/SKILL.md` directly and re-test; the skills are the source of truth.
+- `runbook missing ...` — `init <dir> --slug=<slug> --goal=<goal>`, then `check`. A `runbook.json`/`RUNBOOK.md` means the flow predates this version — finish it on the old plugin or start fresh.
+- `advance: <file> is missing` — write the phase artifact first.
+- `advance: row <r> requires --<flag>` — the phase's required flags weren't given; the error names them.
+- `status: error` on `check` — state contradicts the contract (missing or unexpected artifacts, bad flags). Repair with `set`/`note`; `set <dir> at=<row>` reopens a row — delete stale later artifacts too.
+- `advance: flow is blocked` — someone marked it. Resume with `set <dir> status=in-progress`.
 
 ## Plan review never converges
 
-- Reduce the plan's scope, or split it into a masterplan and sub-plans.
+Shrink the plan, or split it into a masterplan plus sub-plans.
 
 ## Review finds the plan itself is wrong
 
-- Go back to planning: revise `2 - PLANNING.md`, re-run `sk-review-plan`, then re-implement. Do not patch code against a wrong plan.
+Back to planning: revise `2 - PLANNING.md`, re-run `sk-review-plan`, re-implement. Don't patch code against a bad plan.
 
 ## The agent diverged from a skill
 
-- Record the reason in the runbook row's `note` and the `divergences` array via `flow-state.mjs set`, then return to the phase that diverged.
-
-## Install script fails
-
-- Requires `sh`, `cp`, and a writable target project directory.
-- The target project must already exist.
-
-## Uninstall script fails
-
-- Requires `sh`, `rm`, `cmp`, `mktemp`, and a writable target project directory.
-- The target project must already exist.
+Record why with `flow-state.sh note <dir> <reason>`, then return to the phase that drifted (`set <dir> at=<row>` if it already passed).

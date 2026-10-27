@@ -1,124 +1,95 @@
-# Architecture Overview
+# Architecture
 
-A cross-agent toolkit for reusable skills and an optional multi-phase workflow.
+A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on top.
 
-## Project Structure
+## Layout
 
 ```text
 ./
-├── skills/                  # Skills (source of truth for all agents)
-│   ├── sk-ai-toolbelt/
-│   ├── sk-alternatives/
-│   ├── sk-explore/
-│   ├── sk-flow/
-│   ├── sk-implement/
-│   ├── sk-planning/
-│   ├── sk-pr/
-│   ├── sk-project-docs/
-│   ├── sk-review-alternatives/
-│   ├── sk-review/
-│   ├── sk-review-plan/
-│   └── sk-verify/
-├── .agents/flows/           # Flow output directory (actual flow dirs are sk-*)
-├── rules/                   # Shared rules shipped inside the Cursor and Devin plugins
-├── hooks/                   # inject-rules.py + Claude (hooks.json) and Cursor (cursor/hooks.json) manifests
-├── .cursor-plugin/          # Cursor plugin manifest (repo root is the plugin)
-├── .claude-plugin/          # Claude Code plugin manifest
-├── plugins/slash-kit/       # Devin plugin (manifest, skills/rules/hook scripts synced from root by scripts/sync-devin-plugin.sh)
-├── scripts/                 # install.sh, uninstall.sh, sync-devin-plugin.sh, gen-skills-index.sh, test-*.sh
-├── AGENTS.md                # Agent-facing index
-├── CLAUDE.md                # Claude Code entry point
-├── README.md                # Human-facing overview
-└── docs/                    # Contributor and user documentation
+├── skills/                  # Source of truth for all agents
+│   ├── sk-flow/             #   the workflow + flow-state.sh gate + templates
+│   ├── sk-implement/        #   + receipt scripts
+│   ├── sk-planning/         #   + lint-plan.sh + plan templates
+│   └── sk-*/                #   explore, alternatives, review-*, verify, pr, ...
+├── .agents/flows/           # Flow dirs (sk-*, gitignored by default)
+├── rules/                   # Shared rules, shipped in the Cursor and Devin plugins
+├── .cursor-plugin/          # Cursor manifest (repo root is the plugin)
+├── .claude-plugin/          # Claude Code manifest
+├── plugins/slash-kit/       # Devin plugin — synced from root, never edited directly
+└── scripts/                 # install, uninstall, sync, tests
 ```
 
-## Data Flow
-
-### Single skill
+## How a request flows
 
 ```text
-[user prompt]
-   │
-   ├── Claude: slash command or description match loads the matching skills/sk-*/SKILL.md
-   │
-   ├── Cursor: slash-kit plugin (repo root) provides the skill and shared rules as context
-   │
-   ├── Devin: slash-kit plugin (plugins/slash-kit/) provides the skills as /slash-kit:* commands
-   │
-   ▼
-[relevant skills/sk-*/SKILL.md]
-   ▼
-[output or file artifact]
+user prompt ──▶ matching skills/sk-*/SKILL.md ──▶ output or file artifact
 ```
 
-### Full workflow
+Claude Code loads the skill via `/sk-*` or description match, Devin via `/slash-kit:*`, Cursor through the plugin's skills and rules. Agents without skill support can read the SKILL.md files by hand.
+
+A full `/sk-flow` run chains the phase skills:
 
 ```text
-[user asks for /sk-flow [auto|manual] or "use the sk-flow skill"]
-   ▼
-[sk-flow skill] → parses mode, loads and runs the full flow
-   ▼
-[sk-explore] → 0 - EXPLORE.md
-   ▼
-[sk-alternatives] → [sk-review-alternatives] → user picks option → 1 - ALTERNATIVES.md
-   ▼
-[sk-planning] → [sk-review-plan] → 2 - PLANNING.md
-   ▼
-[sk-implement] (code changes + tests) → 3 - IMPLEMENTATION.md
-   ▼
-[sk-review] → 4 - REVIEW.md
-   ▼
-[sk-verify] → 5 - VERIFY.md
-   ▼
-[sk-pr] → 6 - PR.md
+explore ─▶ alternatives ─▶ planning ─▶ implement ─▶ review ─▶ verify ─▶ pr
 ```
 
-`sk-flow` first assesses size. A small change takes the light path: short plan, `sk-implement`, `sk-verify`, `sk-pr`, with explore, alternatives, and all three reviews skipped and the work allowed to run inline. Everything above is the full path. Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (e.g. `sk-planning`) instead of paraphrasing it, so mandatory steps inside the skill — reviews, sub-dispatch — cannot be dropped. The parent triages the output and dispatches the next phase.
+Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (never a paraphrased checklist — that would drop the mandatory steps inside the skill). `sk-flow` triages size first: small changes take the light path — plan, implement, verify, PR — with explore, alternatives, and the review rows skipped.
 
-## Key Decisions
+## Key decisions
 
-### Skills are source of truth
+### Skills are the source of truth
 
-Each skill in `skills/sk-*/SKILL.md` is the source of truth. Claude Code loads the matching skill when the user types `/sk-*` or the model matches the description. Devin loads the same skill files through the slash-kit plugin; Cursor uses them through the skill tool or rules.
+Each `skills/sk-*/SKILL.md` is the one definition of what that skill does. Every channel (Claude, Cursor, Devin, single-skill installs) ships or reads the same files — no per-agent forks to drift apart.
 
-### Flow runbooks are durable, validated state
+### The gate is a cursor, not a state machine
 
-Every flow lives in `.agents/flows/sk-<slug>/` with a mandatory `runbook.json` state file and numbered phase docs. The runbook is created and mutated only through `skills/sk-flow/scripts/flow-state.mjs` (`init`, `set`, `pr`), which validates every mutation against `skills/sk-flow/schemas/` before writing; `check` re-validates the whole flow and names the next phase. Each numbered doc carries a JSON frontmatter block (`<!-- -->`-wrapped) validated against its schema. The plan, implementation, review, and PR phases read these files without depending on chat context, so the workflow works across agents and sessions.
+Every flow lives in `.agents/flows/sk-<slug>/`: a flat `key: value` `runbook`, the numbered phase docs, and `receipts/` — one self-contained bundle.
 
-### Alternatives are reviewed before presentation
+- `at` is the cursor; `f.<row>.*` records what each `advance` captured.
+- Four commands: `init`, `check`, `advance` (the only structural mutation — it refuses until the row's artifact exists and its required flags pass), `note` (append-only), and `set` (repair hatch).
+- Agents never hand-edit the runbook; the script (`skills/sk-flow/scripts/flow-state.sh`) owns it.
+- Phase docs are pure Markdown for humans. Gate data lives in the runbook — nothing parses the docs.
+- `init` writes `.agents/.gitignore` (`flows/`) so flows stay private; delete that line to commit them.
 
-The `sk-alternatives` skill dispatches `sk-review-alternatives` to catch irrelevant, duplicate, or weak options before the user sees them. This keeps decision quality high without adding much friction.
+What the gate guarantees, and nothing more: fixed phase order, artifact must exist, review can't close with valid findings, verify can't close without a passing receipt.
 
-### Rules ship in plugins, hooks fill the gaps
+### Scripts are `sh` + coreutils, nothing else
 
-Shared rules live in `rules/` and ship inside the Cursor and Devin plugins. Claude Code plugins have no rules channel, and spawned subagents load no plugin rules on any platform — `hooks/inject-rules.py` covers both gaps by returning the rules as `additionalContext` on `sessionStart` and prepending them to subagent prompts on `preToolUse`.
+Node and Python existed only to touch JSON — kill the JSON and both runtimes vanish. The runbook and receipts are flat `key: value` (readable by `grep`/`sed`), gate fields ride on `advance` flags, and rules are plain files per channel. Git is opportunistic: `git-head` is recorded when present, never required.
 
-### Workflow is opt-in
+### Alternatives get reviewed before you see them
 
-Nothing forces the full flow. Each skill is self-contained and can be used alone. Agents without skill support can follow the workflow doc in [USAGE.md](USAGE.md#run-the-workflow) manually.
+`sk-alternatives` dispatches `sk-review-alternatives` to weed out irrelevant, duplicate, or weak options before they reach the user.
+
+### Rules ship as files per channel
+
+`rules/` goes inside the Cursor and Devin plugins. Claude Code has no plugin rules channel, so `scripts/install-claude-rules.sh` copies them into `~/.claude/slashkit/` and `@`-imports them from `~/.claude/CLAUDE.md` — imported memory reaches subagents without any prompt rewriting.
+
+### The workflow is opt-in
+
+Every skill works alone, including single-skill installs — skills skip gate calls when `flow-state.sh` isn't there. Nothing forces `sk-flow`.
 
 ## Gates
 
-Gates keep agent runs honest: a script decides and records facts, the model keeps judgment.
+A gate keeps a run honest: a script decides facts and records them; the model keeps judgment.
 
-1. **Scripts decide facts, the model decides meaning.** Which phase a flow is in, whether a plan's structure is complete, whether a check really ran: a script answers these deterministically and records the answer. The model writes, judges, and chooses.
-2. **The base layer is a script the skill runs.** Each gate is a small script (shell or Node) the skill invokes, checking its exit code and the receipt file it writes. This works in every harness, with or without hook support.
-3. **Hooks and CI are optional layers on top.** Where the harness supports hooks (Claude Code, Cursor, Devin), a hook can enforce a gate by blocking. In this repo, CI runs the same checks. Neither is required for a gate to work.
-4. **No one is forced to change their setup.** Installing the plugin never requires editing CI or settings; enforcement layers are opt-in.
+1. **Scripts decide facts, the model decides meaning.** Which phase a flow is in, whether a check really ran — a script answers deterministically.
+2. **The base layer is a script the skill runs.** Small `sh` scripts; the skill checks exit codes and the files they write. Works in every harness.
+3. **CI is optional on top.** Same checks, not required.
 
-The gates:
+The three gates:
 
-- **Check receipts** (`skills/sk-implement/scripts/run-with-receipt.sh` and `check-receipt.sh`): run a check, record a receipt. A check without a valid passing receipt did not happen. Used by `sk-implement` and `sk-verify`. Receipt files stay key:value because the raw output tail cannot embed in JSON without escaping.
-- **Plan lint** (`skills/sk-planning/scripts/lint-plan.sh`): a plan's structure matches the template — required sections in order, `Files` right after `Goal`, TODO depth at most 2, an explicit Proceed/Split decision. Used by `sk-planning`.
-- **Flow state** (`skills/sk-flow/scripts/flow-state.mjs`): the runbook gate described under Key Decisions. With `size: "light"` it also fixes the skipped rows and requires receipts listed in the implementation and verify frontmatter. Used by `sk-flow`.
+- **Check receipts** (`run-with-receipt.sh`, `check-receipt.sh`): run a check, record a receipt inside the flow's `receipts/` — command, exit code, timestamps, `git-head`, output tail. A check without a valid passing receipt did not happen. `--head` binds to the current commit when git is available, skips cleanly when not.
+- **Plan lint** (`lint-plan.sh`): plan structure matches the template — required sections in order, `Files` right after `Goal`, bounded TODO depth, explicit decision.
+- **Flow state** (`flow-state.sh`): the cursor gate above. `size: light` limits rows to `2, 3, 5, 6`.
 
-## External Dependencies
+## Dependencies
 
-- `claude` — Claude Code CLI.
-- `cursor` — Cursor CLI or IDE.
-- `Node.js` — For `npx skills` and `skills/sk-flow/scripts/flow-state.mjs` (≥18).
-- `gh` — Used by the `sk-pr` skill.
+- `sh` + core utilities — required, that's all.
+- `git` — opportunistic (receipt metadata, the `sk-pr` flow).
+- `gh` — `sk-pr` only.
+- `npx` — only for the `npx skills add` install path.
 
-## Security Notes
+## Security
 
-No web server, no stored credentials, and no network calls from the toolkit itself. The `sk-pr` skill uses the user’s authenticated `gh` CLI. See [docs/SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+No server, no credentials, no network calls from the toolkit. `sk-pr` uses the user's own authenticated `gh`. Report issues per [docs/SECURITY.md](SECURITY.md).

@@ -1,4 +1,4 @@
-nubx lint-staged || exit 1
+./node_modules/.bin/lint-staged || exit 1
 sh scripts/gen-skills-index.sh --check || exit 1
 sh scripts/sync-devin-plugin.sh || exit 1
-git add plugins/slash-kit/skills plugins/slash-kit/rules plugins/slash-kit/hooks
+git add plugins/slash-kit/skills plugins/slash-kit/rules

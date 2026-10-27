@@ -30,8 +30,11 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 - rules/no-comments.md
 - rules/slashkit.md
 
-## Hooks
+## Scripts
 
-- hooks/inject-rules.py
-- hooks/hooks.json
-- hooks/cursor/hooks.json
+- skills/sk-flow/scripts/flow-state.sh — the runbook gate (init/check/advance/note/set)
+- skills/sk-implement/scripts/run-with-receipt.sh + check-receipt.sh — check receipts
+- skills/sk-planning/scripts/lint-plan.sh — plan structure lint
+- scripts/install.sh — install the Cursor plugin
+- scripts/install-claude-rules.sh — install rules into ~/.claude
+- scripts/sync-devin-plugin.sh — sync skills/rules into plugins/slash-kit

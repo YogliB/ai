@@ -18,14 +18,10 @@ Never infer fix mode. When unsure, stay read-only. A PR link or an outside contr
 - User explicitly asks for fixes, or `sk-flow` step 9 calls it in fix mode (unless the user asked for read-only): fix mode.
 - Before `sk-pr` when only a report is needed: read-only mode.
 
-## Active PR handoff
-
-When the root runbook is multi-PR, fetch refs before this phase and verify the checked-out branch and HEAD against `prs[active-pr]`. Use the harness-supported sync workflow and record the resulting HEAD via `pr <dir> <slug> --head=<sha>` in the active PR's root runbook. If the branch or HEAD cannot be reconciled safely, `pr <dir> <slug> --state=blocked --notes=<reason>` and stop instead of reviewing or changing the wrong diff.
-
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/sk-<slug>/`.
-2. Else inspect root runbooks (`runbook.json`; `node ../sk-flow/scripts/flow-state.mjs check <dir>` prints the resolved state when the script exists — a standalone install reads `runbook.json` directly and skips every `set`/`pr`/`check` call). For a multi-PR runbook, use its exact `active-pr` and matching `pr-<slug>/` directory; for a single-PR runbook, use the root. Require `3 - IMPLEMENTATION.md` there, and a missing `4 - REVIEW.md` (an existing one is fine for fix-mode re-runs and explicitly requested re-reviews, see step 4).
+2. Else run `sh ../sk-flow/scripts/flow-state.sh check <dir>` on each `.agents/flows/sk-*/` and pick the flow whose `next` is `4` (a standalone install skips every `flow-state.sh` call and works flow-less). Require `3 - IMPLEMENTATION.md` there; a missing `4 - REVIEW.md` for first runs (an existing one is fine for fix-mode re-runs and explicitly requested re-reviews, see step 4 — reopen the row first via `set <dir> at=4`).
 3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
 4. Fix mode only: if `4 - REVIEW.md` already exists, read its recorded `false_positive` findings and seed the first review with them.
 
@@ -138,7 +134,7 @@ If the diff is empty, reply with `AI review. harness: <harness>, model: <model>`
 3. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
 4. **Triage** — as above.
 5. **Display** — the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
-6. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` from `../sk-flow/templates/4 - REVIEW.md` (including the intent sources block; frontmatter `schema: review` carries `result`, `passes`, and triage counts) and, when a runbook exists, `node ../sk-flow/scripts/flow-state.mjs set <dir> 4 done` (`diverged --note=<reason>` if you departed from this skill; when posted, add the review URL via `--summary`). On a `size:"light"` runbook row `4` stays `skipped`: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `size:"full"`. Do not fix.
+6. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` from `../sk-flow/templates/4 - REVIEW.md` (including the intent sources block and triage counts). When a runbook exists: if zero `valid` findings remain after triage, `sh ../sk-flow/scripts/flow-state.sh advance <dir> --result=clean --valid=0` (`--note=<reason>` when you departed from this skill or to record the review URL); if `valid` findings remain, do not advance — `note <dir> <N valid findings unresolved>` and leave the cursor for the user to decide (re-run in fix mode or accept the findings). On a `size: light` runbook row `4` does not exist: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `size: full`. Do not fix.
 
 ## Fix mode
 
@@ -152,11 +148,11 @@ If the diff is empty, stop in one sentence. The disclosure header goes on the fi
 
 **Exit rule:** hand off when the latest pass is `Lean & valid. Ship.` or has zero `valid` findings after triage (all `false_positive` or all `unvalidated`).
 
-**Stuck guard:** if the same `valid` finding persists after 3 fix passes, stop, mark row `4` `blocked --note=<reason>` and report the blocker.
+**Stuck guard:** if the same `valid` finding persists after 3 fix passes, stop, `note <dir> <reason>` (and `set <dir> status=blocked`), and report the blocker.
 
 **Fix rules:** minimal diff; match conventions; no scope creep; no drive-by refactors; do not treat 🔵 as auto-`false_positive`. Do not silence linters, fix the root cause. Run relevant tests after non-trivial fixes; record failures as blockers. Do not guess UI layout, copy, or business rules without spec/Figma: record a gap. Do not auto-fix gap-dependent ❓ by guessing intent.
 
-**Output:** when the exit rule is met (or blocked), write `4 - REVIEW.md` and, when a runbook exists, `set <dir> 4 <done|blocked|diverged>` (`blocked`/`diverged` need `--note=<reason>`) (`blocked` when the stuck guard fired or tests still fail; `diverged` if you departed from this skill) (on a `size:"light"` runbook row `4` stays `skipped`: write nothing and tell the user a review needs `size:"full"`) with:
+**Output:** when the exit rule is met, write `4 - REVIEW.md` and, when a runbook exists, `advance <dir> --result=clean|findings-fixed --valid=0` (`--note=<reason>` when you departed from this skill). When blocked (stuck guard fired or tests still fail), write `4 - REVIEW.md`, `note <dir> <reason>`, and `set <dir> status=blocked` — do not advance while `valid` findings remain. On a `size: light` runbook row `4` does not exist: write nothing and tell the user a review needs `size: full`. The doc carries:
 
 - Review rounds completed
 - The intent sources block (or `none resolved`)
@@ -218,7 +214,7 @@ Everything posted to the PR is short, clear, concise, and human-readable - write
 
 ## Rules
 
-- Read-only mode: no code edits; write only `4 - REVIEW.md`, the runbook row, and the temporary `review.json` used for PR posting.
+- Read-only mode: no code edits; write only `4 - REVIEW.md`, the runbook `advance`, and the temporary `review.json` used for PR posting.
 - Fix mode only on an explicit request or an explicit `sk-flow` step 9 call; never switch to it on your own.
 - Reviewer subagents review and the orchestrator triages. Reviewers never fix or post.
 - Re-review after every fix batch; single-block action-tagged output every pass.
