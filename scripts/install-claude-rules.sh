@@ -2,7 +2,7 @@
 set -eu
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
-DEST="$HOME/.claude/slashkit"
+DEST="$HOME/.claude/snail"
 MEMORY="$HOME/.claude/CLAUDE.md"
 
 mkdir -p "$DEST"
@@ -17,7 +17,7 @@ if [ -s "$MEMORY" ] && [ -n "$(tail -c 1 "$MEMORY")" ]; then
 	printf '\n' >> "$MEMORY"
 fi
 for f in "$DEST"/*.md; do
-	line="@slashkit/$(basename "$f")"
+	line="@snail/$(basename "$f")"
 	grep -qxF "$line" "$MEMORY" || echo "$line" >> "$MEMORY"
 done
 

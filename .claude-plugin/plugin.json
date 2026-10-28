@@ -1,8 +1,8 @@
 {
-	"name": "slash-kit",
-	"displayName": "Slash Kit",
+	"name": "snail",
+	"displayName": "Snail",
 	"version": "0.5.0",
-	"description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
+	"description": "Reusable agent skills and an optional stage-gated workflow for Claude Code.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
 		"url": "https://github.com/yboaron"

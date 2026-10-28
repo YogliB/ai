@@ -1,21 +1,22 @@
 {
 	"$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-	"name": "ai",
-	"description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
+	"name": "snail",
+	"description": "Reusable agent skills and an optional stage-gated workflow for Claude Code.",
 	"owner": {
 		"name": "Yogev Boaron Ben-Har",
 		"url": "https://github.com/yboaron"
 	},
 	"plugins": [
 		{
-			"name": "slash-kit",
-			"displayName": "Slash Kit",
-			"description": "Reusable agent skills and an optional end-to-end workflow for Claude Code.",
+			"name": "snail",
+			"displayName": "Snail",
+			"description": "Reusable agent skills and an optional stage-gated workflow for Claude Code.",
 			"source": "./",
 			"category": "productivity"
 		}
 	],
 	"renames": {
-		"ai": "slash-kit"
+		"ai": "snail",
+		"slash-kit": "snail"
 	}
 }

@@ -22,9 +22,9 @@ mkdir -p "$HOME"
 unset CLAUDE_CONFIG_DIR
 
 "$CLAUDE" plugin marketplace add "$REPO_ROOT" >/dev/null || fail "marketplace add failed"
-"$CLAUDE" plugin install slash-kit@ai >/dev/null || fail "plugin install failed"
+"$CLAUDE" plugin install snail@snail >/dev/null || fail "plugin install failed"
 
-DETAILS=$("$CLAUDE" plugin details slash-kit@ai) || fail "plugin details failed"
+DETAILS=$("$CLAUDE" plugin details snail@snail) || fail "plugin details failed"
 echo "$DETAILS" | grep -q 'Skills (12)' || fail "expected 12 skills:
 $DETAILS"
 

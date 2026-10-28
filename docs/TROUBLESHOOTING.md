@@ -1,14 +1,14 @@
 # Troubleshooting
 
-## A slashkit skill does nothing in Claude Code
+## A snail skill does nothing in Claude Code
 
 - Check the install: `ls ~/.claude/skills/sk-<name>/SKILL.md` (single skill) or reinstall the plugin.
 - Restart Claude Code after installing.
-- Use the exact name: `/slash-kit:sk-planning` from the plugin, `/sk-planning` for a single-skill install.
+- Use the exact name: `/snail:sk-planning` from the plugin, `/sk-planning` for a single-skill install.
 
 ## Cursor ignores the rules
 
-- Rules ship inside the plugin — check `~/.cursor/plugins/local/slash-kit/rules/` exists, then reload the window.
+- Rules ship inside the plugin — check `~/.cursor/plugins/local/snail/rules/` exists, then reload the window.
 - Cursor only loads plugin rules for the workspace the plugin is enabled in.
 
 ## Review or PR skills miss context

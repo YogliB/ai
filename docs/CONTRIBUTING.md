@@ -26,7 +26,7 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 - `rules/` — Shared rules shipped inside the Cursor and Devin plugins.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
+- `plugins/snail/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
 - `scripts/install.sh` — Install the Cursor plugin.
 - `scripts/uninstall.sh` — Remove the Cursor plugin.
 - `README.md` — Human-facing overview.

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Syncs the canonical root skills/ and rules/ into the Devin plugin, which must
-# be self-contained: git-subdir installs fetch only plugins/slash-kit/, so a
+# be self-contained: git-subdir installs fetch only plugins/snail/, so a
 # symlink to ../../skills never resolves there.
 set -eu
 
@@ -38,9 +38,9 @@ if [ "${1:-}" = "--check" ]; then
 	sync_all "$TMP"
 	status=0
 	for sub in $SUBDIRS; do
-		if ! diff -r "$TMP/$sub" "$ROOT/plugins/slash-kit/$sub" >/dev/null 2>&1; then
-			echo "sync-devin-plugin: plugins/slash-kit/$sub is out of sync with $sub/:" >&2
-			diff -r "$TMP/$sub" "$ROOT/plugins/slash-kit/$sub" 2>&1 | head -20 >&2
+		if ! diff -r "$TMP/$sub" "$ROOT/plugins/snail/$sub" >/dev/null 2>&1; then
+			echo "sync-devin-plugin: plugins/snail/$sub is out of sync with $sub/:" >&2
+			diff -r "$TMP/$sub" "$ROOT/plugins/snail/$sub" 2>&1 | head -20 >&2
 			status=1
 		fi
 	done
@@ -50,5 +50,5 @@ if [ "${1:-}" = "--check" ]; then
 	exit "$status"
 fi
 
-sync_all "$ROOT/plugins/slash-kit"
-echo "sync-devin-plugin: synced $count skills, $rcount rules to plugins/slash-kit/"
+sync_all "$ROOT/plugins/snail"
+echo "sync-devin-plugin: synced $count skills, $rcount rules to plugins/snail/"

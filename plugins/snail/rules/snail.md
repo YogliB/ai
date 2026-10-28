@@ -1,11 +1,11 @@
 ---
-description: slashkit AI conventions and skill pointers
+description: snail AI conventions and skill pointers
 alwaysApply: true
 ---
 
-# slashkit
+# snail
 
-slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills listed below; they may live alongside other skills in `.agents/skills/`.
+snail is an AI workflow toolkit. The snail skills are the `sk-*` skills listed below; they may live alongside other skills in `.agents/skills/`.
 
 ## Skills
 
@@ -14,7 +14,7 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 - `sk-ai-toolbelt` — Pointer to external AI tools and MCPs
 - `sk-alternatives` — Suggest up to 3 viable alternatives for a code or design decision
 - `sk-explore` — First-link discovery
-- `sk-flow` — End-to-end slashkit workflow
+- `sk-flow` — End-to-end snail workflow
 - `sk-implement` — Execute an approved plan exactly as written, with per-step checks and atomic commits
 - `sk-planning` — Draft a self-contained executable technical plan with atomic testable TODOs
 - `sk-pr` — Create or update a GitHub pull request via gh CLI
@@ -29,8 +29,8 @@ slashkit is an AI workflow toolkit. The slashkit skills are the `sk-*` skills li
 ## Conventions
 
 - Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations.
-- Before using a slashkit skill, read its `SKILL.md`.
-- Invoke slashkit skills by name. Do not run the full workflow (`sk-flow`) unless the user explicitly asks for it.
+- Before using a snail skill, read its `SKILL.md`.
+- Invoke snail skills by name. Do not run the full workflow (`sk-flow`) unless the user explicitly asks for it.
 - Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `runbook` via `skills/sk-flow/scripts/flow-state.sh`. The actual flow directory name starts with `sk-` and is short, clear, and concise.
 - When delegating the flow or a phase to a subagent, the prompt names the skill to invoke plus its inputs (goal, slug, mode). Never paraphrase a phase into an artifact checklist — artifacts are outputs, not instructions.
 - Each flow phase runs in a fresh subagent when the harness has one.
