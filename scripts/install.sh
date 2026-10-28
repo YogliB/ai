@@ -1,20 +1,20 @@
 #!/usr/bin/env sh
-# Install slash-kit as a local Cursor plugin (repo root is the plugin).
+# Install snail as a local Cursor plugin (repo root is the plugin).
 #
 # Usage:
 #   ./scripts/install.sh    # install the Cursor plugin for this user
 #
 # Other agents have their own install paths:
-#   Claude Code:    claude plugin marketplace add YogliB/ai && claude plugin install slash-kit@ai
-#   Devin:          devin plugins install YogliB/ai#plugins/slash-kit
-#   Global skills:  npx skills add YogliB/ai -g
+#   Claude Code:    claude plugin marketplace add YogliB/snail && claude plugin install snail@snail
+#   Devin:          devin plugins install YogliB/snail#plugins/snail
+#   Global skills:  npx skills add YogliB/snail -g
 
 set -e
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
-PLUGIN_HOME="$HOME/.cursor/plugins/local/slash-kit"
+PLUGIN_HOME="$HOME/.cursor/plugins/local/snail"
 
-echo "Installing slash-kit Cursor plugin into $PLUGIN_HOME"
+echo "Installing snail Cursor plugin into $PLUGIN_HOME"
 
 rm -rf "$PLUGIN_HOME"
 mkdir -p "$PLUGIN_HOME"

@@ -2,7 +2,7 @@
 set -eu
 
 ROOT=$(git rev-parse --show-toplevel)
-FILE="$ROOT/rules/slashkit.md"
+FILE="$ROOT/rules/snail.md"
 START='<!-- skills:start -->'
 END='<!-- skills:end -->'
 
@@ -36,7 +36,7 @@ awk -v s="$START" -v e="$END" '
 	$0 == e { el = NR; ne++ }
 	END { exit !(ns == 1 && ne == 1 && sl < el) }
 ' "$FILE" || {
-	echo "gen-skills-index: markers missing or out of order in rules/slashkit.md" >&2
+	echo "gen-skills-index: markers missing or out of order in rules/snail.md" >&2
 	exit 1
 }
 
@@ -47,7 +47,7 @@ render "$TMP/list" > "$TMP/out"
 
 if [ "${1:-}" = "--check" ]; then
 	if ! diff "$FILE" "$TMP/out" >/dev/null; then
-		echo "gen-skills-index: skill list in rules/slashkit.md is out of date; run scripts/gen-skills-index.sh" >&2
+		echo "gen-skills-index: skill list in rules/snail.md is out of date; run scripts/gen-skills-index.sh" >&2
 		diff "$FILE" "$TMP/out" | head -20 >&2
 		exit 1
 	fi
@@ -56,4 +56,4 @@ if [ "${1:-}" = "--check" ]; then
 fi
 
 cat "$TMP/out" > "$FILE"
-echo "gen-skills-index: updated rules/slashkit.md"
+echo "gen-skills-index: updated rules/snail.md"

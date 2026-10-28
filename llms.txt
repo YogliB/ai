@@ -1,6 +1,6 @@
-# ai
+# snail
 
-Reusable agent skills, subagent prompts, and personal developer-tool references.
+Reusable agent skills and an optional stage-gated workflow.
 
 ## Entry points
 
@@ -28,7 +28,7 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 ## Rules
 
 - rules/no-comments.md
-- rules/slashkit.md
+- rules/snail.md
 
 ## Scripts
 
@@ -37,4 +37,4 @@ Reusable agent skills, subagent prompts, and personal developer-tool references.
 - skills/sk-planning/scripts/lint-plan.sh — plan structure lint
 - scripts/install.sh — install the Cursor plugin
 - scripts/install-claude-rules.sh — install rules into ~/.claude
-- scripts/sync-devin-plugin.sh — sync skills/rules into plugins/slash-kit
+- scripts/sync-devin-plugin.sh — sync skills/rules into plugins/snail

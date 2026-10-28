@@ -1,12 +1,12 @@
 {
-	"name": "slash-kit",
+	"name": "snail",
 	"version": "0.5.0",
-	"description": "Reusable agent skills, rules, and an optional end-to-end workflow for Cursor.",
+	"description": "Reusable agent skills, rules, and an optional stage-gated workflow for Cursor.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har"
 	},
-	"homepage": "https://github.com/YogliB/ai",
-	"repository": "https://github.com/YogliB/ai",
+	"homepage": "https://github.com/YogliB/snail",
+	"repository": "https://github.com/YogliB/snail",
 	"license": "MIT",
 	"keywords": ["skills", "workflow", "code-review", "planning"]
 }

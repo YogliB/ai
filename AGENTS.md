@@ -9,7 +9,7 @@ These rules are always-on. Read them before every task:
 | Rule                | Guideline                                                                                                                                                                   |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Skill format        | Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations. |
-| Skill usage         | Before using a slashkit skill, read `skills/<skill>/SKILL.md`.                                                                                                              |
+| Skill usage         | Before using a snail skill, read `skills/<skill>/SKILL.md`.                                                                                                                 |
 | Workflow invocation | Do not run `sk-flow` unless the user explicitly asks for it.                                                                                                                |
 | Workflow output     | Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `runbook` via `flow-state.sh`.                                                               |
 | Commits             | Run `nub run format` before committing. Squash to a single Conventional Commit.                                                                                             |
@@ -29,7 +29,7 @@ These rules are always-on. Read them before every task:
 
 ## Condensed docs
 
-slashkit is a cross-agent AI workflow toolkit. Skills live in `skills/sk-*/SKILL.md` and are the source of truth for all agents.
+snail is a cross-agent AI workflow toolkit. Skills live in `skills/sk-*/SKILL.md` and are the source of truth for all agents.
 
 ### Setup
 
@@ -40,17 +40,17 @@ nub run format
 
 ### Common commands
 
-| Command                          | Purpose                                                                |
-| -------------------------------- | ---------------------------------------------------------------------- |
-| `./scripts/install.sh`           | Install the Cursor plugin into `~/.cursor/plugins/local/`              |
-| `./scripts/uninstall.sh`         | Remove the Cursor plugin                                               |
-| `./scripts/sync-devin-plugin.sh` | Sync `skills/` and `rules/` into `plugins/slash-kit/`                  |
-| `./scripts/gen-skills-index.sh`  | Regenerate the skill list in `rules/slashkit.md` (`--check` to verify) |
-| `nub run format`                 | Format with `oxfmt`                                                    |
-| `nub run lint`                   | Run the pre-commit lint step                                           |
-| `sh scripts/test-flow-state.sh`  | Test the runbook state machine and validator                           |
-| `sh scripts/test-lint-plan.sh`   | Test the plan-structure linter                                         |
-| `sh scripts/test-receipts.sh`    | Test the check-receipt scripts                                         |
+| Command                          | Purpose                                                             |
+| -------------------------------- | ------------------------------------------------------------------- |
+| `./scripts/install.sh`           | Install the Cursor plugin into `~/.cursor/plugins/local/`           |
+| `./scripts/uninstall.sh`         | Remove the Cursor plugin                                            |
+| `./scripts/sync-devin-plugin.sh` | Sync `skills/` and `rules/` into `plugins/snail/`                   |
+| `./scripts/gen-skills-index.sh`  | Regenerate the skill list in `rules/snail.md` (`--check` to verify) |
+| `nub run format`                 | Format with `oxfmt`                                                 |
+| `nub run lint`                   | Run the pre-commit lint step                                        |
+| `sh scripts/test-flow-state.sh`  | Test the runbook state machine and validator                        |
+| `sh scripts/test-lint-plan.sh`   | Test the plan-structure linter                                      |
+| `sh scripts/test-receipts.sh`    | Test the check-receipt scripts                                      |
 
 ### Project layout
 
@@ -59,7 +59,7 @@ nub run format
 - `.agents/flows/` — flow output directory (actual flow dirs are `sk-*`).
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
-- `plugins/slash-kit/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
+- `plugins/snail/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
 - `scripts/install.sh` — install the Cursor plugin.
 - `scripts/uninstall.sh` — remove the Cursor plugin.
 - `docs/` — contributor and user documentation.

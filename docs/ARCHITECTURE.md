@@ -15,7 +15,7 @@ A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on
 ├── rules/                   # Shared rules, shipped in the Cursor and Devin plugins
 ├── .cursor-plugin/          # Cursor manifest (repo root is the plugin)
 ├── .claude-plugin/          # Claude Code manifest
-├── plugins/slash-kit/       # Devin plugin — synced from root, never edited directly
+├── plugins/snail/           # Devin plugin — synced from root, never edited directly
 └── scripts/                 # install, uninstall, sync, tests
 ```
 
@@ -25,7 +25,7 @@ A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on
 user prompt ──▶ matching skills/sk-*/SKILL.md ──▶ output or file artifact
 ```
 
-Claude Code loads the skill via `/sk-*` or description match, Devin via `/slash-kit:*`, Cursor through the plugin's skills and rules. Agents without skill support can read the SKILL.md files by hand.
+Claude Code loads the skill via `/sk-*` or description match, Devin via `/snail:*`, Cursor through the plugin's skills and rules. Agents without skill support can read the SKILL.md files by hand.
 
 A full `/sk-flow` run chains the phase skills:
 
@@ -63,7 +63,7 @@ Node and Python existed only to touch JSON — kill the JSON and both runtimes v
 
 ### Rules ship as files per channel
 
-`rules/` goes inside the Cursor and Devin plugins. Claude Code has no plugin rules channel, so `scripts/install-claude-rules.sh` copies them into `~/.claude/slashkit/` and `@`-imports them from `~/.claude/CLAUDE.md` — imported memory reaches subagents without any prompt rewriting.
+`rules/` goes inside the Cursor and Devin plugins. Claude Code has no plugin rules channel, so `scripts/install-claude-rules.sh` copies them into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md` — imported memory reaches subagents without any prompt rewriting.
 
 ### The workflow is opt-in
 

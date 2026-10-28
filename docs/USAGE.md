@@ -7,39 +7,39 @@ Everything runs on `sh` and core utilities — no runtimes to install. `git` hel
 ### Claude Code
 
 ```bash
-claude plugin marketplace add YogliB/ai
-claude plugin install slash-kit@ai
+claude plugin marketplace add YogliB/snail
+claude plugin install snail@snail
 sh scripts/install-claude-rules.sh   # one-time: rules into ~/.claude
 ```
 
 ### Devin
 
 ```bash
-devin plugins install YogliB/ai#plugins/slash-kit
+devin plugins install YogliB/snail#plugins/snail
 ```
 
 ### Cursor
 
 ```bash
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
+npx degit YogliB/snail /tmp/snail && sh /tmp/snail/scripts/install.sh
 ```
 
-Copies the plugin into `~/.cursor/plugins/local/slash-kit`. Reload the window to load it.
+Copies the plugin into `~/.cursor/plugins/local/snail`. Reload the window to load it.
 
 ### Just the skills, any agent
 
 ```bash
-npx skills add YogliB/ai -g                    # all skills, global
-npx skills add YogliB/ai --skill sk-planning   # or just one
-npx skills add YogliB/ai --list                # browse first
+npx skills add YogliB/snail -g                    # all skills, global
+npx skills add YogliB/snail --skill sk-planning   # or just one
+npx skills add YogliB/snail --list                # browse first
 ```
 
 ## Uninstall
 
 ```bash
-claude plugin uninstall slash-kit@ai
-devin plugins remove slash-kit
-sh /tmp/ai/scripts/uninstall.sh        # cursor
+claude plugin uninstall snail@snail
+devin plugins remove snail
+sh /tmp/snail/scripts/uninstall.sh     # cursor
 npx skills remove sk-planning          # one skill
 ```
 
@@ -73,14 +73,14 @@ Use the sk-pr skill to open a pull request.
 
 ### Slash commands
 
-In Claude Code and Devin the plugin namespaces commands with `/slash-kit:`:
+In Claude Code and Devin the plugin namespaces commands with `/snail:`:
 
 ```text
-/slash-kit:sk-explore add-user-auth
-/slash-kit:sk-planning add-user-auth
-/slash-kit:sk-review fix my branch
-/slash-kit:sk-pr
-/slash-kit:sk-flow auto
+/snail:sk-explore add-user-auth
+/snail:sk-planning add-user-auth
+/snail:sk-review fix my branch
+/snail:sk-pr
+/snail:sk-flow auto
 ```
 
 Installed a single skill with `npx skills add`? Drop the prefix: `/sk-planning`.
@@ -147,9 +147,9 @@ Read the phase table, then open the matching `skills/sk-*/SKILL.md` by hand befo
 
 - Plans and flow docs live in `.agents/flows/sk-<slug>/`.
 - Shared rules live in `rules/` and ship inside the Cursor and Devin plugins.
-- The Devin plugin lives in `plugins/slash-kit/`; `scripts/sync-devin-plugin.sh` syncs `skills/` and `rules/` into it.
+- The Devin plugin lives in `plugins/snail/`; `scripts/sync-devin-plugin.sh` syncs `skills/` and `rules/` into it.
 - The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/` and `rules/`.
-- Claude Code has no plugin rules channel — `scripts/install-claude-rules.sh` copies rules into `~/.claude/slashkit/` and `@`-imports them from `~/.claude/CLAUDE.md`.
+- Claude Code has no plugin rules channel — `scripts/install-claude-rules.sh` copies rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`.
 
 ## Example session
 

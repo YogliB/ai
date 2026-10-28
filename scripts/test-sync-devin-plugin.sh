@@ -40,18 +40,18 @@ if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
 fi
 
 git checkout -q -- .
-echo stray > plugins/slash-kit/rules/stray.md
+echo stray > plugins/snail/rules/stray.md
 if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
-	fail "--check misses stray file plugins/slash-kit/rules/stray.md"
+	fail "--check misses stray file plugins/snail/rules/stray.md"
 fi
 echo "edited rule" > rules/demo.md
 mkdir -p skills/sk-new
 echo "# new skill" > skills/sk-new/SKILL.md
 sh scripts/sync-devin-plugin.sh >/dev/null
-grep '^git add plugins/slash-kit' "$REPO_ROOT/.husky/pre-commit" | while IFS= read -r line; do
+grep '^git add plugins/snail' "$REPO_ROOT/.husky/pre-commit" | while IFS= read -r line; do
 	eval "$line"
 done
-UNSTAGED=$(git status --porcelain -- plugins/slash-kit | grep -E '^(.[^ ]|\?\?)' || true)
+UNSTAGED=$(git status --porcelain -- plugins/snail | grep -E '^(.[^ ]|\?\?)' || true)
 [ -z "$UNSTAGED" ] || fail "pre-commit staging leaves synced files unstaged or untracked: $UNSTAGED"
 
 echo "test-sync-devin-plugin: all tests passed"

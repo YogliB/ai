@@ -1,6 +1,6 @@
-# AI
+# snail
 
-Reusable agent skills and an optional end-to-end workflow for Claude, Cursor, and Devin. I built this to stop repeating myself to every agent. Take it, break it, and rebuild it into something that fits your own chaos.
+Reusable agent skills and an optional stage-gated workflow for Claude, Cursor, and Devin. It carries state between phases and leaves a trail — every gate is a shell script, every phase leaves a receipt. I built this to stop repeating myself to every agent. Take it, break it, and rebuild it into something that fits your own chaos.
 
 ## What you get
 
@@ -17,25 +17,25 @@ Pick your agent:
 
 ```bash
 # Claude Code - plugin with /sk-* slash commands
-claude plugin marketplace add YogliB/ai
-claude plugin install slash-kit@ai
+claude plugin marketplace add YogliB/snail
+claude plugin install snail@snail
 # + rules into ~/.claude (one-time): sh scripts/install-claude-rules.sh
 
-# Devin - plugin with /slash-kit:* commands
-devin plugins install YogliB/ai#plugins/slash-kit
+# Devin - plugin with /snail:* commands
+devin plugins install YogliB/snail#plugins/snail
 
 # Any agent - skills only, global
-npx skills add YogliB/ai -g
+npx skills add YogliB/snail -g
 
 # Cursor - local plugin (skills + rules)
-npx degit YogliB/ai /tmp/ai && sh /tmp/ai/scripts/install.sh
+npx degit YogliB/snail /tmp/snail && sh /tmp/snail/scripts/install.sh
 ```
 
-`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/slash-kit`; reload the window to load it.
+`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/snail`; reload the window to load it.
 
-Want just one skill? `npx skills add YogliB/ai --skill sk-planning` — it works standalone, no plugin needed.
+Want just one skill? `npx skills add YogliB/snail --skill sk-planning` — it works standalone, no plugin needed.
 
-To remove: `npx skills remove sk-planning`, or each agent's own uninstall (`claude plugin uninstall slash-kit@ai`, `devin plugins remove slash-kit`, `sh /tmp/ai/scripts/uninstall.sh` for Cursor).
+To remove: `npx skills remove sk-planning`, or each agent's own uninstall (`claude plugin uninstall snail@snail`, `devin plugins remove snail`, `sh /tmp/snail/scripts/uninstall.sh` for Cursor).
 
 ## Use it
 
@@ -44,38 +44,38 @@ To remove: `npx skills remove sk-planning`, or each agent's own uninstall (`clau
 Plugin skills are namespaced. Type the command at the start of a prompt:
 
 ```text
-/slash-kit:sk-explore add-auth-token
-/slash-kit:sk-alternatives for caching API responses
-/slash-kit:sk-planning add-auth-token
-/slash-kit:sk-review
-/slash-kit:sk-pr
-/slash-kit:sk-flow auto
+/snail:sk-explore add-auth-token
+/snail:sk-alternatives for caching API responses
+/snail:sk-planning add-auth-token
+/snail:sk-review
+/snail:sk-pr
+/snail:sk-flow auto
 ```
 
-Installed a skill individually with `npx skills add`? Drop the `/slash-kit:` prefix (`/sk-planning`).
+Installed a skill individually with `npx skills add`? Drop the `/snail:` prefix (`/sk-planning`).
 
-| Slash command                   | What it does                                                                         |
-| ------------------------------- | ------------------------------------------------------------------------------------ |
-| `/slash-kit:sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/slash-kit:sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
-| `/slash-kit:sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
-| `/slash-kit:sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
-| `/slash-kit:sk-review`          | Review the current diff (add "fix" to fix).                                          |
-| `/slash-kit:sk-pr`              | Create or update a GitHub PR.                                                        |
-| `/slash-kit:sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
+| Slash command               | What it does                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| `/snail:sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
+| `/snail:sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
+| `/snail:sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
+| `/snail:sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
+| `/snail:sk-review`          | Review the current diff (add "fix" to fix).                                          |
+| `/snail:sk-pr`              | Create or update a GitHub PR.                                                        |
+| `/snail:sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
 ### In Devin
 
-Install the plugin, then prefix the skill name with `/slash-kit:`:
+Install the plugin, then prefix the skill name with `/snail:`:
 
 ```bash
-devin plugins install YogliB/ai#plugins/slash-kit
+devin plugins install YogliB/snail#plugins/snail
 ```
 
 ```text
-/slash-kit:sk-planning add-auth-token
-/slash-kit:sk-implement
-/slash-kit:sk-flow auto
+/snail:sk-planning add-auth-token
+/snail:sk-implement
+/snail:sk-flow auto
 ```
 
 ### In any editor
@@ -100,10 +100,10 @@ Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pau
 
 ## Caveats
 
-- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/slash-kit:sk-*`). Cursor can use the skill names.
+- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/snail:sk-*`). Cursor can use the skill names.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
-- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel — `scripts/install-claude-rules.sh` copies the rules into `~/.claude/slashkit/` and `@`-imports them from `~/.claude/CLAUDE.md`, which also reaches subagent context.
+- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel — `scripts/install-claude-rules.sh` copies the rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`, which also reaches subagent context.
 
 ## More
 

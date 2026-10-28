@@ -1,7 +1,7 @@
 ---
 name: sk-flow
 argument-hint: '[auto|manual]'
-description: End-to-end slashkit workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review in fix mode, sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
+description: End-to-end snail workflow. Runs sk-explore, sk-alternatives, sk-planning, sk-implement, sk-review in fix mode, sk-verify, then sk-pr. Use when the user asks for /sk-flow, the full workflow, or "run the ai workflow".
 ---
 
 # Flow

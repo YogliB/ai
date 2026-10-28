@@ -1,12 +1,12 @@
 {
-	"name": "ai",
+	"name": "snail",
 	"version": "0.1.0",
-	"description": "AI development tools and configurations",
+	"description": "Reusable agent skills and an optional stage-gated workflow",
 	"license": "MIT",
 	"author": "Yogev Boaron Ben-Har",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/YogliB/ai"
+		"url": "https://github.com/YogliB/snail"
 	},
 	"scripts": {
 		"prepare": "husky",
