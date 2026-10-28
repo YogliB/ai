@@ -1,11 +1,9 @@
 {
 	"name": "slash-kit",
-	"displayName": "Slash Kit",
 	"version": "0.5.0",
 	"description": "Reusable agent skills, rules, and an optional end-to-end workflow for Cursor.",
 	"author": {
-		"name": "Yogev Boaron Ben-Har",
-		"url": "https://github.com/yboaron"
+		"name": "Yogev Boaron Ben-Har"
 	},
 	"homepage": "https://github.com/YogliB/ai",
 	"repository": "https://github.com/YogliB/ai",
