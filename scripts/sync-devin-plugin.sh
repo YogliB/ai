@@ -18,7 +18,7 @@ sync_all() {
 	done
 
 	count=0
-	for d in "$SRC"/sk-*; do
+	for d in "$SRC"/snail-*; do
 		[ -d "$d" ] || continue
 		cp -R "$d" "$DST/skills/"
 		count=$((count + 1))

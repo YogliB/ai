@@ -4,8 +4,8 @@ Reusable agent skills and an optional stage-gated workflow for Claude, Cursor, a
 
 ## What you get
 
-- **Skills** — single-purpose prompts like `sk-explore`, `sk-planning`, `sk-implement`, `sk-review-plan`, `sk-review`, and `sk-pr`.
-- **Slash commands** — in Claude Code, type `/sk-explore`, `/sk-planning`, `/sk-implement`, `/sk-review`, `/sk-pr`, or `/sk-flow` to invoke the matching skill.
+- **Skills** — single-purpose prompts like `snail-explore`, `snail-planning`, `snail-implement`, `snail-review-plan`, `snail-review`, and `snail-pr`.
+- **Slash commands** — in Claude Code, type `/snail-explore`, `/snail-planning`, `/snail-implement`, `/snail-review`, `/snail-pr`, or `/snail-flow` to invoke the matching skill.
 - **A workflow** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude and Cursor.
 
@@ -16,7 +16,7 @@ Flow state and receipts are flat `key: value` files; everything else is plain Ma
 Pick your agent:
 
 ```bash
-# Claude Code - plugin with /sk-* slash commands
+# Claude Code - plugin with /snail-* slash commands
 claude plugin marketplace add YogliB/snail
 claude plugin install snail@snail
 # + rules into ~/.claude (one-time): sh scripts/install-claude-rules.sh
@@ -33,9 +33,9 @@ npx degit YogliB/snail /tmp/snail && sh /tmp/snail/scripts/install.sh
 
 `scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/snail`; reload the window to load it.
 
-Want just one skill? `npx skills add YogliB/snail --skill sk-planning` — it works standalone, no plugin needed.
+Want just one skill? `npx skills add YogliB/snail --skill snail-planning` — it works standalone, no plugin needed.
 
-To remove: `npx skills remove sk-planning`, or each agent's own uninstall (`claude plugin uninstall snail@snail`, `devin plugins remove snail`, `sh /tmp/snail/scripts/uninstall.sh` for Cursor).
+To remove: `npx skills remove snail-planning`, or each agent's own uninstall (`claude plugin uninstall snail@snail`, `devin plugins remove snail`, `sh /tmp/snail/scripts/uninstall.sh` for Cursor).
 
 ## Use it
 
@@ -44,25 +44,25 @@ To remove: `npx skills remove sk-planning`, or each agent's own uninstall (`clau
 Plugin skills are namespaced. Type the command at the start of a prompt:
 
 ```text
-/snail:sk-explore add-auth-token
-/snail:sk-alternatives for caching API responses
-/snail:sk-planning add-auth-token
-/snail:sk-review
-/snail:sk-pr
-/snail:sk-flow auto
+/snail:snail-explore add-auth-token
+/snail:snail-alternatives for caching API responses
+/snail:snail-planning add-auth-token
+/snail:snail-review
+/snail:snail-pr
+/snail:snail-flow auto
 ```
 
-Installed a skill individually with `npx skills add`? Drop the `/snail:` prefix (`/sk-planning`).
+Installed a skill individually with `npx skills add`? Drop the `/snail:` prefix (`/snail-planning`).
 
-| Slash command               | What it does                                                                         |
-| --------------------------- | ------------------------------------------------------------------------------------ |
-| `/snail:sk-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/sk-<slug>/`.             |
-| `/snail:sk-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
-| `/snail:sk-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
-| `/snail:sk-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
-| `/snail:sk-review`          | Review the current diff (add "fix" to fix).                                          |
-| `/snail:sk-pr`              | Create or update a GitHub PR.                                                        |
-| `/snail:sk-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
+| Slash command                  | What it does                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| `/snail:snail-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/snail-<slug>/`.          |
+| `/snail:snail-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
+| `/snail:snail-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
+| `/snail:snail-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
+| `/snail:snail-review`          | Review the current diff (add "fix" to fix).                                          |
+| `/snail:snail-pr`              | Create or update a GitHub PR.                                                        |
+| `/snail:snail-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
 
 ### In Devin
 
@@ -73,9 +73,9 @@ devin plugins install YogliB/snail#plugins/snail
 ```
 
 ```text
-/snail:sk-planning add-auth-token
-/snail:sk-implement
-/snail:sk-flow auto
+/snail:snail-planning add-auth-token
+/snail:snail-implement
+/snail:snail-flow auto
 ```
 
 ### In any editor
@@ -83,24 +83,24 @@ devin plugins install YogliB/snail#plugins/snail
 Name the skill directly:
 
 ```text
-Use the sk-planning skill to write a plan for pagination.
-Use the sk-review-plan skill to review the plan.
-Use the sk-implement skill to implement the plan.
-Use the sk-review skill on the current diff (say "fix" for fix mode).
-Use the sk-pr skill to open a pull request.
+Use the snail-planning skill to write a plan for pagination.
+Use the snail-review-plan skill to review the plan.
+Use the snail-implement skill to implement the plan.
+Use the snail-review skill on the current diff (say "fix" for fix mode).
+Use the snail-pr skill to open a pull request.
 ```
 
 ## The flow
 
 ```text
-sk-explore → sk-alternatives → sk-planning → sk-implement → sk-review (fix mode) → sk-verify → sk-pr
+snail-explore → snail-alternatives → snail-planning → snail-implement → snail-review (fix mode) → snail-verify → snail-pr
 ```
 
-Each phase writes a numbered doc into `.agents/flows/sk-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
+Each phase writes a numbered doc into `.agents/flows/snail-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
 
 ## Caveats
 
-- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/snail:sk-*`). Cursor can use the skill names.
+- **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/snail:snail-*`). Cursor can use the skill names.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
 - **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel — `scripts/install-claude-rules.sh` copies the rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`, which also reaches subagent context.

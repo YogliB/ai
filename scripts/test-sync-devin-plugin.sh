@@ -14,9 +14,9 @@ fail() {
 git init -q .
 git config user.email test@example.com
 git config user.name Test
-mkdir -p scripts skills/sk-demo rules
+mkdir -p scripts skills/snail-demo rules
 cp "$REPO_ROOT/scripts/sync-devin-plugin.sh" scripts/
-echo "# demo skill" > skills/sk-demo/SKILL.md
+echo "# demo skill" > skills/snail-demo/SKILL.md
 echo "demo rule" > rules/demo.md
 
 sh scripts/sync-devin-plugin.sh >/dev/null
@@ -25,7 +25,7 @@ sh scripts/sync-devin-plugin.sh --check >/dev/null || fail "--check fails on fre
 git add -A
 git commit -qm init
 
-for path in skills/sk-demo/SKILL.md rules/demo.md; do
+for path in skills/snail-demo/SKILL.md rules/demo.md; do
 	git checkout -q -- .
 	echo "edited" > "$path"
 	if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
@@ -34,9 +34,9 @@ for path in skills/sk-demo/SKILL.md rules/demo.md; do
 done
 
 git checkout -q -- .
-rm skills/sk-demo/SKILL.md
+rm skills/snail-demo/SKILL.md
 if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
-	fail "--check misses deleted canonical file skills/sk-demo/SKILL.md"
+	fail "--check misses deleted canonical file skills/snail-demo/SKILL.md"
 fi
 
 git checkout -q -- .
@@ -45,8 +45,8 @@ if sh scripts/sync-devin-plugin.sh --check >/dev/null 2>&1; then
 	fail "--check misses stray file plugins/snail/rules/stray.md"
 fi
 echo "edited rule" > rules/demo.md
-mkdir -p skills/sk-new
-echo "# new skill" > skills/sk-new/SKILL.md
+mkdir -p skills/snail-new
+echo "# new skill" > skills/snail-new/SKILL.md
 sh scripts/sync-devin-plugin.sh >/dev/null
 grep '^git add plugins/snail' "$REPO_ROOT/.husky/pre-commit" | while IFS= read -r line; do
 	eval "$line"

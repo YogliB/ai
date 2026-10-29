@@ -7,7 +7,7 @@ START='<!-- skills:start -->'
 END='<!-- skills:end -->'
 
 list() {
-	for f in "$ROOT"/skills/sk-*/SKILL.md; do
+	for f in "$ROOT"/skills/snail-*/SKILL.md; do
 		awk '
 			NR == 1 && $0 != "---" { exit }
 			NR > 1 && $0 == "---" { exit }

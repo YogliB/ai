@@ -7,11 +7,11 @@ A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on
 ```text
 ./
 ├── skills/                  # Source of truth for all agents
-│   ├── sk-flow/             #   the workflow + flow-state.sh gate + templates
-│   ├── sk-implement/        #   + receipt scripts
-│   ├── sk-planning/         #   + lint-plan.sh + plan templates
-│   └── sk-*/                #   explore, alternatives, review-*, verify, pr, ...
-├── .agents/flows/           # Flow dirs (sk-*, gitignored by default)
+│   ├── snail-flow/             #   the workflow + flow-state.sh gate + templates
+│   ├── snail-implement/        #   + receipt scripts
+│   ├── snail-planning/         #   + lint-plan.sh + plan templates
+│   └── snail-*/                #   explore, alternatives, review-*, verify, pr, ...
+├── .agents/flows/           # Flow dirs (snail-*, gitignored by default)
 ├── rules/                   # Shared rules, shipped in the Cursor and Devin plugins
 ├── .cursor-plugin/          # Cursor manifest (repo root is the plugin)
 ├── .claude-plugin/          # Claude Code manifest
@@ -22,32 +22,32 @@ A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on
 ## How a request flows
 
 ```text
-user prompt ──▶ matching skills/sk-*/SKILL.md ──▶ output or file artifact
+user prompt ──▶ matching skills/snail-*/SKILL.md ──▶ output or file artifact
 ```
 
-Claude Code loads the skill via `/sk-*` or description match, Devin via `/snail:*`, Cursor through the plugin's skills and rules. Agents without skill support can read the SKILL.md files by hand.
+Claude Code loads the skill via `/snail-*` or description match, Devin via `/snail:*`, Cursor through the plugin's skills and rules. Agents without skill support can read the SKILL.md files by hand.
 
-A full `/sk-flow` run chains the phase skills:
+A full `/snail-flow` run chains the phase skills:
 
 ```text
 explore ─▶ alternatives ─▶ planning ─▶ implement ─▶ review ─▶ verify ─▶ pr
 ```
 
-Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (never a paraphrased checklist — that would drop the mandatory steps inside the skill). `sk-flow` triages size first: small changes take the light path — plan, implement, verify, PR — with explore, alternatives, and the review rows skipped.
+Each full-path phase runs in a fresh subagent when the harness has one. The worker prompt names the skill to invoke (never a paraphrased checklist — that would drop the mandatory steps inside the skill). `snail-flow` triages size first: small changes take the light path — plan, implement, verify, PR — with explore, alternatives, and the review rows skipped.
 
 ## Key decisions
 
 ### Skills are the source of truth
 
-Each `skills/sk-*/SKILL.md` is the one definition of what that skill does. Every channel (Claude, Cursor, Devin, single-skill installs) ships or reads the same files — no per-agent forks to drift apart.
+Each `skills/snail-*/SKILL.md` is the one definition of what that skill does. Every channel (Claude, Cursor, Devin, single-skill installs) ships or reads the same files — no per-agent forks to drift apart.
 
 ### The gate is a cursor, not a state machine
 
-Every flow lives in `.agents/flows/sk-<slug>/`: a flat `key: value` `runbook`, the numbered phase docs, and `receipts/` — one self-contained bundle.
+Every flow lives in `.agents/flows/snail-<slug>/`: a flat `key: value` `runbook`, the numbered phase docs, and `receipts/` — one self-contained bundle.
 
 - `at` is the cursor; `f.<row>.*` records what each `advance` captured.
 - Four commands: `init`, `check`, `advance` (the only structural mutation — it refuses until the row's artifact exists and its required flags pass), `note` (append-only), and `set` (repair hatch).
-- Agents never hand-edit the runbook; the script (`skills/sk-flow/scripts/flow-state.sh`) owns it.
+- Agents never hand-edit the runbook; the script (`skills/snail-flow/scripts/flow-state.sh`) owns it.
 - Phase docs are pure Markdown for humans. Gate data lives in the runbook — nothing parses the docs.
 - `init` writes `.agents/.gitignore` (`flows/`) so flows stay private; delete that line to commit them.
 
@@ -59,7 +59,7 @@ Node and Python existed only to touch JSON — kill the JSON and both runtimes v
 
 ### Alternatives get reviewed before you see them
 
-`sk-alternatives` dispatches `sk-review-alternatives` to weed out irrelevant, duplicate, or weak options before they reach the user.
+`snail-alternatives` dispatches `snail-review-alternatives` to weed out irrelevant, duplicate, or weak options before they reach the user.
 
 ### Rules ship as files per channel
 
@@ -67,7 +67,7 @@ Node and Python existed only to touch JSON — kill the JSON and both runtimes v
 
 ### The workflow is opt-in
 
-Every skill works alone, including single-skill installs — skills skip gate calls when `flow-state.sh` isn't there. Nothing forces `sk-flow`.
+Every skill works alone, including single-skill installs — skills skip gate calls when `flow-state.sh` isn't there. Nothing forces `snail-flow`.
 
 ## Gates
 
@@ -86,10 +86,10 @@ The three gates:
 ## Dependencies
 
 - `sh` + core utilities — required, that's all.
-- `git` — opportunistic (receipt metadata, the `sk-pr` flow).
-- `gh` — `sk-pr` only.
+- `git` — opportunistic (receipt metadata, the `snail-pr` flow).
+- `gh` — `snail-pr` only.
 - `npx` — only for the `npx skills add` install path.
 
 ## Security
 
-No server, no credentials, no network calls from the toolkit. `sk-pr` uses the user's own authenticated `gh`. Report issues per [docs/SECURITY.md](SECURITY.md).
+No server, no credentials, no network calls from the toolkit. `snail-pr` uses the user's own authenticated `gh`. Report issues per [docs/SECURITY.md](SECURITY.md).

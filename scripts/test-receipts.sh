@@ -15,8 +15,8 @@ git init -q .
 git config user.email test@test
 git config user.name test
 mkdir -p scripts receipts
-cp "$REPO_ROOT/skills/sk-implement/scripts/run-with-receipt.sh" scripts/
-cp "$REPO_ROOT/skills/sk-implement/scripts/check-receipt.sh" scripts/
+cp "$REPO_ROOT/skills/snail-implement/scripts/run-with-receipt.sh" scripts/
+cp "$REPO_ROOT/skills/snail-implement/scripts/check-receipt.sh" scripts/
 git add -A
 git commit -qm init
 

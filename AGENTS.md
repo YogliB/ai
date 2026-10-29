@@ -10,8 +10,8 @@ These rules are always-on. Read them before every task:
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Skill format        | Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations. |
 | Skill usage         | Before using a snail skill, read `skills/<skill>/SKILL.md`.                                                                                                                 |
-| Workflow invocation | Do not run `sk-flow` unless the user explicitly asks for it.                                                                                                                |
-| Workflow output     | Flow skills write numbered phase docs to `.agents/flows/sk-<slug>/` and update `runbook` via `flow-state.sh`.                                                               |
+| Workflow invocation | Do not run `snail-flow` unless the user explicitly asks for it.                                                                                                             |
+| Workflow output     | Flow skills write numbered phase docs to `.agents/flows/snail-<slug>/` and update `runbook` via `flow-state.sh`.                                                            |
 | Commits             | Run `nub run format` before committing. Squash to a single Conventional Commit.                                                                                             |
 
 ## Docs index
@@ -29,7 +29,7 @@ These rules are always-on. Read them before every task:
 
 ## Condensed docs
 
-snail is a cross-agent AI workflow toolkit. Skills live in `skills/sk-*/SKILL.md` and are the source of truth for all agents.
+snail is a cross-agent AI workflow toolkit. Skills live in `skills/snail-*/SKILL.md` and are the source of truth for all agents.
 
 ### Setup
 
@@ -56,7 +56,7 @@ nub run format
 
 - `skills/` — skills, source of truth for all agents.
 - `rules/` — shared rules shipped inside the Cursor and Devin plugins.
-- `.agents/flows/` — flow output directory (actual flow dirs are `sk-*`).
+- `.agents/flows/` — flow output directory (actual flow dirs are `snail-*`).
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `plugins/snail/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
