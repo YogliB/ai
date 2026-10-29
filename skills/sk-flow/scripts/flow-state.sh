@@ -138,6 +138,28 @@ receipts_ok() {
 }
 
 RECEIPT_ERRS=
+
+receipt_git_head() {
+	sed -n "/^--- output/q; s/^git-head: //p" "$1" | head -n 1
+}
+
+warn_stale_receipt() {
+	rh=$(receipt_git_head "$DIR/$1")
+	case $rh in
+		"" | none) return ;;
+	esac
+	cur=$(git -C "$DIR" rev-parse HEAD 2>/dev/null) || return
+	[ "$rh" = "$cur" ] && return
+	rhs=$(printf '%s' "$rh" | cut -c1-8)
+	curs=$(printf '%s' "$cur" | cut -c1-8)
+	if git -C "$DIR" merge-base --is-ancestor "$rh" "$cur" 2>/dev/null; then
+		n=$(git -C "$DIR" rev-list --count "$rh..$cur")
+		echo "flow-state: warning: $1 was recorded $n commit(s) behind current HEAD ($rhs -> $curs); re-run the check if code changed since" >&2
+	else
+		echo "flow-state: warning: $1 was recorded on $rhs, not an ancestor of current HEAD ($curs); re-run the check if code changed since" >&2
+	fi
+}
+
 collect_receipt_errs() {
 	RECEIPT_ERRS=
 	oldifs=$IFS; IFS=,
@@ -147,6 +169,8 @@ collect_receipt_errs() {
 		if [ -n "$m" ]; then
 			RECEIPT_ERRS="$RECEIPT_ERRS$m
 "
+		else
+			warn_stale_receipt "$p"
 		fi
 	done
 	set +f
