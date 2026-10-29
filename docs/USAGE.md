@@ -130,7 +130,7 @@ Every flow is a self-contained folder:
 
 ### Standalone entry
 
-Every skill works alone — even a single-skill install. When `../snail-flow/scripts/flow-state.mjs` is absent, skills skip every gate call and run flow-less. When it is present, `snail-explore`, `snail-alternatives`, and `snail-planning` self-start a flow via `init <dir> --slug=<s> --goal=<g> --at=<row>`; earlier rows are marked skipped with a `standalone entry` note. Downstream skills (`snail-implement`, `snail-verify`, `snail-pr`) need the previous phase's artifact, so they join a flow already in progress. `snail-review` runs flow-less either way.
+Every skill works alone — even a single-skill install. When `../snail-flow/scripts/flow-state.mjs` is absent, skills skip every gate call and run flow-less. When it is present, `snail-explore`, `snail-alternatives`, and `snail-planning` self-start a flow via `init <dir> --slug=<s> --goal=<g> --at=<row>`; earlier rows are marked skipped with a `standalone entry` note. Downstream skills (`snail-implement`, `snail-verify`, `snail-pr`) need the previous phase's artifact, so they join a flow already in progress. `snail-review` runs flow-less either way; without a matching flow its only artifact goes to the fixed standalone location `.agents/flows/snail-review/4 - REVIEW.yaml` (no runbook, overwritten by each standalone review).
 
 ### Rollback
 

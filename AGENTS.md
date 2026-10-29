@@ -55,7 +55,7 @@ nub run format
 
 - `skills/` — skills, source of truth for all agents.
 - `rules/` — shared rules shipped inside the Cursor and Devin plugins.
-- `.agents/flows/` — flow output directory (actual flow dirs are `snail-*`).
+- `.agents/flows/` — flow output directory (actual flow dirs are `snail-*`, plus the runbook-less `snail-review/` standalone location).
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `plugins/snail/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).

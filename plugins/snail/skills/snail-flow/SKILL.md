@@ -40,12 +40,12 @@ Pass the result to `init --size=<choice>` — or `set <dir> size=light|full` bef
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/snail-<slug>/`.
-2. If no slug, look for a stuck flow: run `check` on each `.agents/flows/snail-*/` — `at` other than `done` means pending work. If one, suggest continuing its next phase. If several, list them and ask. If none, ask for a short kebab-case slug.
-3. Start the flow: `node scripts/flow-state.mjs init .agents/flows/snail-<slug> --slug=<slug> --goal=<goal>` (`--size=light` when triage chose light). `init` also adds `.agents/flows/` to the repo's `.git/info/exclude` so flows stay private; remove that line to commit flows. Pass the slug to each phase.
+2. If no slug, look for a stuck flow: run `check` on each `.agents/flows/snail-*/` that has a `runbook.yaml` (skip runbook-less folders such as the standalone `snail-review` location) — `at` other than `done` means pending work. If one, suggest continuing its next phase. If several, list them and ask. If none, ask for a short kebab-case slug.
+3. Start the flow: `node scripts/flow-state.mjs init .agents/flows/snail-<slug> --slug=<slug> --goal=<goal>` (`--size=light` when triage chose light). `init` also adds `.agents/flows/` to the repo's `.git/info/exclude` so flows stay private; remove that line to commit flows. Pass the slug to each phase. If slug `review` is requested while the standalone review artifact (`.agents/flows/snail-review/4 - REVIEW.yaml`, no runbook) exists, do not `init` over it and do not delete the file: surface the collision and let the user pick a different slug or explicitly approve moving or removing it. (`init` itself does not detect this; the first `check` afterwards fails.)
 
 ## State checks
 
-`node scripts/flow-state.mjs check <dir>` prints `status: ok|error`, `at`, and `next-phase`. Run it before starting any phase and when looking for a stuck flow; act on its output. `status: error` means the recorded state contradicts this contract (missing artifacts, bad flag values, unexpected files) — repair via `set`/`note` or the files before continuing; never continue on guessed state. Never pick a phase by globbing artifacts or modification time.
+`node scripts/flow-state.mjs check <dir>` prints `status: ok|error`, `at`, and `next-phase`. Run it before starting any phase and when looking for a stuck flow; act on its output. `status: error` means the recorded state contradicts this contract (missing artifacts, bad flag values, unexpected files) — repair via `set`/`note` or the files before continuing; never continue on guessed state. A folder under `.agents/flows/` without a `runbook.yaml` (such as the standalone `snail-review` location) is not a flow: skip it in scans; its `runbook missing` error is expected, not a repair target. Never pick a phase by globbing artifacts or modification time.
 
 ## Phases
 

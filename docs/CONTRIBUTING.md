@@ -22,7 +22,7 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 ## Project Layout
 
 - `skills/` — Skills (source of truth for all agents).
-- `.agents/flows/` — Flow output directory (actual flow dirs are `snail-*`).
+- `.agents/flows/` — Flow output directory (actual flow dirs are `snail-*`, plus the runbook-less `snail-review/` standalone location).
 - `rules/` — Shared rules shipped inside the Cursor and Devin plugins.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
