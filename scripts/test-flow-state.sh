@@ -60,6 +60,20 @@ bad "check passed with a missing cited receipt"
 grep -q 'missing receipt' "$TMP/err" || fail "check did not report the missing receipt"
 mv "$D/receipts/$R.keep" "$D/receipts/$R"
 ok "check failed after restoring receipt"
+grep -q 'warning' "$TMP/err" && fail "fresh receipt triggered a stale warning"
+git commit -qm move-head --allow-empty
+sh "$FS" check "$D" > "$TMP/out" 2> "$TMP/warn" || fail "stale receipt blocked the check"
+grep -q 'status: ok' "$TMP/out" || fail "stale receipt flipped the status"
+grep -q 'warning: .*behind current HEAD' "$TMP/warn" || fail "no stale-receipt warning on check"
+B=$(git branch --show-current)
+git checkout -q --orphan diverged
+git commit -qm diverged --allow-empty
+sh "$FS" check "$D" > "$TMP/out" 2> "$TMP/warn" || fail "diverged receipt blocked the check"
+grep -q 'status: ok' "$TMP/out" || fail "diverged receipt flipped the status"
+grep -q 'warning: .*not an ancestor' "$TMP/warn" || fail "no diverged-receipt warning on check"
+git checkout -q "$B"
+git branch -qD diverged
+
 
 if sh "$FS" advance "$D" --receipts="receipts/$R" 2>/dev/null; then fail "row 4 accepted result-less advance"; fi
 echo "# 4 - REVIEW" > "$D/4 - REVIEW.md"

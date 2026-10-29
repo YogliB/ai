@@ -79,7 +79,7 @@ A gate keeps a run honest: a script decides facts and records them; the model ke
 
 The three gates:
 
-- **Check receipts** (`run-with-receipt.sh`, `check-receipt.sh`): run a check, record a receipt inside the flow's `receipts/` — command, exit code, timestamps, `git-head`, output tail. A check without a valid passing receipt did not happen. `--head` binds to the current commit when git is available, skips cleanly when not.
+- **Check receipts** (`run-with-receipt.sh`, `check-receipt.sh`): run a check, record a receipt inside the flow's `receipts/` — command, exit code, timestamps, `git-head`, output tail. A check without a valid passing receipt did not happen. `--head` binds to the current commit when git is available, skips cleanly when not. `flow-state.sh` warns (never blocks) when a cited receipt was recorded behind the current HEAD or on a commit that is not its ancestor.
 - **Plan lint** (`lint-plan.sh`): plan structure matches the template — required sections in order, `Files` right after `Goal`, bounded TODO depth, explicit decision.
 - **Flow state** (`flow-state.sh`): the cursor gate above. `size: light` limits rows to `2, 3, 5, 6`.
 
