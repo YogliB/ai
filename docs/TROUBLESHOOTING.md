@@ -15,6 +15,10 @@
 
 - They expect `.agents/flows/snail-<slug>/` with a `runbook` and a `2 - PLANNING.md`. Missing either? They note it under `Known validation gaps` and keep going.
 
+## An old flow lives under sk-<slug>
+
+Flows started before the rename used `.agents/flows/sk-<slug>/`. Skills resolve only `snail-<slug>` now — rename the dir to continue it: `mv .agents/flows/sk-<slug> .agents/flows/snail-<slug>`. `.gitignore` keeps ignoring `sk-*` dirs, so nothing else is needed.
+
 ## Runbook errors
 
 Create state only via `sh skills/snail-flow/scripts/flow-state.sh`:
