@@ -114,7 +114,7 @@ Every flow is a self-contained folder:
 └── 6 - PR.yaml
 ```
 
-`init` writes `.agents/.gitignore` containing `flows/` — flows stay private unless you delete that line. Agents mutate `runbook.yaml` only via `node skills/snail-flow/scripts/flow-state.mjs` (Node 24+); the contract lives in [ARCHITECTURE.md](ARCHITECTURE.md).
+`init` adds `.agents/flows/` to the repo's `.git/info/exclude` — flows stay private without anything entering git status; delete that line to commit them. Agents mutate `runbook.yaml` only via `node skills/snail-flow/scripts/flow-state.mjs` (Node 24+); the contract lives in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### Phases
 

@@ -41,7 +41,7 @@ Pass the result to `init --size=<choice>` — or `set <dir> size=light|full` bef
 
 1. If the user provided a slug, use `.agents/flows/snail-<slug>/`.
 2. If no slug, look for a stuck flow: run `check` on each `.agents/flows/snail-*/` — `at` other than `done` means pending work. If one, suggest continuing its next phase. If several, list them and ask. If none, ask for a short kebab-case slug.
-3. Start the flow: `node scripts/flow-state.mjs init .agents/flows/snail-<slug> --slug=<slug> --goal=<goal>` (`--size=light` when triage chose light). `init` also writes `.agents/.gitignore` so flows stay private; remove that line to commit flows. Pass the slug to each phase.
+3. Start the flow: `node scripts/flow-state.mjs init .agents/flows/snail-<slug> --slug=<slug> --goal=<goal>` (`--size=light` when triage chose light). `init` also adds `.agents/flows/` to the repo's `.git/info/exclude` so flows stay private; remove that line to commit flows. Pass the slug to each phase.
 
 ## State checks
 

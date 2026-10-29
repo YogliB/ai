@@ -12,7 +12,7 @@ description: Suggest up to 3 viable alternatives for a code or design decision. 
 3. Create the folder if needed. Create the runbook if missing: `node ../snail-flow/scripts/flow-state.mjs init .agents/flows/snail-<slug> --slug=<slug> --goal=<one-line goal> --at=1`.
 4. Write the final doc to `1 - ALTERNATIVES.yaml` from `../snail-flow/templates/1 - ALTERNATIVES.yaml`, then `node ../snail-flow/scripts/flow-state.mjs advance <dir>` for row `1`, and `advance <dir> --valid=0` for row `1r` once the review loop's latest pass is clean. If the run ends early, `note <dir> <what happened>` instead.
 
-This skill can run on its own; it still maintains the flow folder and runbook when `../snail-flow/scripts/flow-state.mjs` exists — a standalone install skips every `flow-state.mjs` call.
+This skill can run on its own; it still maintains the flow folder and runbook when `../snail-flow/scripts/flow-state.mjs` exists — a standalone install skips every `flow-state.mjs` call. Before writing artifacts, add the flow dir's repo-root-relative path (usually `.agents/flows/`) on its own line to the repo's exclude file (`$(git rev-parse --git-common-dir)/info/exclude`, usually `.git/info/exclude`) if it is not there already (backslash-escaping any gitignore special characters in the path), so flow artifacts stay out of git without adding any file to the repo, the same rule `init` adds; outside a git repo there is nothing to ignore. If any flow files are already tracked, warn the user: ignore rules will not untrack them.
 
 ## Steps
 
