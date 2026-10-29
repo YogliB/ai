@@ -11,7 +11,7 @@ A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on
 │   ├── snail-implement/        #   + receipt scripts
 │   ├── snail-planning/         #   + lint-plan.mjs + plan templates
 │   └── snail-*/                #   explore, alternatives, review-*, verify, pr, ...
-├── .agents/flows/           # Flow dirs (snail-*, gitignored by default)
+├── .agents/flows/           # Flow dirs (snail-*, excluded by default)
 ├── rules/                   # Shared rules, shipped in the Cursor and Devin plugins
 ├── .cursor-plugin/          # Cursor manifest (repo root is the plugin)
 ├── .claude-plugin/          # Claude Code manifest
@@ -50,7 +50,7 @@ Every flow lives in `.agents/flows/snail-<slug>/`: a `runbook.yaml`, the numbere
 - Four commands: `init`, `check`, `advance` (the only structural mutation — it refuses until the row's artifact exists and its required flags pass), `note` (append-only), and `set` (repair hatch).
 - Agents never hand-edit the runbook; the script (`skills/snail-flow/scripts/flow-state.mjs`) owns it.
 - Everything the flow produces is YAML: the runbook, the phase artifacts, the receipts. The gate parses artifact YAML with the vendored parser, so a malformed artifact fails the check instead of passing silently.
-- `init` writes `.agents/.gitignore` (`flows/`) so flows stay private; delete that line to commit them.
+- `init` adds `.agents/flows/` to the repo's `.git/info/exclude` so flows stay private without entering git status; delete that line to commit them.
 
 What the gate guarantees, and nothing more: fixed phase order, artifact must exist and parse, review can't close with valid findings, verify can't close without a passing receipt.
 

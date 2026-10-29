@@ -16,9 +16,10 @@ import {
 	renameSync,
 	rmSync,
 	writeFileSync,
+	realpathSync,
 } from 'node:fs';
 import { appendFileSync } from 'node:fs';
-import { basename, dirname, join, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import yaml from './vendor/js-yaml.mjs';
@@ -394,6 +395,11 @@ function cmdCheck(dir) {
 	}
 }
 
+const giEscape = (seg) =>
+	seg.replace(/[\\*?[\]]/g, (c) => `\\${c}`).replace(/^[!#]/, (c) => `\\${c}`);
+
+const shQuote = (s) => `'${s.replace(/'/g, `'\\''`)}'`;
+
 function cmdInit(dir, args) {
 	let slug = '',
 		goal = '',
@@ -430,21 +436,43 @@ function cmdInit(dir, args) {
 	const flowsdir = dirname(dir);
 	const agentsdir = dirname(flowsdir);
 	if (basename(flowsdir) === 'flows' && basename(agentsdir) === '.agents') {
-		const gi = join(agentsdir, '.gitignore');
-		const hasRule = existsSync(gi) && readFileSync(gi, 'utf8').split('\n').includes('flows/');
-		if (!hasRule) {
-			mkdirSync(agentsdir, { recursive: true });
-			ensureNl(gi);
-			appendFileSync(gi, 'flows/\n');
-		}
-		const inRepo = spawnSync('git', ['-C', agentsdir, 'rev-parse', '--git-dir']);
-		if (inRepo.status === 0) {
+		mkdirSync(agentsdir, { recursive: true });
+		const common = spawnSync('git', ['-C', agentsdir, 'rev-parse', '--git-common-dir'], {
+			encoding: 'utf8',
+		});
+		if (common.status === 0 && common.stdout.trim()) {
+			const excl = join(resolve(agentsdir, common.stdout.trim()), 'info', 'exclude');
+			const top = spawnSync('git', ['-C', agentsdir, 'rev-parse', '--show-toplevel'], {
+				encoding: 'utf8',
+			});
+			let rule = '',
+				rel = '';
+			if (top.status === 0 && top.stdout.trim()) {
+				rel = relative(top.stdout.trim(), join(realpathSync(agentsdir), 'flows'));
+				if (
+					rel &&
+					rel !== '..' &&
+					!rel.startsWith(`..${sep}`) &&
+					!isAbsolute(rel) &&
+					!rel.includes('\n')
+				)
+					rule = `${rel.split(sep).map(giEscape).join('/')}/`;
+			}
+			if (rule) {
+				const hasRule =
+					existsSync(excl) && readFileSync(excl, 'utf8').split('\n').includes(rule);
+				if (!hasRule) {
+					mkdirSync(dirname(excl), { recursive: true });
+					ensureNl(excl);
+					appendFileSync(excl, `${rule}\n`);
+				}
+			}
 			const tracked = spawnSync('git', ['-C', agentsdir, 'ls-files', 'flows'], {
 				encoding: 'utf8',
 			});
 			if (tracked.status === 0 && tracked.stdout.trim()) {
 				console.error(
-					`init: warning: ${flowsdir} already has tracked files; gitignore will not hide them (git rm -r --cached .agents/flows to untrack)`,
+					`init: warning: ${flowsdir} already has tracked files; ignore rules will not hide them (git rm -r --cached ${shQuote(rel || flowsdir)} to untrack)`,
 				);
 			}
 		}

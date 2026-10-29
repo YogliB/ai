@@ -10,7 +10,7 @@ Create or update a GitHub PR for the current branch.
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/snail-<slug>/`.
-2. Else run `node ../snail-flow/scripts/flow-state.mjs check <dir>` on each `.agents/flows/snail-*/` and pick the flow whose `next` is `6` (a standalone install skips every `flow-state.mjs` call and works flow-less). Require missing `6 - PR.yaml` there.
+2. Else run `node ../snail-flow/scripts/flow-state.mjs check <dir>` on each `.agents/flows/snail-*/` and pick the flow whose `next` is `6` (a standalone install skips every `flow-state.mjs` call and works flow-less). In a standalone install, before writing artifacts, add the flow dir's repo-root-relative path (usually `.agents/flows/`) on its own line to the repo's exclude file (`$(git rev-parse --git-common-dir)/info/exclude`, usually `.git/info/exclude`) if it is not there already (backslash-escaping any gitignore special characters in the path), so flow artifacts stay out of git without adding any file to the repo, the same rule `init` adds; outside a git repo there is nothing to ignore. If any flow files are already tracked, warn the user: ignore rules will not untrack them. Require missing `6 - PR.yaml` there.
 3. Read the exact plan (`2 - PLANNING.yaml`) and other phase docs in the selected flow.
 4. After creating/updating the PR, write `6 - PR.yaml` from `../snail-flow/templates/6 - PR.yaml` (with the real url, status, number) and `node ../snail-flow/scripts/flow-state.mjs advance <dir>`.
 

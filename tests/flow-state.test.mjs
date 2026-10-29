@@ -1,6 +1,7 @@
 /** flow-state tests: the snail-flow stage-gate state machine. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import {
 	existsSync,
 	mkdirSync,
@@ -66,8 +67,17 @@ test('full flow: init, gates, receipts, warnings, reopen, skip, blocked, sizes',
 	);
 	assert.ok(existsSync(join(tmp, D, 'runbook.yaml')), 'init did not write runbook.yaml');
 	assert.ok(
-		readFileSync(join(tmp, '.agents/.gitignore'), 'utf8').split('\n').includes('flows/'),
-		'init did not write .agents/.gitignore',
+		readFileSync(join(tmp, '.git/info/exclude'), 'utf8').split('\n').includes('.agents/flows/'),
+		'init did not add .agents/flows/ to .git/info/exclude',
+	);
+	assert.ok(
+		!existsSync(join(tmp, '.agents/.gitignore')),
+		'init created .agents/.gitignore, which would enter git status',
+	);
+	assert.equal(
+		git(tmp, ['status', '--porcelain']),
+		'',
+		'a freshly introduced .agents tree showed up in git status',
 	);
 	assert.notEqual(
 		fsRun(D, ['init', D, '--slug=demo', '--goal=x'], { cwd: tmp }).status,
@@ -572,31 +582,116 @@ test('full flow: init, gates, receipts, warnings, reopen, skip, blocked, sizes',
 	);
 	rmSync(join(tmp, D5, '0 - EXPLORE.yaml'));
 
-	// .gitignore handling: append after a missing trailing newline, never duplicate
+	// exclude handling: repo-relative rule, append after a missing trailing
+	// newline, never duplicate
 	mkdirSync(join(tmp, 'nested/.agents/flows'), { recursive: true });
-	writeFileSync(join(tmp, 'nested/.agents/.gitignore'), 'dist');
+	writeFileSync(join(tmp, '.git/info/exclude'), 'dist');
 	assert.equal(
 		fsRun('x', ['init', 'nested/.agents/flows/snail-nl', '--slug=nl', '--goal=x'], { cwd: tmp })
 			.status,
 		0,
-		'init under existing .gitignore failed',
+		'init under existing exclude failed',
 	);
-	const gi = readFileSync(join(tmp, 'nested/.agents/.gitignore'), 'utf8').split('\n');
-	assert.equal(gi[0], 'dist', 'init merged into last .gitignore line');
-	assert.equal(gi[1], 'flows/', 'init did not append flows/ after missing newline');
+	const gi = readFileSync(join(tmp, '.git/info/exclude'), 'utf8').split('\n');
+	assert.equal(gi[0], 'dist', 'init merged into last exclude line');
+	assert.equal(
+		gi[1],
+		'nested/.agents/flows/',
+		'init did not append the repo-relative flows rule after missing newline',
+	);
 	assert.equal(
 		fsRun('x', ['init', 'nested/.agents/flows/snail-nl2', '--slug=nl2', '--goal=x'], {
 			cwd: tmp,
 		}).status,
 		0,
-		'second init under existing .gitignore failed',
+		'second init under existing exclude failed',
 	);
 	assert.equal(
-		readFileSync(join(tmp, 'nested/.agents/.gitignore'), 'utf8')
+		readFileSync(join(tmp, '.git/info/exclude'), 'utf8')
 			.split('\n')
-			.filter((l) => l === 'flows/').length,
+			.filter((l) => l === 'nested/.agents/flows/').length,
 		1,
-		'init duplicated flows/ in .gitignore',
+		'init duplicated the flows rule in exclude',
+	);
+});
+
+test('init in a ..-prefixed subdir still writes the rule', (t) => {
+	const tmp = tmpdir_(t);
+	gitInit(tmp);
+	git(tmp, ['commit', '-qm', 'init', '--allow-empty']);
+	mkdirSync(join(tmp, '..dots/.agents'), { recursive: true });
+	assert.equal(
+		fsRun('x', ['init', '..dots/.agents/flows/snail-g', '--slug=g', '--goal=x'], {
+			cwd: tmp,
+		}).status,
+		0,
+	);
+	assert.ok(
+		readFileSync(join(tmp, '.git/info/exclude'), 'utf8')
+			.split('\n')
+			.includes('..dots/.agents/flows/'),
+		'rule missing for ..-prefixed in-repo dir',
+	);
+});
+
+test('init escapes gitignore glob chars in the rule', (t) => {
+	const tmp = tmpdir_(t);
+	gitInit(tmp);
+	git(tmp, ['commit', '-qm', 'init', '--allow-empty']);
+	mkdirSync(join(tmp, 'we[ird/.agents'), { recursive: true });
+	assert.equal(
+		fsRun('x', ['init', 'we[ird/.agents/flows/snail-g', '--slug=g', '--goal=x'], {
+			cwd: tmp,
+		}).status,
+		0,
+	);
+	const rule = readFileSync(join(tmp, '.git/info/exclude'), 'utf8')
+		.split('\n')
+		.find((l) => l.includes('flows'));
+	assert.equal(rule, 'we\\[ird/.agents/flows/');
+	assert.equal(
+		spawnSync('git', ['-C', tmp, 'check-ignore', 'we[ird/.agents/flows/snail-g/runbook.yaml'])
+			.status,
+		0,
+		'escaped rule does not match the flow dir',
+	);
+});
+
+test('tracked-flows warning shell-quotes the flows path', (t) => {
+	const tmp = tmpdir_(t);
+	gitInit(tmp);
+	git(tmp, ['commit', '-qm', 'init', '--allow-empty']);
+	mkdirSync(join(tmp, `it's a dir/.agents/flows/snail-t`), { recursive: true });
+	writeFileSync(join(tmp, `it's a dir/.agents/flows/snail-t/seed.yaml`), 'x\n');
+	git(tmp, ['add', '-A']);
+	git(tmp, ['commit', '-qm', 'tracked']);
+	const r = fsRun('x', ['init', `it's a dir/.agents/flows/snail-t`, '--slug=t', '--goal=x'], {
+		cwd: tmp,
+	});
+	assert.equal(r.status, 0, r.stderr);
+	assert.ok(
+		r.stderr.includes(`git rm -r --cached 'it'\\''s a dir/.agents/flows' to untrack`),
+		r.stderr,
+	);
+});
+
+test('init inside .git writes no exclude rule', (t) => {
+	const tmp = tmpdir_(t);
+	gitInit(tmp);
+	git(tmp, ['commit', '-qm', 'init', '--allow-empty']);
+	mkdirSync(join(tmp, '.git/.agents'), { recursive: true });
+	assert.equal(
+		fsRun('x', ['init', '.git/.agents/flows/snail-g', '--slug=g', '--goal=x'], {
+			cwd: tmp,
+		}).status,
+		0,
+		'init under .git failed',
+	);
+	assert.ok(
+		!readFileSync(join(tmp, '.git/info/exclude'), 'utf8')
+			.split('\n')
+			.some((l) => l.includes('flows')),
+		'init wrote an exclude rule it could not anchor to the toplevel',
 	);
 });
 

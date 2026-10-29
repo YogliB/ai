@@ -21,7 +21,11 @@
 
 ## An old flow lives under sk-<slug>
 
-Flows started before the rename used `.agents/flows/sk-<slug>/`. Skills resolve only `snail-<slug>` now — rename the dir to continue it: `mv .agents/flows/sk-<slug> .agents/flows/snail-<slug>`. `.gitignore` keeps ignoring `sk-*` dirs, so nothing else is needed.
+Flows started before the rename used `.agents/flows/sk-<slug>/`. Skills resolve only `snail-<slug>` now — rename the dir to continue it: `mv .agents/flows/sk-<slug> .agents/flows/snail-<slug>`. The `.agents/flows/` exclude rule keeps ignoring `sk-*` dirs, so nothing else is needed.
+
+## Flows stay ignored after deleting the exclude line
+
+Installs initialized before the exclude change have `.agents/.gitignore` with a `flows/` line, which keeps ignoring flows on its own. Delete that line (or the file) as well.
 
 ## Runbook errors
 
