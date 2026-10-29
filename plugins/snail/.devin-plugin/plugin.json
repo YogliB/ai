@@ -1,6 +1,6 @@
 {
 	"name": "snail",
-	"version": "0.5.0",
+	"version": "0.0.1",
 	"description": "Reusable agent skills and an optional stage-gated workflow for Devin.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
