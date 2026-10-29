@@ -16,8 +16,8 @@ Reusable agent skills and an optional stage-gated workflow.
 - skills/snail-flow/SKILL.md
 - skills/snail-implement/SKILL.md
 - skills/snail-planning/SKILL.md
-- skills/snail-planning/templates/masterplan.md
-- skills/snail-planning/templates/plan.md
+- skills/snail-planning/templates/masterplan.yaml
+- skills/snail-planning/templates/plan.yaml
 - skills/snail-pr/SKILL.md
 - skills/snail-project-docs/SKILL.md
 - skills/snail-review-alternatives/SKILL.md
@@ -32,9 +32,17 @@ Reusable agent skills and an optional stage-gated workflow.
 
 ## Scripts
 
-- skills/snail-flow/scripts/flow-state.sh — the runbook gate (init/check/advance/note/set)
-- skills/snail-implement/scripts/run-with-receipt.sh + check-receipt.sh — check receipts
-- skills/snail-planning/scripts/lint-plan.sh — plan structure lint
-- scripts/install.sh — install the Cursor plugin
-- scripts/install-claude-rules.sh — install rules into ~/.claude
-- scripts/sync-devin-plugin.sh — sync skills/rules into plugins/snail
+All scripts are Node (24+); the YAML parser is vendored inside each skill that needs it.
+
+- skills/snail-flow/scripts/flow-state.mjs — the runbook gate (init/check/advance/note/set)
+- skills/snail-implement/scripts/run-with-receipt.mjs + check-receipt.mjs — check receipts
+- skills/snail-planning/scripts/lint-plan.mjs — plan structure lint
+- scripts/install.mjs — install the Cursor plugin
+- scripts/install-claude-rules.mjs — install rules into ~/.claude
+- scripts/sync-devin-plugin.mjs — sync skills/rules into plugins/snail
+- scripts/gen-skills-index.mjs — regenerate the skill list in rules/snail.md
+- scripts/vendor-js-yaml.mjs — refresh vendored js-yaml copies
+
+## Tests
+
+- tests/ — node --test suite (npm test)

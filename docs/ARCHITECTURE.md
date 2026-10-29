@@ -7,16 +7,17 @@ A cross-agent toolkit: reusable skills, plus an optional multi-phase workflow on
 ```text
 ./
 ├── skills/                  # Source of truth for all agents
-│   ├── snail-flow/             #   the workflow + flow-state.sh gate + templates
+│   ├── snail-flow/             #   the workflow + flow-state.mjs gate + templates
 │   ├── snail-implement/        #   + receipt scripts
-│   ├── snail-planning/         #   + lint-plan.sh + plan templates
+│   ├── snail-planning/         #   + lint-plan.mjs + plan templates
 │   └── snail-*/                #   explore, alternatives, review-*, verify, pr, ...
 ├── .agents/flows/           # Flow dirs (snail-*, gitignored by default)
 ├── rules/                   # Shared rules, shipped in the Cursor and Devin plugins
 ├── .cursor-plugin/          # Cursor manifest (repo root is the plugin)
 ├── .claude-plugin/          # Claude Code manifest
 ├── plugins/snail/           # Devin plugin — synced from root, never edited directly
-└── scripts/                 # install, uninstall, sync, tests
+├── scripts/                 # install, uninstall, sync, vendor
+└── tests/                   # node --test suite for the scripts and gates
 ```
 
 ## How a request flows
@@ -43,19 +44,19 @@ Each `skills/snail-*/SKILL.md` is the one definition of what that skill does. Ev
 
 ### The gate is a cursor, not a state machine
 
-Every flow lives in `.agents/flows/snail-<slug>/`: a flat `key: value` `runbook`, the numbered phase docs, and `receipts/` — one self-contained bundle.
+Every flow lives in `.agents/flows/snail-<slug>/`: a `runbook.yaml`, the numbered phase YAML artifacts, and `receipts/` — one self-contained bundle.
 
-- `at` is the cursor; `f.<row>.*` records what each `advance` captured.
+- `at` is the cursor; `rows.<row>.*` records what each `advance` captured.
 - Four commands: `init`, `check`, `advance` (the only structural mutation — it refuses until the row's artifact exists and its required flags pass), `note` (append-only), and `set` (repair hatch).
-- Agents never hand-edit the runbook; the script (`skills/snail-flow/scripts/flow-state.sh`) owns it.
-- Phase docs are pure Markdown for humans. Gate data lives in the runbook — nothing parses the docs.
+- Agents never hand-edit the runbook; the script (`skills/snail-flow/scripts/flow-state.mjs`) owns it.
+- Everything the flow produces is YAML: the runbook, the phase artifacts, the receipts. The gate parses artifact YAML with the vendored parser, so a malformed artifact fails the check instead of passing silently.
 - `init` writes `.agents/.gitignore` (`flows/`) so flows stay private; delete that line to commit them.
 
-What the gate guarantees, and nothing more: fixed phase order, artifact must exist, review can't close with valid findings, verify can't close without a passing receipt.
+What the gate guarantees, and nothing more: fixed phase order, artifact must exist and parse, review can't close with valid findings, verify can't close without a passing receipt.
 
-### Scripts are `sh` + coreutils, nothing else
+### Scripts are Node (current LTS), one language
 
-Node and Python existed only to touch JSON — kill the JSON and both runtimes vanish. The runbook and receipts are flat `key: value` (readable by `grep`/`sed`), gate fields ride on `advance` flags, and rules are plain files per channel. Git is opportunistic: `git-head` is recorded when present, never required.
+All authored scripts are Node with JSDoc — no `sh`/`awk` mix. YAML needs a real parser, so `js-yaml` is vendored as a single dependency-free file inside each skill that needs it (`scripts/vendor/js-yaml.mjs`); installing or using a skill never runs npm or touches the network. Git is opportunistic: `git-head` is recorded when present, never required.
 
 ### Alternatives get reviewed before you see them
 
@@ -63,29 +64,29 @@ Node and Python existed only to touch JSON — kill the JSON and both runtimes v
 
 ### Rules ship as files per channel
 
-`rules/` goes inside the Cursor and Devin plugins. Claude Code has no plugin rules channel, so `scripts/install-claude-rules.sh` copies them into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md` — imported memory reaches subagents without any prompt rewriting.
+`rules/` goes inside the Cursor and Devin plugins. Claude Code has no plugin rules channel, so `scripts/install-claude-rules.mjs` copies them into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md` — imported memory reaches subagents without any prompt rewriting.
 
 ### The workflow is opt-in
 
-Every skill works alone, including single-skill installs — skills skip gate calls when `flow-state.sh` isn't there. Nothing forces `snail-flow`.
+Every skill works alone, including single-skill installs — skills skip gate calls when `flow-state.mjs` isn't there. Nothing forces `snail-flow`.
 
 ## Gates
 
 A gate keeps a run honest: a script decides facts and records them; the model keeps judgment.
 
 1. **Scripts decide facts, the model decides meaning.** Which phase a flow is in, whether a check really ran — a script answers deterministically.
-2. **The base layer is a script the skill runs.** Small `sh` scripts; the skill checks exit codes and the files they write. Works in every harness.
+2. **The base layer is a script the skill runs.** Small Node scripts; the skill checks exit codes and the files they write. Works in every harness. A missing or too-old Node fails loudly and names the fix — a mandatory gate is never skipped silently.
 3. **CI is optional on top.** Same checks, not required.
 
 The three gates:
 
-- **Check receipts** (`run-with-receipt.sh`, `check-receipt.sh`): run a check, record a receipt inside the flow's `receipts/` — command, exit code, timestamps, `git-head`, output tail. A check without a valid passing receipt did not happen. `--head` binds to the current commit when git is available, skips cleanly when not. `flow-state.sh` warns (never blocks) when a cited receipt was recorded behind the current HEAD or on a commit that is not its ancestor.
-- **Plan lint** (`lint-plan.sh`): plan structure matches the template — required sections in order, `Files` right after `Goal`, bounded TODO depth, explicit decision.
-- **Flow state** (`flow-state.sh`): the cursor gate above. `size: light` limits rows to `2, 3, 5, 6`.
+- **Check receipts** (`run-with-receipt.mjs`, `check-receipt.mjs`): run a check, record a YAML receipt inside the flow's `receipts/` — command, exit code, timestamps, `git-head`, output tail. A check without a valid passing receipt did not happen. `--head` binds to the current commit when git is available, skips cleanly when not. `flow-state.mjs` warns (never blocks) when a cited receipt was recorded behind the current HEAD or on a commit that is not its ancestor.
+- **Plan lint** (`lint-plan.mjs`): plan structure matches the template — required keys in order, `files` right after `goal`, bounded TODO depth, explicit `proceed`/`split` decision, no leftover template placeholders.
+- **Flow state** (`flow-state.mjs`): the cursor gate above. `size: light` limits rows to `2, 3, 5, 6`.
 
 ## Dependencies
 
-- `sh` + core utilities — required, that's all.
+- Node.js, current LTS (24+) — required. The toolkit's scripts and gates run on it; everything else a skill needs is vendored inside the skill, so consumers never run npm or fetch anything.
 - `git` — opportunistic (receipt metadata, the `snail-pr` flow).
 - `gh` — `snail-pr` only.
 - `npx` — only for the `npx skills add` install path.

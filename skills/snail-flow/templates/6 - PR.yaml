@@ -1,0 +1,6 @@
+pr:
+    title: '{{title}}'
+    url: '{{url}}'
+    number: '{{n}}'
+body: '{{summary or body}}'
+status: '{{open / updated / closed}}'

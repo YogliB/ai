@@ -1,0 +1,13 @@
+plan_reference: '2 - PLANNING.yaml'
+branch: '{{branch name}}'
+goal: '{{one line, from the plan}}'
+steps:
+    - todo: '{{plan TODO}}'
+      done: '{{what was done}}'
+      checks: '{{commands and results}}'
+      receipts: '{{receipt paths}}'
+      commit: '{{sha}}'
+deviations: "{{every departure from the plan text, with one-line reasons; 'None' if none}}"
+plan_gaps: '{{unresolved gaps flagged to the user: what the plan said, what the repo actually shows, what was tried}}'
+final_verification: '{{the full check suite the plan names - build, tests, lint, typecheck, format - run through the receipt runner, with receipt paths and results}}'
+next_step_recommendation: '{{snail-review (fix mode inside snail-flow) - one-line reason}}'

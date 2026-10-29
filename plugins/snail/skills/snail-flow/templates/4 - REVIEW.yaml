@@ -1,0 +1,13 @@
+# AI review. harness: <harness>, model: <model>
+result: '{{clean | findings-fixed | blocked}}'
+scope:
+    repository: '...'
+    diff_target: '...'
+    base_branch: '...'
+    custom_focus: '...'
+validation_gaps: '{{missing context, capabilities, or artifacts}}'
+findings: '{{per-pass Review Findings summaries}}'
+triage: '{{valid / false_positive / unvalidated counts}}'
+false_positives: '{{one per line as file:line | tag | original finding | why it was dismissed; later runs seed from this}}'
+fixes: '{{what was changed to resolve findings}}'
+confidence: "{{one-line, e.g. 'Verifiable surface clean; UI vs Figma not validated.'}}"

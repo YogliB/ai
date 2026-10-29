@@ -1,0 +1,48 @@
+overview: '{{2-3 short sentences - decision record for multi-PR and/or multi-repo work; each PR then runs as its own snail-<stable-slug> flow with a self-contained 2 - PLANNING.yaml from plan.yaml}}'
+approach: '{{brief}}'
+est_time: '{{X-Yh}}'
+prs: '{{N}}'
+repos:
+    - '{{repo-1}}'
+risk: '{{Low / Med / High - why}}'
+files:
+    - 'path/one'
+context: "{{cross-cutting inlined facts for the whole initiative (shared schemas, rollout flags, version map rationale). Each prs entry below must also be self-contained for that PR's scope - repeat per-PR contracts here, not 'see PR1'.}}"
+implementation_status: "{{PRs: whole numbers, start at 1, sequential by dependencies. Table of slug / repo / dependencies is the execution order; each PR's live state lives in its own snail-<slug> flow's runbook.}}"
+prs_detail:
+    - number: 1
+      slug: '{{stable slug}}'
+      title: '{{title}}'
+      repo: '{{name}}'
+      eta: '{{X-Yh}}'
+      files:
+          - 'path/one'
+      changes: '{{what/why - file, line/context, before/after code, deps/imports}}'
+      acceptance:
+          - '{{criteria 1}}'
+          - '{{tests updated/added}}'
+          - '{{no breaking changes}}'
+          - '{{all checks pass}}'
+      dependencies: '{{blocked by [PRs] / None; blocks [PRs] / None}}'
+risk_mitigation: '{{risk category: concern -> analysis -> mitigation -> recovery}}'
+deployment_strategy: '{{critical ordering/coordination; stages with deploy/verify/rollback; cross-repo version map}}'
+monitoring_observability: '{{metrics: name -> expected; logs: success and errors; alarms: condition -> threshold}}'
+verification:
+    - '{{verification step 1}}'
+rollback: '{{quick (flag): disable -> verify -> fix -> re-enable; full: if PR/stage N fails -> steps, verify; order: last-deployed/highest-risk first; artifacts safe to keep}}'
+delivery: '{{each PR: main pulled, branch {branch-prefix}/<short-meaningful-name> (prefix derived from git user or feature/; slug describes the work, not a ticket or issue ID); commit only when policy allows; push when policy or PR flow requires}}'
+success_criteria:
+    - '{{all N PRs merged + prod}}'
+    - '{{no perf regression (metric < threshold)}}'
+    - '{{tests >= X% and green}}'
+    - '{{0 prod incidents}}'
+    - '{{monitoring meets SLOs}}'
+    - '{{user-facing criteria met}}'
+references: "{{optional source attribution only - required content must be inlined under context or the relevant PR block. Write 'None' when nothing to attribute.}}"
+notes_assumptions:
+    - '{{impl decisions}}'
+    - '{{cross-repo coord}}'
+    - '{{data model}}'
+    - '{{risks}}'
+    - '{{testing: integrated with each PR (avoid standalone)}}'
+    - '{{assumptions: verified / needs verify}}'

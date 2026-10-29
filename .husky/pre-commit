@@ -1,4 +1,5 @@
 ./node_modules/.bin/lint-staged || exit 1
-sh scripts/gen-skills-index.sh --check || exit 1
-sh scripts/sync-devin-plugin.sh || exit 1
+node scripts/gen-skills-index.mjs --check || exit 1
+node scripts/vendor-js-yaml.mjs --check || exit 1
+node scripts/sync-devin-plugin.mjs || exit 1
 git add plugins/snail/skills plugins/snail/rules

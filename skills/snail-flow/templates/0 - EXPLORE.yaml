@@ -1,0 +1,6 @@
+goal: '{{restated user goal and scope boundary}}'
+files_and_context: '{{relevant files, code snippets, current state - inline facts; no pointer-only references}}'
+findings: '{{what exists, what is missing, patterns, constraints, edge cases}}'
+assumptions_and_open_questions: '{{unknowns with acceptance impact}}'
+risks: '{{known blockers or high-risk areas}}'
+next_step_recommendation: '{{snail-alternatives or snail-planning with a one-line reason}}'
