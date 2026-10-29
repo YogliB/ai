@@ -11,6 +11,7 @@ alwaysApply: true
 
 - Auto-generated headers/licenses only
 - Python one-liner docstrings (`"""Single line."""`) — multi-line docstrings forbidden
+- JSDoc docblocks (`/** ... */`) in JavaScript/TypeScript — the one documentation-comment exception; keep them to what a reader of the signature cannot see
 
 ## Forbidden
 

@@ -13,20 +13,20 @@ description: First-link discovery. Gather repo context and write a structured re
 
 ## Goal
 
-Produce a self-contained `0 - EXPLORE.md` so the next phase can proceed without re-exploring.
+Produce a self-contained `0 - EXPLORE.yaml` so the next phase can proceed without re-exploring.
 
 ## Slug and flow folder
 
 1. Derive a short kebab-case slug from the goal (confirm with the user if not provided).
 2. Create `.agents/flows/snail-<slug>/` if needed.
-3. Create the runbook if missing: `sh ../snail-flow/scripts/flow-state.sh init .agents/flows/snail-<slug> --slug=<slug> --goal=<one-line goal>` (`init` writes `.agents/.gitignore` so flows stay private).
-4. Write `0 - EXPLORE.md` from `../snail-flow/templates/0 - EXPLORE.md`, then `sh ../snail-flow/scripts/flow-state.sh advance <dir>`.
+3. Create the runbook if missing: `node ../snail-flow/scripts/flow-state.mjs init .agents/flows/snail-<slug> --slug=<slug> --goal=<one-line goal>` (`init` writes `.agents/.gitignore` so flows stay private).
+4. Write `0 - EXPLORE.yaml` from `../snail-flow/templates/0 - EXPLORE.yaml`, then `node ../snail-flow/scripts/flow-state.mjs advance <dir>`.
 
-A standalone install has no `../snail-flow/scripts/flow-state.sh` or templates — skip every `init`/`advance`/`check` call above and work flow-less.
+A standalone install has no `../snail-flow/scripts/flow-state.mjs` or templates — skip every `init`/`advance`/`check` call above and work flow-less.
 
 ## Output
 
-`0 - EXPLORE.md` includes:
+`0 - EXPLORE.yaml` includes:
 
 - **Goal**: restated scope.
 - **Files and Context**: relevant files and inline facts.

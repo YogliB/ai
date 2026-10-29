@@ -1,0 +1,6 @@
+plan_reference: '2 - PLANNING.yaml'
+commands:
+    - command: '{{command}}'
+      receipt: '{{receipt path}}'
+results: '{{per-command output}}'
+overall: '{{PASS / FAIL}}'

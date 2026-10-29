@@ -1,0 +1,2 @@
+# Vendored single-file builds are byte-identical to their upstream dists
+**/scripts/vendor/

@@ -38,7 +38,7 @@ Lean & valid. Ship.
 Rules for Plan Review Findings:
 - Sort findings section → line ascending
 - One finding per line; problem then fix separated by ". "
-- Location: section = exact ## heading name; line = line number within that section (1-based from heading line), or — when issue spans whole section
+- Location: section = the YAML key path in `2 - PLANNING.yaml` (e.g. `implementation_todos` or `verification`); line = line number within that key's block (1-based from the key line), or — when issue spans the whole key
 - Action tags (literal after colon):
   - 🔴 bug: correctness blocker, contradiction, broken logic, missing critical step
   - 🟡 gap: weak testability, missing file/dependency, unclear sequencing, unmitigated risk
@@ -70,7 +70,7 @@ End with exactly one line:
 2. **Executability**: every step can be done without guessing missing context.
 3. **TODO atomicity/testability**: each TODO is one focused, testable action.
 4. **Scope/acceptance alignment**: the plan matches the goal and acceptance.
-5. **Missing files or dependencies**: the `Files` section covers every path that needs to change.
+5. **Missing files or dependencies**: the `files` key covers every path that needs to change.
 6. **Contradictions**: sections do not contradict each other.
 7. **Realistic sequencing**: dependencies and ordering are possible.
 8. **Verifiable**: verification steps are concrete and runnable.

@@ -10,14 +10,14 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 
 ## Common Commands
 
-| Command                                   | Purpose                                           |
-| ----------------------------------------- | ------------------------------------------------- |
-| `nub run format`                          | Format Markdown and JSON with `oxfmt`.            |
-| `nub run lint`                            | Run the pre-commit lint step.                     |
-| `sh scripts/sync-devin-plugin.sh --check` | Fail if the Devin plugin copies differ from root. |
-| `sh scripts/test-flow-state.sh`           | Test the runbook state machine and validator.     |
-| `sh scripts/test-lint-plan.sh`            | Test the plan-structure linter.                   |
-| `sh scripts/test-receipts.sh`             | Test the check-receipt scripts.                   |
+| Command                                      | Purpose                                              |
+| -------------------------------------------- | ---------------------------------------------------- |
+| `nub run format`                             | Format Markdown and JSON with `oxfmt`.               |
+| `nub run lint`                               | Run the pre-commit lint step.                        |
+| `npm test`                                   | Run the `node --test` suite in `tests/`.             |
+| `node scripts/sync-devin-plugin.mjs --check` | Fail if the Devin plugin copies differ from root.    |
+| `node scripts/gen-skills-index.mjs --check`  | Fail if the skills index in rules/snail.md is stale. |
+| `node scripts/vendor-js-yaml.mjs --check`    | Fail if a vendored js-yaml copy is stale.            |
 
 ## Project Layout
 
@@ -27,8 +27,8 @@ No nub? `npm ci` works too — the lockfile is a standard `package-lock.json`.
 - `.cursor-plugin/` — Cursor plugin manifest (repo root is the plugin).
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `plugins/snail/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
-- `scripts/install.sh` — Install the Cursor plugin.
-- `scripts/uninstall.sh` — Remove the Cursor plugin.
+- `scripts/` — Repo scripts (install, uninstall, sync, index, vendoring), all Node.
+- `tests/` — The `node --test` suite for the scripts and gates.
 - `README.md` — Human-facing overview.
 - `AGENTS.md` — Agent-facing index.
 - `docs/` — Contributor and user documentation.

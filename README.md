@@ -1,6 +1,6 @@
 # snail
 
-Reusable agent skills and an optional stage-gated workflow for Claude, Cursor, and Devin. It carries state between phases and leaves a trail — every gate is a shell script, every phase leaves a receipt. I built this to stop repeating myself to every agent. Take it, break it, and rebuild it into something that fits your own chaos.
+Reusable agent skills and an optional stage-gated workflow for Claude, Cursor, and Devin. It carries state between phases and leaves a trail — every gate is a small Node script, every phase leaves a receipt. I built this to stop repeating myself to every agent. Take it, break it, and rebuild it into something that fits your own chaos.
 
 ## What you get
 
@@ -9,7 +9,7 @@ Reusable agent skills and an optional stage-gated workflow for Claude, Cursor, a
 - **A workflow** — optional full flow: explore → alternatives → plan → build → review → verify → PR.
 - **Rules** — editor-specific conventions for Claude and Cursor.
 
-Flow state and receipts are flat `key: value` files; everything else is plain Markdown. No magic binaries, no cloud services, no tracking. Every gate script needs only `sh` and core utilities (git optional).
+Flow state, phase artifacts and receipts are YAML. No magic binaries, no cloud services, no tracking. Every gate script needs only Node 24+ (current LTS; git optional) — the YAML parser is vendored inside each skill, so installs never run npm or touch the network.
 
 ## Quick start
 
@@ -19,7 +19,7 @@ Pick your agent:
 # Claude Code - plugin with /snail-* slash commands
 claude plugin marketplace add YogliB/snail
 claude plugin install snail@snail
-# + rules into ~/.claude (one-time): sh scripts/install-claude-rules.sh
+# + rules into ~/.claude (one-time): node scripts/install-claude-rules.mjs
 
 # Devin - plugin with /snail:* commands
 devin plugins install YogliB/snail#plugins/snail
@@ -28,14 +28,14 @@ devin plugins install YogliB/snail#plugins/snail
 npx skills add YogliB/snail -g
 
 # Cursor - local plugin (skills + rules)
-npx degit YogliB/snail /tmp/snail && sh /tmp/snail/scripts/install.sh
+npx degit YogliB/snail /tmp/snail && node /tmp/snail/scripts/install.mjs
 ```
 
-`scripts/install.sh` copies the plugin into `~/.cursor/plugins/local/snail`; reload the window to load it.
+`scripts/install.mjs` copies the plugin into `~/.cursor/plugins/local/snail`; reload the window to load it.
 
 Want just one skill? `npx skills add YogliB/snail --skill snail-planning` — it works standalone, no plugin needed.
 
-To remove: `npx skills remove snail-planning`, or each agent's own uninstall (`claude plugin uninstall snail@snail`, `devin plugins remove snail`, `sh /tmp/snail/scripts/uninstall.sh` for Cursor).
+To remove: `npx skills remove snail-planning`, or each agent's own uninstall (`claude plugin uninstall snail@snail`, `devin plugins remove snail`, `node /tmp/snail/scripts/uninstall.mjs` for Cursor).
 
 ## Use it
 
@@ -56,10 +56,10 @@ Installed a skill individually with `npx skills add`? Drop the `/snail:` prefix 
 
 | Slash command                  | What it does                                                                         |
 | ------------------------------ | ------------------------------------------------------------------------------------ |
-| `/snail:snail-explore <slug>`  | Gather context and write `0 - EXPLORE.md` to `.agents/flows/snail-<slug>/`.          |
-| `/snail:snail-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.md`.                       |
-| `/snail:snail-planning <slug>` | Write an executable `2 - PLANNING.md`.                                               |
-| `/snail:snail-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.md`.                           |
+| `/snail:snail-explore <slug>`  | Gather context and write `0 - EXPLORE.yaml` to `.agents/flows/snail-<slug>/`.        |
+| `/snail:snail-alternatives`    | Generate and review options, then write `1 - ALTERNATIVES.yaml`.                     |
+| `/snail:snail-planning <slug>` | Write an executable `2 - PLANNING.yaml`.                                             |
+| `/snail:snail-implement`       | Execute an approved plan, writing `3 - IMPLEMENTATION.yaml`.                         |
 | `/snail:snail-review`          | Review the current diff (add "fix" to fix).                                          |
 | `/snail:snail-pr`              | Create or update a GitHub PR.                                                        |
 | `/snail:snail-flow [mode]`     | Run the whole workflow. `auto` skips confirmations; `manual` asks before each phase. |
@@ -96,14 +96,14 @@ Use the snail-pr skill to open a pull request.
 snail-explore → snail-alternatives → snail-planning → snail-implement → snail-review (fix mode) → snail-verify → snail-pr
 ```
 
-Each phase writes a numbered doc into `.agents/flows/snail-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
+Each phase writes a numbered YAML artifact into `.agents/flows/snail-<slug>/`, so you can pause, resume, or hand the work to another agent without losing context.
 
 ## Caveats
 
 - **Slash commands work in Claude Code and Devin.** In Devin they come from the plugin and are namespaced (`/snail:snail-*`). Cursor can use the skill names.
 - **Flow runbooks are not committed by default.** Commit them only if your policy wants them.
 - **Skills are modular.** Nothing forces the full flow. Pick one skill and ignore the rest.
-- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel — `scripts/install-claude-rules.sh` copies the rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`, which also reaches subagent context.
+- **Rules ship inside the Cursor and Devin plugins** from the shared `rules/` directory. Claude Code plugins have no rules channel — `scripts/install-claude-rules.mjs` copies the rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`, which also reaches subagent context.
 
 ## More
 

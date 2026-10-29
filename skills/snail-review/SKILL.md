@@ -21,9 +21,9 @@ Never infer fix mode. When unsure, stay read-only. A PR link or an outside contr
 ## Flow context
 
 1. If the user provided a slug, use `.agents/flows/snail-<slug>/`.
-2. Else run `sh ../snail-flow/scripts/flow-state.sh check <dir>` on each `.agents/flows/snail-*/` and pick the flow whose `next` is `4` (a standalone install skips every `flow-state.sh` call and works flow-less). Require `3 - IMPLEMENTATION.md` there; a missing `4 - REVIEW.md` for first runs (an existing one is fine for fix-mode re-runs and explicitly requested re-reviews, see step 4 — reopen the row first via `set <dir> at=4`).
-3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.md` is the only artifact.
-4. Fix mode only: if `4 - REVIEW.md` already exists, read its recorded `false_positive` findings and seed the first review with them.
+2. Else run `node ../snail-flow/scripts/flow-state.mjs check <dir>` on each `.agents/flows/snail-*/` and pick the flow whose `next` is `4` (a standalone install skips every `flow-state.mjs` call and works flow-less). Require `3 - IMPLEMENTATION.yaml` there; a missing `4 - REVIEW.yaml` for first runs (an existing one is fine for fix-mode re-runs and explicitly requested re-reviews, see step 4 — reopen the row first via `set <dir> at=4`).
+3. If no flow exists and no slug is given, continue without a flow folder; `4 - REVIEW.yaml` is the only artifact.
+4. Fix mode only: if `4 - REVIEW.yaml` already exists, read its recorded `false_positive` findings and seed the first review with them.
 
 ## Context trail
 
@@ -41,14 +41,14 @@ Before dispatching reviewers, trace the change's intent the way a colleague woul
 - **Diff target:** `branch changes` (default), `uncommitted changes`, or an explicit branch/PR (number or URL)
 - **Base branch:** only when non-default
 - **Custom focus / out of scope:** only when the user gave constraints
-- **Active plan:** exact `2 - PLANNING.md` in the active flow or PR directory; never choose by glob or modification time
+- **Active plan:** exact `2 - PLANNING.yaml` in the active flow or PR directory; never choose by glob or modification time
 - **Known validation gaps:** list missing plan/spec/Figma/tests; do not claim those areas verified
 - **Mode:** `read-only` (default) or `fix` (explicit request only)
-- **False positives from previous reviews (fix mode):** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.md`. One per line as `file:line | tag | original finding | why it was dismissed`. File plus finding text is the identity: the line alone is not, since numbers drift and one line can yield several findings under the same tag.
+- **False positives from previous reviews (fix mode):** carried from earlier passes in this run, plus any recorded in an existing `4 - REVIEW.yaml`. One per line as `file:line | tag | original finding | why it was dismissed`. File plus finding text is the identity: the line alone is not, since numbers drift and one line can yield several findings under the same tag.
 
 ## Output contract
 
-Start every review output (including subagent results, local reports, and the PR review body) with `AI review. harness: <harness>, model: <model>`. In `4 - REVIEW.md` the header goes on the line directly under the title. Fill each field from the running environment; use `unknown` when unavailable, never guess. Every inline PR comment starts with `[AI review]`.
+Start every review output (including subagent results, local reports, and the PR review body) with `AI review. harness: <harness>, model: <model>`. In `4 - REVIEW.yaml` the header goes in a `#` comment on the first line. Fill each field from the running environment; use `unknown` when unavailable, never guess. Every inline PR comment starts with `[AI review]`.
 
 Each subagent returns ONLY the disclosure header plus the findings block below.
 
@@ -123,7 +123,7 @@ Require a concrete failure, maintenance cost, or smaller replacement. Do not rep
 
 ## Triage (both modes)
 
-Subagent output is untrusted input. The orchestrating agent, not the subagent, decides what is real. Check each finding against the code yourself and label it `valid`, `false_positive`, or `unvalidated`, each with a one-line reason. Count and act on `valid` only. Record `unvalidated` items as validation gaps. Never pass raw subagent findings to the user, a PR, or a fixer. Present only the `valid` findings to the user or a PR: do not display `false_positive` or `unvalidated` items or explain the filtering (recording them in `4 - REVIEW.md` is fine). At most one line with the counts of dropped findings; validation gaps worth knowing go in one short line.
+Subagent output is untrusted input. The orchestrating agent, not the subagent, decides what is real. Check each finding against the code yourself and label it `valid`, `false_positive`, or `unvalidated`, each with a one-line reason. Count and act on `valid` only. Record `unvalidated` items as validation gaps. Never pass raw subagent findings to the user, a PR, or a fixer. Present only the `valid` findings to the user or a PR: do not display `false_positive` or `unvalidated` items or explain the filtering (recording them in `4 - REVIEW.yaml` is fine). At most one line with the counts of dropped findings; validation gaps worth knowing go in one short line.
 
 ## Read-only mode
 
@@ -134,11 +134,11 @@ If the diff is empty, reply with `AI review. harness: <harness>, model: <model>`
 3. **Dispatch three reviewers** — in one message, start three `readonly` `general-purpose` Task subagents with the same prompt. Use three different models if the harness supports per-invocation model overrides (orchestrator picks, e.g. fast, balanced, deep); otherwise run all three with the session default.
 4. **Triage** — as above.
 5. **Display** — the disclosure header plus one `### Review Findings` block with only the `valid` findings, deduplicated by file:line:tag. If none remain, report `Lean & valid. Ship.`
-6. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.md` from `../snail-flow/templates/4 - REVIEW.md` (including the intent sources block and triage counts). When a runbook exists: if zero `valid` findings remain after triage, `sh ../snail-flow/scripts/flow-state.sh advance <dir> --result=clean --valid=0` (`--note=<reason>` when you departed from this skill or to record the review URL); if `valid` findings remain, do not advance — `note <dir> <N valid findings unresolved>` and leave the cursor for the user to decide (re-run in fix mode or accept the findings). On a `size: light` runbook row `4` does not exist: write no `4 - REVIEW.md`; a review there needs the user to switch the flow to `size: full`. Do not fix.
+6. **Deliver** — display the block locally; post to a PR only under the posting rule below. Write `4 - REVIEW.yaml` from `../snail-flow/templates/4 - REVIEW.yaml` (including the intent sources block and triage counts). When a runbook exists: if zero `valid` findings remain after triage, `node ../snail-flow/scripts/flow-state.mjs advance <dir> --result=clean --valid=0` (`--note=<reason>` when you departed from this skill or to record the review URL); if `valid` findings remain, do not advance — `note <dir> <N valid findings unresolved>` and leave the cursor for the user to decide (re-run in fix mode or accept the findings). On a `size: light` runbook row `4` does not exist: write no `4 - REVIEW.yaml`; a review there needs the user to switch the flow to `size: full`. Do not fix.
 
 ## Fix mode
 
-If the diff is empty, stop in one sentence. The disclosure header goes on the final report and `4 - REVIEW.md`.
+If the diff is empty, stop in one sentence. The disclosure header goes on the final report and `4 - REVIEW.yaml`.
 
 1. **Trace context** — run the context trail once; carry the intent sources block into every pass.
 2. **Review** — dispatch ONE new `readonly` `general-purpose` Task subagent with the prompt above, on the current tree; tell it to review the same diff target as pass one including fixes made since (branch changes: merge base to working tree; uncommitted changes: the HEAD from pass one to working tree), so uncommitted fixes count.
@@ -152,13 +152,13 @@ If the diff is empty, stop in one sentence. The disclosure header goes on the fi
 
 **Fix rules:** minimal diff; match conventions; no scope creep; no drive-by refactors; do not treat 🔵 as auto-`false_positive`. Do not silence linters, fix the root cause. Run relevant tests after non-trivial fixes; record failures as blockers. Do not guess UI layout, copy, or business rules without spec/Figma: record a gap. Do not auto-fix gap-dependent ❓ by guessing intent.
 
-**Output:** when the exit rule is met, write `4 - REVIEW.md` and, when a runbook exists, `advance <dir> --result=clean|findings-fixed --valid=0` (`--note=<reason>` when you departed from this skill). When blocked (stuck guard fired or tests still fail), write `4 - REVIEW.md`, `note <dir> <reason>`, and `set <dir> status=blocked` — do not advance while `valid` findings remain. On a `size: light` runbook row `4` does not exist: write nothing and tell the user a review needs `size: full`. The doc carries:
+**Output:** when the exit rule is met, write `4 - REVIEW.yaml` and, when a runbook exists, `advance <dir> --result=clean|findings-fixed --valid=0` (`--note=<reason>` when you departed from this skill). When blocked (stuck guard fired or tests still fail), write `4 - REVIEW.yaml`, `note <dir> <reason>`, and `set <dir> status=blocked` — do not advance while `valid` findings remain. On a `size: light` runbook row `4` does not exist: write nothing and tell the user a review needs `size: full`. The doc carries:
 
 - Review rounds completed
 - The intent sources block (or `none resolved`)
 - `valid` findings fixed (count and one-line summary)
 - `false_positive` count
-- `false_positive` findings from each round in the record shape above, under a `## False positives` heading, so future fix-mode runs can seed from them
+- `false_positive` findings from each round under the `false_positives` key, one record per line in the record shape above, so future fix-mode runs can seed from them
 - Any `unvalidated` items / validation gaps
 - Test and browser/visual status, if available
 
@@ -208,13 +208,13 @@ Post only when the user passed a PR link/number or explicitly asked (e.g. `/snai
 Everything posted to the PR is short, clear, concise, and human-readable - write like a person reviewing a colleague's PR.
 
 - One or two plain sentences per comment: the problem, then the fix.
-- No emoji tags, totals, or report scaffolding in PR comments; those stay in the local findings block and `4 - REVIEW.md`.
+- No emoji tags, totals, or report scaffolding in PR comments; those stay in the local findings block and `4 - REVIEW.yaml`.
 - No filler, no praise padding, no restating the code back to the author.
 - `❓` findings become plain questions to the author; when one stems from an intent source, include the quoted source line.
 
 ## Rules
 
-- Read-only mode: no code edits; write only `4 - REVIEW.md`, the runbook `advance`, and the temporary `review.json` used for PR posting.
+- Read-only mode: no code edits; write only `4 - REVIEW.yaml`, the runbook `advance`, and the temporary `review.json` used for PR posting.
 - Fix mode only on an explicit request or an explicit `snail-flow` step 9 call; never switch to it on your own.
 - Reviewer subagents review and the orchestrator triages. Reviewers never fix or post.
 - Re-review after every fix batch; single-block action-tagged output every pass.

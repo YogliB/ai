@@ -11,10 +11,12 @@
 	"scripts": {
 		"prepare": "husky",
 		"format": "oxfmt",
-		"lint": "lint-staged"
+		"lint": "lint-staged",
+		"test": "node --test tests/*.test.mjs"
 	},
 	"devDependencies": {
 		"husky": "9.1.7",
+		"js-yaml": "4.1.0",
 		"lint-staged": "16.4.0",
 		"oxfmt": "0.74.0"
 	},
@@ -27,6 +29,9 @@
 			"version": "^12.2.0",
 			"onFail": "warn"
 		}
+	},
+	"engines": {
+		"node": ">=24"
 	},
 	"packageManager": "npm@12.2.0+sha512.66c2632a94e796649738b2d7894d710c2cc2e1696893823066687f6b0d8a52e5f2b54eeaeaa32ffdc513ecca1e49ff794a5c2ec3f9515d879f1b3182b291cf35"
 }

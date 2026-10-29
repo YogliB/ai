@@ -11,7 +11,7 @@ These rules are always-on. Read them before every task:
 | Skill format        | Keep `SKILL.md` files short, clear, and concise. Preserve output contracts, tag definitions, and subagent instructions; remove redundant prose and duplicated explanations. |
 | Skill usage         | Before using a snail skill, read `skills/<skill>/SKILL.md`.                                                                                                                 |
 | Workflow invocation | Do not run `snail-flow` unless the user explicitly asks for it.                                                                                                             |
-| Workflow output     | Flow skills write numbered phase docs to `.agents/flows/snail-<slug>/` and update `runbook` via `flow-state.sh`.                                                            |
+| Workflow output     | Flow skills write numbered phase YAML artifacts to `.agents/flows/snail-<slug>/` and update `runbook.yaml` via `flow-state.mjs` (Node 24+ required).                        |
 | Commits             | Run `nub run format` before committing. Squash to a single Conventional Commit.                                                                                             |
 
 ## Docs index
@@ -40,17 +40,16 @@ nub run format
 
 ### Common commands
 
-| Command                          | Purpose                                                             |
-| -------------------------------- | ------------------------------------------------------------------- |
-| `./scripts/install.sh`           | Install the Cursor plugin into `~/.cursor/plugins/local/`           |
-| `./scripts/uninstall.sh`         | Remove the Cursor plugin                                            |
-| `./scripts/sync-devin-plugin.sh` | Sync `skills/` and `rules/` into `plugins/snail/`                   |
-| `./scripts/gen-skills-index.sh`  | Regenerate the skill list in `rules/snail.md` (`--check` to verify) |
-| `nub run format`                 | Format with `oxfmt`                                                 |
-| `nub run lint`                   | Run the pre-commit lint step                                        |
-| `sh scripts/test-flow-state.sh`  | Test the runbook state machine and validator                        |
-| `sh scripts/test-lint-plan.sh`   | Test the plan-structure linter                                      |
-| `sh scripts/test-receipts.sh`    | Test the check-receipt scripts                                      |
+| Command                              | Purpose                                                             |
+| ------------------------------------ | ------------------------------------------------------------------- |
+| `node scripts/install.mjs`           | Install the Cursor plugin into `~/.cursor/plugins/local/`           |
+| `node scripts/uninstall.mjs`         | Remove the Cursor plugin                                            |
+| `node scripts/sync-devin-plugin.mjs` | Sync `skills/` and `rules/` into `plugins/snail/`                   |
+| `node scripts/gen-skills-index.mjs`  | Regenerate the skill list in `rules/snail.md` (`--check` to verify) |
+| `node scripts/vendor-js-yaml.mjs`    | Refresh vendored js-yaml copies (`--check` to verify)               |
+| `nub run format`                     | Format with `oxfmt`                                                 |
+| `nub run lint`                       | Run the pre-commit lint step                                        |
+| `npm test`                           | Run the `node --test` suite in `tests/`                             |
 
 ### Project layout
 
@@ -60,8 +59,8 @@ nub run format
 - `.cursor-plugin/` — Cursor plugin manifest; the repo root is the plugin.
 - `.claude-plugin/` — Claude Code plugin manifest.
 - `plugins/snail/` — Devin plugin (manifest, `skills/` and `rules/` synced from root).
-- `scripts/install.sh` — install the Cursor plugin.
-- `scripts/uninstall.sh` — remove the Cursor plugin.
+- `scripts/` — repo scripts (install, uninstall, sync, index, vendoring), all Node 24+.
+- `tests/` — the `node --test` suite for the scripts and gates.
 - `docs/` — contributor and user documentation.
 
 ## Documentation sync

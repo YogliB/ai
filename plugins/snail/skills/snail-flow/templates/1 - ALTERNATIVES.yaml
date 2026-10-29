@@ -1,0 +1,13 @@
+goal: '{{one-line decision}}'
+options:
+    - name: '{{option 1 name}}'
+      idea: '...'
+      pros: '...'
+      cons: '...'
+    - name: '{{option 2 name}}'
+      idea: '...'
+      pros: '...'
+      cons: '...'
+review_findings: "{{'Lean & valid. Ship.' or the review findings block from snail-review-alternatives}}"
+recommendation: '{{one clear option}}'
+decision: '{{chosen option and why; if the phase was skipped, state the reason}}'

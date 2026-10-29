@@ -9,7 +9,7 @@ Everything runs on `sh` and core utilities — no runtimes to install. `git` hel
 ```bash
 claude plugin marketplace add YogliB/snail
 claude plugin install snail@snail
-sh scripts/install-claude-rules.sh   # one-time: rules into ~/.claude
+node scripts/install-claude-rules.mjs   # one-time: rules into ~/.claude
 ```
 
 ### Devin
@@ -21,7 +21,7 @@ devin plugins install YogliB/snail#plugins/snail
 ### Cursor
 
 ```bash
-npx degit YogliB/snail /tmp/snail && sh /tmp/snail/scripts/install.sh
+npx degit YogliB/snail /tmp/snail && node /tmp/snail/scripts/install.mjs
 ```
 
 Copies the plugin into `~/.cursor/plugins/local/snail`. Reload the window to load it.
@@ -39,7 +39,7 @@ npx skills add YogliB/snail --list                # browse first
 ```bash
 claude plugin uninstall snail@snail
 devin plugins remove snail
-sh /tmp/snail/scripts/uninstall.sh     # cursor
+node /tmp/snail/scripts/uninstall.mjs   # cursor
 npx skills remove snail-planning          # one skill
 ```
 
@@ -103,38 +103,38 @@ Every flow is a self-contained folder:
 
 ```text
 .agents/flows/snail-<slug>/
-├── runbook          # state: flat key: value lines, `at` is the cursor
-├── receipts/        # proof a check ran and passed
-├── 0 - EXPLORE.md
-├── 1 - ALTERNATIVES.md
-├── 2 - PLANNING.md
-├── 3 - IMPLEMENTATION.md
-├── 4 - REVIEW.md
-├── 5 - VERIFY.md
-└── 6 - PR.md
+├── runbook.yaml     # state: `at` is the cursor, `rows.*` the gate fields
+├── receipts/        # YAML receipts: proof a check ran and passed
+├── 0 - EXPLORE.yaml
+├── 1 - ALTERNATIVES.yaml
+├── 2 - PLANNING.yaml
+├── 3 - IMPLEMENTATION.yaml
+├── 4 - REVIEW.yaml
+├── 5 - VERIFY.yaml
+└── 6 - PR.yaml
 ```
 
-`init` writes `.agents/.gitignore` containing `flows/` — flows stay private unless you delete that line. Agents mutate `runbook` only via `skills/snail-flow/scripts/flow-state.sh`; the contract lives in [ARCHITECTURE.md](ARCHITECTURE.md).
+`init` writes `.agents/.gitignore` containing `flows/` — flows stay private unless you delete that line. Agents mutate `runbook.yaml` only via `node skills/snail-flow/scripts/flow-state.mjs` (Node 24+); the contract lives in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### Phases
 
-| #   | Skill                | Output                  | Gate                                                             |
-| --- | -------------------- | ----------------------- | ---------------------------------------------------------------- |
-| 0   | `snail-explore`      | `0 - EXPLORE.md`        | Artifact exists.                                                 |
-| 1   | `snail-alternatives` | `1 - ALTERNATIVES.md`   | `snail-review-alternatives` runs clean; user picks an option.    |
-| 2   | `snail-planning`     | `2 - PLANNING.md`       | `snail-review-plan` converges (`valid=0`), decision `proceed`.   |
-| 3   | `snail-implement`    | `3 - IMPLEMENTATION.md` | Passing receipts for the per-step checks.                        |
-| 4   | `snail-review`       | `4 - REVIEW.md`         | Valid findings resolved (`valid=0`).                             |
-| 5   | `snail-verify`       | `5 - VERIFY.md`         | `--result=pass` + receipts; `--skip --note=<reason>` if blocked. |
-| 6   | `snail-pr`           | `6 - PR.md`             | `advance` writes `at: done`, `status: completed`.                |
+| #   | Skill                | Output                    | Gate                                                             |
+| --- | -------------------- | ------------------------- | ---------------------------------------------------------------- |
+| 0   | `snail-explore`      | `0 - EXPLORE.yaml`        | Artifact exists.                                                 |
+| 1   | `snail-alternatives` | `1 - ALTERNATIVES.yaml`   | `snail-review-alternatives` runs clean; user picks an option.    |
+| 2   | `snail-planning`     | `2 - PLANNING.yaml`       | `snail-review-plan` converges (`valid=0`), decision `proceed`.   |
+| 3   | `snail-implement`    | `3 - IMPLEMENTATION.yaml` | Passing receipts for the per-step checks.                        |
+| 4   | `snail-review`       | `4 - REVIEW.yaml`         | Valid findings resolved (`valid=0`).                             |
+| 5   | `snail-verify`       | `5 - VERIFY.yaml`         | `--result=pass` + receipts; `--skip --note=<reason>` if blocked. |
+| 6   | `snail-pr`           | `6 - PR.yaml`             | `advance` writes `at: done`, `status: completed`.                |
 
 ### Standalone entry
 
-Every skill works alone — even a single-skill install. When `../snail-flow/scripts/flow-state.sh` is absent, skills skip every gate call and run flow-less. When it is present, `snail-explore`, `snail-alternatives`, and `snail-planning` self-start a flow via `init <dir> --slug=<s> --goal=<g> --at=<row>`; earlier rows are marked skipped with a `standalone entry` note. Downstream skills (`snail-implement`, `snail-verify`, `snail-pr`) need the previous phase's artifact, so they join a flow already in progress. `snail-review` runs flow-less either way.
+Every skill works alone — even a single-skill install. When `../snail-flow/scripts/flow-state.mjs` is absent, skills skip every gate call and run flow-less. When it is present, `snail-explore`, `snail-alternatives`, and `snail-planning` self-start a flow via `init <dir> --slug=<s> --goal=<g> --at=<row>`; earlier rows are marked skipped with a `standalone entry` note. Downstream skills (`snail-implement`, `snail-verify`, `snail-pr`) need the previous phase's artifact, so they join a flow already in progress. `snail-review` runs flow-less either way.
 
 ### Rollback
 
-- **Before implementation:** edit `2 - PLANNING.md` and re-run the plan review.
+- **Before implementation:** edit `2 - PLANNING.yaml` and re-run the plan review.
 - **Mid-implementation:** split a too-big TODO in the plan and keep going.
 - **After review:** if the plan itself is wrong, revise it and re-implement — don't patch code against a bad plan.
 - **After PR:** close or update it. No force-merges.
@@ -147,14 +147,14 @@ Read the phase table, then open the matching `skills/snail-*/SKILL.md` by hand b
 
 - Plans and flow docs live in `.agents/flows/snail-<slug>/`.
 - Shared rules live in `rules/` and ship inside the Cursor and Devin plugins.
-- The Devin plugin lives in `plugins/snail/`; `scripts/sync-devin-plugin.sh` syncs `skills/` and `rules/` into it.
+- The Devin plugin lives in `plugins/snail/`; `scripts/sync-devin-plugin.mjs` syncs `skills/` and `rules/` into it.
 - The Cursor plugin is the repo root: `.cursor-plugin/plugin.json` plus `skills/` and `rules/`.
-- Claude Code has no plugin rules channel — `scripts/install-claude-rules.sh` copies rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`.
+- Claude Code has no plugin rules channel — `scripts/install-claude-rules.mjs` copies rules into `~/.claude/snail/` and `@`-imports them from `~/.claude/CLAUDE.md`.
 
 ## Example session
 
 ```text
-/snail-planning add-auth-token      # writes .agents/flows/snail-add-auth-token/2 - PLANNING.md
+/snail-planning add-auth-token      # writes .agents/flows/snail-add-auth-token/2 - PLANNING.yaml
 /snail-review fix                   # reviews and fixes the diff
 /snail-pr                           # opens the PR
 ```

@@ -13,24 +13,27 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Test receipt scripts
-              run: sh scripts/test-receipts.sh
-            - name: Test plan lint
-              run: sh scripts/test-lint-plan.sh
-            - name: Test flow state machine
-              run: sh scripts/test-flow-state.sh
-            - name: Test sync script
-              run: sh scripts/test-sync-devin-plugin.sh
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+            - run: npm ci
+            - name: Run the test suite
+              run: npm test
             - name: Check plugin copies are in sync
-              run: sh scripts/sync-devin-plugin.sh --check
-            - name: Test skills index script
-              run: sh scripts/test-gen-skills-index.sh
+              run: node scripts/sync-devin-plugin.mjs --check
             - name: Check skills index is up to date
-              run: sh scripts/gen-skills-index.sh --check
+              run: node scripts/gen-skills-index.mjs --check
+            - name: Check vendored js-yaml is up to date
+              run: node scripts/vendor-js-yaml.mjs --check
     claude-plugin:
         runs-on: ubuntu-latest
         timeout-minutes: 10
         steps:
             - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
             - name: Test Claude Code plugin install
-              run: sh scripts/test-claude-plugin.sh
+              run: node --test tests/claude-plugin.test.mjs
+              env:
+                  CLAUDE_PLUGIN_TEST: 1

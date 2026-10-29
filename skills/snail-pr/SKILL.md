@@ -10,9 +10,9 @@ Create or update a GitHub PR for the current branch.
 ## Slug and flow folder
 
 1. If the user provided a slug, use `.agents/flows/snail-<slug>/`.
-2. Else run `sh ../snail-flow/scripts/flow-state.sh check <dir>` on each `.agents/flows/snail-*/` and pick the flow whose `next` is `6` (a standalone install skips every `flow-state.sh` call and works flow-less). Require missing `6 - PR.md` there.
-3. Read the exact plan (`2 - PLANNING.md`) and other phase docs in the selected flow.
-4. After creating/updating the PR, write `6 - PR.md` from `../snail-flow/templates/6 - PR.md` (with the real url, status, number) and `sh ../snail-flow/scripts/flow-state.sh advance <dir>`.
+2. Else run `node ../snail-flow/scripts/flow-state.mjs check <dir>` on each `.agents/flows/snail-*/` and pick the flow whose `next` is `6` (a standalone install skips every `flow-state.mjs` call and works flow-less). Require missing `6 - PR.yaml` there.
+3. Read the exact plan (`2 - PLANNING.yaml`) and other phase docs in the selected flow.
+4. After creating/updating the PR, write `6 - PR.yaml` from `../snail-flow/templates/6 - PR.yaml` (with the real url, status, number) and `node ../snail-flow/scripts/flow-state.mjs advance <dir>`.
 
 ## Route: update or new
 
@@ -59,7 +59,7 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 1. Compose the body and write it to `.pr-body-temp.md` in the repo root.
 2. **Create:** `gh pr create --title "<title>" --body-file .pr-body-temp.md` (append `--label "code-review:request"` in corporate mode).
 3. **Update:** `gh pr edit <n> --title "<title>" --body-file .pr-body-temp.md`.
-4. Write `6 - PR.md` and `advance <dir>`.
+4. Write `6 - PR.yaml` and `advance <dir>`.
 5. **Always delete** `.pr-body-temp.md` last, even on failure.
 
 ## Troubleshooting
@@ -70,4 +70,4 @@ In OSS/standard mode, use a conventional-commit title (e.g. `feat(scope): add th
 
 ## Multi-PR completion
 
-Each PR is its own flow. After writing `6 - PR.md` and advancing to `done`, start the next PR's flow at the row the masterplan names.
+Each PR is its own flow. After writing `6 - PR.yaml` and advancing to `done`, start the next PR's flow at the row the masterplan names.
