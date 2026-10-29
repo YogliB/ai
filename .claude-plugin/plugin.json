@@ -1,7 +1,7 @@
 {
 	"name": "snail",
 	"displayName": "Snail",
-	"version": "0.5.0",
+	"version": "0.0.1",
 	"description": "Reusable agent skills and an optional stage-gated workflow for Claude Code.",
 	"author": {
 		"name": "Yogev Boaron Ben-Har",
