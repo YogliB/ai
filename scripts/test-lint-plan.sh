@@ -2,9 +2,9 @@
 set -eu
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
-LINT="$REPO_ROOT/skills/sk-planning/scripts/lint-plan.sh"
-TEMPLATE="$REPO_ROOT/skills/sk-planning/templates/plan.md"
-MASTER="$REPO_ROOT/skills/sk-planning/templates/masterplan.md"
+LINT="$REPO_ROOT/skills/snail-planning/scripts/lint-plan.sh"
+TEMPLATE="$REPO_ROOT/skills/snail-planning/templates/plan.md"
+MASTER="$REPO_ROOT/skills/snail-planning/templates/masterplan.md"
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 

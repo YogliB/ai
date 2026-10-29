@@ -16,9 +16,9 @@ git config user.email test@test
 git config user.name test
 git commit -qm init --allow-empty
 
-FS="$REPO_ROOT/skills/sk-flow/scripts/flow-state.sh"
-RW="$REPO_ROOT/skills/sk-implement/scripts/run-with-receipt.sh"
-D=.agents/flows/sk-demo
+FS="$REPO_ROOT/skills/snail-flow/scripts/flow-state.sh"
+RW="$REPO_ROOT/skills/snail-implement/scripts/run-with-receipt.sh"
+D=.agents/flows/snail-demo
 
 ok() { sh "$FS" check "${2:-$D}" > "$TMP/out" 2> "$TMP/err" || fail "$1"; grep -q "status: ok" "$TMP/out" || fail "$1"; }
 bad() { if sh "$FS" check "${2:-$D}" > "$TMP/out" 2> "$TMP/err"; then fail "$1"; fi; }
@@ -108,7 +108,7 @@ sh "$FS" advance "$D" --result=pass --receipts="receipts/$V" >/dev/null || fail 
 echo "# 6 - PR" > "$D/6 - PR.md"
 sh "$FS" advance "$D" >/dev/null || fail "re-advance row 6 failed"
 
-D2=.agents/flows/sk-skip
+D2=.agents/flows/snail-skip
 sh "$FS" init "$D2" --slug=skip --goal=g --at=5 >/dev/null || fail "init --at=5 failed"
 grep -q '^f.3.skipped: 1$' "$D2/runbook" || fail "init --at did not mark earlier rows skipped"
 if sh "$FS" advance "$D2" --skip 2>/dev/null; then fail "skip accepted without a note"; fi
@@ -126,7 +126,7 @@ note" 2>/dev/null; then fail "note accepted a newline"; fi
 if sh "$FS" set "$D2" "at=one
 two" 2>/dev/null; then fail "set accepted a newline value"; fi
 
-D3=.agents/flows/sk-errs
+D3=.agents/flows/snail-errs
 sh "$FS" init "$D3" --slug=errs --goal=g --at=1 >/dev/null || fail "init --at=1 failed"
 echo "# stray" > "$D3/9 - STRAY.md"
 bad "stray numbered artifact accepted" "$D3"
@@ -138,13 +138,13 @@ echo "{}" > "$D3/runbook.json"
 bad "legacy runbook.json tolerated" "$D3"
 rm "$D3/runbook.json"
 ok "clean dir does not check" "$D3"
-if sh "$FS" init .agents/flows/sk-bad --slug=bad --goal=g --at=1r 2>/dev/null; then fail "init --at=1r accepted"; fi
+if sh "$FS" init .agents/flows/snail-bad --slug=bad --goal=g --at=1r 2>/dev/null; then fail "init --at=1r accepted"; fi
 echo "# 1" > "$D3/1 - ALTERNATIVES.md"
 if sh "$FS" advance "$D3" --result=clean 2>/dev/null; then fail "row 1 accepted a flag it does not use"; fi
 if sh "$FS" set "$D3" size=lihgt 2>/dev/null; then fail "set accepted a typo'd size"; fi
 ok "typo'd size rejected by set" "$D3"
 
-DL=.agents/flows/sk-lite
+DL=.agents/flows/snail-lite
 sh "$FS" init "$DL" --slug=lite --goal=g --size=light >/dev/null || fail "light init failed"
 grep -q '^at: 2$' "$DL/runbook" || fail "light flow did not start at row 2"
 echo "# 2 - PLANNING" > "$DL/2 - PLANNING.md"
@@ -167,7 +167,7 @@ grep -q '^at: done$' "$DL/runbook" || fail "light flow did not complete"
 sh "$FS" note "$D" "reopened for a test" >/dev/null || fail "note failed"
 grep -q '^note: reopened for a test$' "$D/runbook" || fail "note was not recorded"
 
-D4=.agents/flows/sk-blocked
+D4=.agents/flows/snail-blocked
 sh "$FS" init "$D4" --slug=blocked --goal=x >/dev/null || fail "blocked init failed"
 sh "$FS" set "$D4" status=blocked >/dev/null || fail "set status=blocked failed"
 if sh "$FS" advance "$D4" 2>"$TMP/err"; then fail "advance ran on a blocked flow"; fi
@@ -176,7 +176,7 @@ sh "$FS" set "$D4" status=in-progress >/dev/null || fail "set status=in-progress
 echo "# 0 - EXPLORE" > "$D4/0 - EXPLORE.md"
 sh "$FS" advance "$D4" >/dev/null || fail "advance after resume failed"
 
-D5=.agents/flows/sk-size
+D5=.agents/flows/snail-size
 sh "$FS" init "$D5" --slug=size --goal=x >/dev/null || fail "size init failed"
 sh "$FS" set "$D5" size=light >/dev/null || fail "set size=light failed"
 grep -q '^at: 2$' "$D5/runbook" || fail "size=light did not move cursor to row 2"
@@ -190,10 +190,10 @@ rm "$D5/0 - EXPLORE.md"
 
 mkdir -p nested/.agents/flows
 printf 'dist' > nested/.agents/.gitignore
-sh "$FS" init nested/.agents/flows/sk-nl --slug=nl --goal=x >/dev/null || fail "init under existing .gitignore failed"
+sh "$FS" init nested/.agents/flows/snail-nl --slug=nl --goal=x >/dev/null || fail "init under existing .gitignore failed"
 [ "$(sed -n '1p' nested/.agents/.gitignore)" = "dist" ] || fail "init merged into last .gitignore line"
 [ "$(sed -n '2p' nested/.agents/.gitignore)" = "flows/" ] || fail "init did not append flows/ after missing newline"
-sh "$FS" init nested/.agents/flows/sk-nl2 --slug=nl2 --goal=x >/dev/null || fail "second init under existing .gitignore failed"
+sh "$FS" init nested/.agents/flows/snail-nl2 --slug=nl2 --goal=x >/dev/null || fail "second init under existing .gitignore failed"
 [ "$(grep -cx 'flows/' nested/.agents/.gitignore)" = "1" ] || fail "init duplicated flows/ in .gitignore"
 
 echo "test-flow-state: all tests passed"

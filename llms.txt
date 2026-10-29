@@ -10,20 +10,20 @@ Reusable agent skills and an optional stage-gated workflow.
 
 ## Skills
 
-- skills/sk-ai-toolbelt/SKILL.md
-- skills/sk-alternatives/SKILL.md
-- skills/sk-explore/SKILL.md
-- skills/sk-flow/SKILL.md
-- skills/sk-implement/SKILL.md
-- skills/sk-planning/SKILL.md
-- skills/sk-planning/templates/masterplan.md
-- skills/sk-planning/templates/plan.md
-- skills/sk-pr/SKILL.md
-- skills/sk-project-docs/SKILL.md
-- skills/sk-review-alternatives/SKILL.md
-- skills/sk-review-plan/SKILL.md
-- skills/sk-review/SKILL.md
-- skills/sk-verify/SKILL.md
+- skills/snail-ai-toolbelt/SKILL.md
+- skills/snail-alternatives/SKILL.md
+- skills/snail-explore/SKILL.md
+- skills/snail-flow/SKILL.md
+- skills/snail-implement/SKILL.md
+- skills/snail-planning/SKILL.md
+- skills/snail-planning/templates/masterplan.md
+- skills/snail-planning/templates/plan.md
+- skills/snail-pr/SKILL.md
+- skills/snail-project-docs/SKILL.md
+- skills/snail-review-alternatives/SKILL.md
+- skills/snail-review-plan/SKILL.md
+- skills/snail-review/SKILL.md
+- skills/snail-verify/SKILL.md
 
 ## Rules
 
@@ -32,9 +32,9 @@ Reusable agent skills and an optional stage-gated workflow.
 
 ## Scripts
 
-- skills/sk-flow/scripts/flow-state.sh — the runbook gate (init/check/advance/note/set)
-- skills/sk-implement/scripts/run-with-receipt.sh + check-receipt.sh — check receipts
-- skills/sk-planning/scripts/lint-plan.sh — plan structure lint
+- skills/snail-flow/scripts/flow-state.sh — the runbook gate (init/check/advance/note/set)
+- skills/snail-implement/scripts/run-with-receipt.sh + check-receipt.sh — check receipts
+- skills/snail-planning/scripts/lint-plan.sh — plan structure lint
 - scripts/install.sh — install the Cursor plugin
 - scripts/install-claude-rules.sh — install rules into ~/.claude
 - scripts/sync-devin-plugin.sh — sync skills/rules into plugins/snail

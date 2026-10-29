@@ -12,10 +12,10 @@ fail() {
 }
 
 git init -q .
-mkdir -p scripts skills/sk-a skills/sk-b rules
+mkdir -p scripts skills/snail-a skills/snail-b rules
 cp "$REPO_ROOT/scripts/gen-skills-index.sh" scripts/
-printf -- '---\nname: sk-a\ndescription: Does A. Use when A.\n---\n' > skills/sk-a/SKILL.md
-printf -- '---\nname: sk-b\ndescription: Does B.\n---\n' > skills/sk-b/SKILL.md
+printf -- '---\nname: snail-a\ndescription: Does A. Use when A.\n---\n' > skills/snail-a/SKILL.md
+printf -- '---\nname: snail-b\ndescription: Does B.\n---\n' > skills/snail-b/SKILL.md
 printf 'head\n\n<!-- skills:start -->\nstale\n<!-- skills:end -->\n\ntail\n' > rules/snail.md
 
 if sh scripts/gen-skills-index.sh --check >/dev/null 2>&1; then
@@ -24,19 +24,19 @@ fi
 
 sh scripts/gen-skills-index.sh >/dev/null
 sh scripts/gen-skills-index.sh --check >/dev/null || fail "--check fails right after generating"
-grep -qF '`sk-a` — Does A' rules/snail.md || fail "sk-a missing"
-grep -qF '`sk-b` — Does B' rules/snail.md || fail "sk-b missing"
+grep -qF '`snail-a` — Does A' rules/snail.md || fail "snail-a missing"
+grep -qF '`snail-b` — Does B' rules/snail.md || fail "snail-b missing"
 grep -qx 'head' rules/snail.md || fail "text before the markers changed"
 grep -qx 'tail' rules/snail.md || fail "text after the markers changed"
 
-mkdir skills/sk-c
-printf -- '---\nname: sk-c\ndescription: Does C.\n---\n' > skills/sk-c/SKILL.md
+mkdir skills/snail-c
+printf -- '---\nname: snail-c\ndescription: Does C.\n---\n' > skills/snail-c/SKILL.md
 if sh scripts/gen-skills-index.sh --check >/dev/null 2>&1; then
 	fail "--check misses a new skill"
 fi
 
 sh scripts/gen-skills-index.sh >/dev/null
-rm -r skills/sk-b
+rm -r skills/snail-b
 if sh scripts/gen-skills-index.sh --check >/dev/null 2>&1; then
 	fail "--check misses a removed skill"
 fi

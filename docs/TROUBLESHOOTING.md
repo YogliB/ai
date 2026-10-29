@@ -2,9 +2,9 @@
 
 ## A snail skill does nothing in Claude Code
 
-- Check the install: `ls ~/.claude/skills/sk-<name>/SKILL.md` (single skill) or reinstall the plugin.
+- Check the install: `ls ~/.claude/skills/snail-<name>/SKILL.md` (single skill) or reinstall the plugin.
 - Restart Claude Code after installing.
-- Use the exact name: `/snail:sk-planning` from the plugin, `/sk-planning` for a single-skill install.
+- Use the exact name: `/snail:snail-planning` from the plugin, `/snail-planning` for a single-skill install.
 
 ## Cursor ignores the rules
 
@@ -13,11 +13,11 @@
 
 ## Review or PR skills miss context
 
-- They expect `.agents/flows/sk-<slug>/` with a `runbook` and a `2 - PLANNING.md`. Missing either? They note it under `Known validation gaps` and keep going.
+- They expect `.agents/flows/snail-<slug>/` with a `runbook` and a `2 - PLANNING.md`. Missing either? They note it under `Known validation gaps` and keep going.
 
 ## Runbook errors
 
-Create state only via `sh skills/sk-flow/scripts/flow-state.sh`:
+Create state only via `sh skills/snail-flow/scripts/flow-state.sh`:
 
 - `runbook missing ...` — `init <dir> --slug=<slug> --goal=<goal>`, then `check`. A `runbook.json`/`RUNBOOK.md` means the flow predates this version — finish it on the old plugin or start fresh.
 - `advance: <file> is missing` — write the phase artifact first.
@@ -31,7 +31,7 @@ Shrink the plan, or split it into a masterplan plus sub-plans.
 
 ## Review finds the plan itself is wrong
 
-Back to planning: revise `2 - PLANNING.md`, re-run `sk-review-plan`, re-implement. Don't patch code against a bad plan.
+Back to planning: revise `2 - PLANNING.md`, re-run `snail-review-plan`, re-implement. Don't patch code against a bad plan.
 
 ## The agent diverged from a skill
 
