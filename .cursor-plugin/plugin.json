@@ -8,5 +8,6 @@
 	"homepage": "https://github.com/YogliB/snail",
 	"repository": "https://github.com/YogliB/snail",
 	"license": "MIT",
-	"keywords": ["skills", "workflow", "code-review", "planning"]
+	"keywords": ["skills", "workflow", "code-review", "planning"],
+	"logo": "assets/snail-logo.svg"
 }
