@@ -1,7 +1,7 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/snail-banner-dark.png">
-    <img alt="snail: Slow down. Ship right." src="assets/snail-banner-light.png" width="640">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/snail-banner-dark-2560.png">
+    <img alt="snail: Slow down. Ship right." src="assets/snail-banner-light-2560.png" width="640">
   </picture>
 </div>
 
