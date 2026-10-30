@@ -10,5 +10,5 @@ First release, ready for the Cursor marketplace.
 
 - Twelve `snail-*` skills: explore, alternatives, planning, implement, review, review-alternatives, review-plan, verify, pr, flow, project-docs, ai-toolbelt.
 - Stage-gated end-to-end workflow (`snail-flow`) with validated YAML runbooks and receipts.
-- Always-on no-comments rule, delivered through a SessionStart hook.
+- Always-on `no-comments` rule (alwaysApply rules in the Cursor and Devin plugins; `install-claude-rules.mjs` wires it into `CLAUDE.md` for Claude Code).
 - Brand assets under `assets/`: logo, README banner, and social preview card.
