@@ -44,7 +44,7 @@ Each `skills/snail-*/SKILL.md` is the one definition of what that skill does. Ev
 
 ### The gate is a cursor, not a state machine
 
-Every flow lives in `.agents/flows/snail-<slug>/`: a `runbook.yaml`, the numbered phase YAML artifacts, and `receipts/` — one self-contained bundle.
+Every flow lives in `.agents/flows/snail-<slug>/`: a `runbook.yaml`, the numbered phase YAML artifacts, and `receipts/` — one self-contained bundle. One runbook-less resident shares the namespace: `.agents/flows/snail-review/`, the fixed standalone review location (no runbook, latest standalone review only). It is not a flow — scans skip folders without a `runbook.yaml`.
 
 - `at` is the cursor; `rows.<row>.*` records what each `advance` captured.
 - Four commands: `init`, `check`, `advance` (the only structural mutation — it refuses until the row's artifact exists and its required flags pass), `note` (append-only), and `set` (repair hatch).
