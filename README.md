@@ -1,3 +1,10 @@
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/snail-banner-dark.png">
+    <img alt="snail: Slow down. Ship right." src="assets/snail-banner-light.png" width="640">
+  </picture>
+</div>
+
 # snail
 
 Reusable agent skills and an optional stage-gated workflow for Claude, Cursor, and Devin. It carries state between phases and leaves a trail — every gate is a small Node script, every phase leaves a receipt. I built this to stop repeating myself to every agent. Take it, break it, and rebuild it into something that fits your own chaos.
